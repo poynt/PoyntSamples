@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".SampleActivity">
+
+    <LinearLayout
+        android:id="@+id/userInfoRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/userInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User:" />
+
+        <TextView
+            android:id="@+id/userInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="no user yet!" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tokenInfoRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/userInfoRow"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tokenTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AccessToken:" />
+
+        <TextView
+            android:id="@+id/tokenInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userInfo"
+            android:text="no token yet!" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:layout_below="@id/tokenInfoRow"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/currentUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current User" />
+
+        <Button
+            android:id="@+id/getToken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Token" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bizInfo"
+        android:text="@string/hello_world"
+        android:layout_below="@id/buttonRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/chargeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Charge $10.00"
+        android:layout_below="@id/bizInfo"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/displayItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display items in second screen"
+        android:layout_below="@id/chargeBtn"
+        android:visibility="visible" />
+
+
+</RelativeLayout>
