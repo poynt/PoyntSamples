@@ -1,0 +1,66 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.+'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+allprojects {
+    repositories {
+        maven {
+            url 'https://nexus.poynt.co/content/repositories/snapshots'
+            credentials {
+                username mavenUser
+                password mavenPassword
+            }
+        }
+        maven {
+            url 'https://nexus.poynt.co/content/repositories/releases'
+            credentials {
+                username mavenUser
+                password mavenPassword
+            }
+        }
+        mavenCentral()
+    }
+}
+
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "co.poynt.samples"
+        minSdkVersion 19
+        targetSdkVersion 20
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-v4:20.+'
+
+    // Poynt Dependencies
+    compile 'co.poynt.api:android-api-model:1.0-beta1@jar'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.0-beta1@aar'
+
+    // JWT dependencies - if you want to parse JWTs
+    compile 'net.jcip:jcip-annotations:1.0@jar'
+    compile 'com.nimbusds:nimbus-jose-jwt:2.26@jar'
+    compile 'net.minidev:json-smart:1.2@jar'
+}
