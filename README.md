@@ -15,6 +15,7 @@ Building & Running
 ============
 The sample uses gradle wrapper to build. Just use the gradlew commands to build or you can open the
 project in Android Studio and run it directly from there.
+
     ./gradlew assembleDebug
 
 Maven repository credentials
