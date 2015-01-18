@@ -14,6 +14,8 @@
     <uses-permission android:name="poynt.permission.RECEIPT_PRINTING_SERVICE" />
     <uses-permission android:name="poynt.permission.EMAIL_SERVICE" />
     <uses-permission android:name="poynt.permission.CUSTOMER_SERVICE" />
+    <uses-permission android:name="poynt.permission.OFFLINE_SERVICE" />
+
     <!-- /Permissions needed by the Payment Fragments -->
 
     <application

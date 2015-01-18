@@ -30,22 +30,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import co.poynt.android.Constants;
-import co.poynt.android.common.util.Ln;
-import co.poynt.android.common.util.Toaster;
-import co.poynt.android.model.Payment;
-import co.poynt.android.model.PaymentStatus;
-import co.poynt.android.model.PoyntError;
-import co.poynt.android.payment.fragments.PaymentFragment;
-import co.poynt.android.payment.fragments.PaymentFragmentListener;
-import co.poynt.android.services.IPoyntBusinessService;
-import co.poynt.android.services.IPoyntBusinessServiceListener;
-import co.poynt.android.services.IPoyntSecondScreenService;
-import co.poynt.android.services.IPoyntSessionService;
-import co.poynt.android.services.IPoyntSessionServiceListener;
 import co.poynt.api.model.Business;
-import co.poynt.api.model.BusinessUser;
 import co.poynt.api.model.OrderItem;
+import co.poynt.os.Constants;
+import co.poynt.os.common.util.Ln;
+import co.poynt.os.common.util.Toaster;
+import co.poynt.os.model.Payment;
+import co.poynt.os.model.PaymentStatus;
+import co.poynt.os.model.PoyntError;
+import co.poynt.os.payment.fragments.PaymentFragment;
+import co.poynt.os.payment.fragments.PaymentFragmentListener;
+import co.poynt.os.services.v1.IPoyntBusinessReadListener;
+import co.poynt.os.services.v1.IPoyntBusinessService;
+import co.poynt.os.services.v1.IPoyntSecondScreenService;
+import co.poynt.os.services.v1.IPoyntSessionService;
+import co.poynt.os.services.v1.IPoyntSessionServiceListener;
 
 /**
  * A simple sample app demonstrating how to get business info from the device using
@@ -116,7 +115,7 @@ public class SampleActivity extends Activity {
                     // Android Account Manager does not maintain sessions - so we use Poynt Session
                     // Service to keep track of the current logged in user.
                     // NOTE that the access tokens are still managed by the Account Manager.
-                    mSessionService.getCurrentUser(1, sessionServiceListener);
+                    mSessionService.getCurrentUser(sessionServiceListener);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -182,7 +181,7 @@ public class SampleActivity extends Activity {
                             price = price.multiply(new BigDecimal(item.getQuantity()));
                             total = total.add(price);
                         }
-                        mSecondScreenService.showItem(Constants.API_VERSION, items, total.longValue(), "USD");
+                        mSecondScreenService.showItem(items, total.longValue(), "USD");
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -245,7 +244,7 @@ public class SampleActivity extends Activity {
             // first load business and business users to make sure the device resolves to a business
             // invoke the api to get business details
             try {
-                mBusinessService.getBusiness(1, businessServiceListener);
+                mBusinessService.getBusiness(businessReadServiceListener);
             } catch (RemoteException e) {
                 Ln.e("Unable to connect to business service to resolve the business this terminal belongs to!");
             }
@@ -261,9 +260,9 @@ public class SampleActivity extends Activity {
     /**
      * Business service listener interface
      */
-    private IPoyntBusinessServiceListener businessServiceListener = new IPoyntBusinessServiceListener.Stub() {
+    private IPoyntBusinessReadListener businessReadServiceListener = new IPoyntBusinessReadListener.Stub() {
         @Override
-        public void getBusinessResponse(int apiVersion, final Business business, PoyntError poyntError) throws RemoteException {
+        public void onResponse(final Business business, PoyntError poyntError) throws RemoteException {
             Ln.d("Received business obj:" + business.getDoingBusinessAs() + " -- " + business.getDescription());
             runOnUiThread(new Runnable() {
                 @Override
@@ -273,17 +272,6 @@ public class SampleActivity extends Activity {
                 }
             });
         }
-
-        @Override
-        public void getBusinessUsersResponse(int apiVersion, List<BusinessUser> businessUsers, PoyntError poyntError) throws RemoteException {
-            // not used in this sample
-        }
-
-        @Override
-        public void getBusinessUserResponse(int apiVersion, BusinessUser businessUser, PoyntError poyntError) throws RemoteException {
-            // not used in this sample
-        }
-
     };
 
     /**
@@ -311,8 +299,7 @@ public class SampleActivity extends Activity {
     private IPoyntSessionServiceListener sessionServiceListener = new IPoyntSessionServiceListener.Stub() {
 
         @Override
-        public void getCurrentUserResponse(int apiVersion, final Account account, PoyntError poyntError) throws RemoteException {
-
+        public void onResponse(final Account account, PoyntError poyntError) throws RemoteException {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -327,7 +314,6 @@ public class SampleActivity extends Activity {
                     }
                 }
             });
-
         }
     };
 
