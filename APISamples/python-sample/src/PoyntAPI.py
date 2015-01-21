@@ -305,6 +305,8 @@ class PoyntAPI:
         if self.debug == True:
             print "\tRESPONSE JSON:"
             prettyPrint(r.json())
+        if r.status_code == requests.codes.unauthorized:
+            print "\t Request merchant authorization by sending them to: " + self._generateAuthzUrl()
         return r.status_code, r.json()
 
 #requests status codes: https://github.com/kennethreitz/requests/blob/master/requests/status_codes.py
