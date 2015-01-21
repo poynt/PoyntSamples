@@ -3,6 +3,7 @@
 import requests
 import logging
 import httplib
+import urllib
 import json
 import sys
 import time
@@ -26,6 +27,7 @@ except ImportError:
 ### POYNT API URL and VERSION
 POYNT_API_HOST_URL = "https://services.poynt.net"
 POYNT_API_VERSION = '1.2'
+POYNT_AUTHZ_HOST_URL = "https://poynt.net"
 
 ###############################################################
 ###  Update the following variables with your own settings  ###
@@ -303,8 +305,11 @@ class PoyntAPI:
         if self.debug == True:
             print "\tRESPONSE JSON:"
             prettyPrint(r.json())
+        if r.status_code == requests.codes.unauthorized:
+            print "\t Request merchant authorization by sending them to: " + self._generateAuthzUrl()
         return r.status_code, r.json()
 
+#requests status codes: https://github.com/kennethreitz/requests/blob/master/requests/status_codes.py
     def _sendGetRequest(self, url, queryParameters, customHeaders):
         commonHeaders = { 'api-version':POYNT_API_VERSION,
                     "User-Agent": 'PoyntSample-Python',
@@ -320,7 +325,17 @@ class PoyntAPI:
         if self.debug == True:
             print "\tRESPONSE JSON:"
             prettyPrint(r.json())
+        if r.status_code == requests.codes.unauthorized:
+            print "\t Request merchant authorization by sending them to: " + self._generateAuthzUrl()
         return r.status_code, r.json()
+
+    def _generateAuthzUrl(self):
+        poyntAuthzUrl = POYNT_AUTHZ_HOST_URL + "/applications/authorize?"
+        params = { 'applicationId' : self.applicationId,
+                    'callback' : 'http://alavilli.com/dump.php',
+                    'context' : 'python-test-script'
+                    }
+        return poyntAuthzUrl + urllib.urlencode(params)
 
 
 if(has_crypto):
