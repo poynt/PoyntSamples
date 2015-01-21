@@ -1,4 +1,4 @@
-package samples.poynt.co.poyntsamples;
+package co.poynt.samples;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

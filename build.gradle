@@ -5,15 +5,35 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.android.tools.build:gradle:1.0.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
+//allprojects {
+//    repositories {
+//        jcenter()
+//    }
+//}
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url 'https://nexus.poynt.co/content/repositories/snapshots'
+            credentials {
+                username mavenUser
+                password mavenPassword
+            }
+        }
+        maven {
+            url 'https://nexus.poynt.co/content/repositories/releases'
+            credentials {
+                username mavenUser
+                password mavenPassword
+            }
+        }
+        mavenCentral()
     }
 }
