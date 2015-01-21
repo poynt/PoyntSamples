@@ -4,8 +4,8 @@ A simple Python sample demonstrating the usage of Poynt Cloud APIs.
 ## Installing
 
 ```
-$ pip install PyJWT
-$ pip install cryptography
+$ sudo pip install PyJWT
+$ sudo pip install cryptography
 ```
 
 ## Usage
