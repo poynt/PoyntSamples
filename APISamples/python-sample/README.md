@@ -6,6 +6,8 @@ A simple Python sample demonstrating the usage of Poynt Cloud APIs.
 ```
 $ sudo pip install PyJWT
 $ sudo pip install cryptography
+$ sudo pip install requests
+$ sudo pip install rsa
 ```
 
 ## Usage
