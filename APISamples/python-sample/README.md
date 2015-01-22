@@ -22,3 +22,14 @@ can just run:
 ```
 python src/PoyntAPI.py
 ```
+
+NOTE: Please update the following parameters in src/PoyntAPI.py to match with yours from Poynt Developer Portal:
+
+```
+BUSINESS_ID = "<your-business-id>"
+APPLICATION_ID = "<your-application-id>"
+### Please make sure you update the following files with your
+### own public/private keys for your Application
+PRIVATE_KEY_FILE = 'keys/poynt_test_key'
+PUBLIC_KEY_FILE = 'keys/poynt_test_key.pub'
+```
