@@ -12,13 +12,9 @@ buildscript {
     }
 }
 
-//allprojects {
-//    repositories {
-//        jcenter()
-//    }
-//}
 allprojects {
     repositories {
+        mavenLocal()
         jcenter()
         maven {
             url 'https://nexus.poynt.co/content/repositories/snapshots'

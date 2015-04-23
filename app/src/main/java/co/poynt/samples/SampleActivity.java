@@ -6,6 +6,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +36,10 @@ import java.util.UUID;
 import co.poynt.api.model.Business;
 import co.poynt.api.model.OrderItem;
 import co.poynt.os.Constants;
-import co.poynt.os.common.util.Ln;
-import co.poynt.os.common.util.Toaster;
+import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
 import co.poynt.os.model.PaymentStatus;
 import co.poynt.os.model.PoyntError;
-import co.poynt.os.payment.fragments.PaymentFragment;
-import co.poynt.os.payment.fragments.PaymentFragmentListener;
 import co.poynt.os.services.v1.IPoyntBusinessReadListener;
 import co.poynt.os.services.v1.IPoyntBusinessService;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
@@ -53,6 +53,9 @@ import co.poynt.os.services.v1.IPoyntSessionServiceListener;
 public class SampleActivity extends Activity {
 
     private static final int AUTHORIZATION_CODE = 1993;
+    // request code for payment service activity
+    private static final int COLLECT_PAYMENT_REQUEST = 13132;
+    private static final String TAG = "SampleActivity";
 
     private AccountManager accountManager;
     private IPoyntSessionService mSessionService;
@@ -81,30 +84,7 @@ public class SampleActivity extends Activity {
         chargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // launch payment fragment w/ a Payment object
-                Payment payment = new Payment();
-                // amount is always in cents
-                payment.setAmount(1000);
-                payment.setCurrency("USD");
-                String referenceId = UUID.randomUUID().toString();
-                payment.setReferenceId(referenceId);
-                PaymentFragment paymentFragment = PaymentFragment.newInstance(payment, new PaymentFragmentListener() {
-                    @Override
-                    public void onPaymentAction(Payment payment) {
-                        if (payment.getStatus() == PaymentStatus.COMPLETED
-                                || payment.getStatus() == PaymentStatus.AUTHORIZED) {
-                            Toaster.showLong(SampleActivity.this, "Thank you for payment");
-                        } else {
-                            Toaster.showLong(SampleActivity.this, "you gotta pay!");
-                        }
-                    }
-                });
-                // prevent the merchant from dismissing the payment fragment by taping
-                // anywhere on the screen
-                paymentFragment.setCancelable(false);
-                // Payment Fragment can be shows as a fragment dialog (recommended) or
-                // can also be embedded in another layout
-                paymentFragment.show(getFragmentManager(), "Payment");
+                launchPoyntPayment(1000l);
             }
         });
         Button currentUser = (Button) findViewById(R.id.currentUser);
@@ -213,7 +193,7 @@ public class SampleActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Ln.d("binding to services...");
+        Log.d(TAG, "binding to services...");
         bindService(new Intent(IPoyntBusinessService.class.getName()),
                 mBusinessServiceConnection, Context.BIND_AUTO_CREATE);
         bindService(new Intent(IPoyntSessionService.class.getName()),
@@ -225,7 +205,7 @@ public class SampleActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-        Ln.d("unbinding from services...");
+        Log.d(TAG, "unbinding from services...");
         unbindService(mBusinessServiceConnection);
         unbindService(mSessionConnection);
         unbindService(mSecondScreenConnection);
@@ -237,7 +217,7 @@ public class SampleActivity extends Activity {
     private ServiceConnection mBusinessServiceConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Ln.d("PoyntBusinessService is now connected");
+            Log.d(TAG, "PoyntBusinessService is now connected");
             // this gets an instance of the IRemoteInterface, which we can use to call on the service
             mBusinessService = IPoyntBusinessService.Stub.asInterface(service);
 
@@ -246,13 +226,13 @@ public class SampleActivity extends Activity {
             try {
                 mBusinessService.getBusiness(businessReadServiceListener);
             } catch (RemoteException e) {
-                Ln.e("Unable to connect to business service to resolve the business this terminal belongs to!");
+                Log.e(TAG, "Unable to connect to business service to resolve the business this terminal belongs to!");
             }
         }
 
         // Called when the connection with the service disconnects unexpectedly
         public void onServiceDisconnected(ComponentName className) {
-            Ln.d("PoyntBusinessService has unexpectedly disconnected");
+            Log.d(TAG, "PoyntBusinessService has unexpectedly disconnected");
             mBusinessService = null;
         }
     };
@@ -263,7 +243,7 @@ public class SampleActivity extends Activity {
     private IPoyntBusinessReadListener businessReadServiceListener = new IPoyntBusinessReadListener.Stub() {
         @Override
         public void onResponse(final Business business, PoyntError poyntError) throws RemoteException {
-            Ln.d("Received business obj:" + business.getDoingBusinessAs() + " -- " + business.getDescription());
+            Log.d(TAG, "Received business obj:" + business.getDoingBusinessAs() + " -- " + business.getDescription());
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -371,7 +351,7 @@ public class SampleActivity extends Activity {
     private ServiceConnection mSecondScreenConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Ln.d("IPoyntSecondScreenService is now connected");
+            Log.d(TAG, "IPoyntSecondScreenService is now connected");
             // Following the example above for an AIDL interface,
             // this gets an instance of the IRemoteInterface, which we can use to call on the service
             mSecondScreenService = IPoyntSecondScreenService.Stub.asInterface(service);
@@ -379,10 +359,63 @@ public class SampleActivity extends Activity {
 
         // Called when the connection with the service disconnects unexpectedly
         public void onServiceDisconnected(ComponentName className) {
-            Ln.d("IPoyntSecondScreenService has unexpectedly disconnected");
+            Log.d(TAG, "IPoyntSecondScreenService has unexpectedly disconnected");
             mSecondScreenService = null;
         }
     };
 
+    private void launchPoyntPayment(Long amount) {
+        String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
+
+        Payment payment = new Payment();
+        String referenceId = UUID.randomUUID().toString();
+        payment.setReferenceId(referenceId);
+        payment.setAmount(amount);
+        payment.setCurrency(currencyCode);
+
+        // start Payment activity for result
+        try {
+            Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+            collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+            startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+        } catch (ActivityNotFoundException ex) {
+            Log.e(TAG, "Poynt Payment Activity not found - did you install PoyntServices?", ex);
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "Received onActivityResult (" + requestCode + ")");
+        // Check which request we're responding to
+        if (requestCode == COLLECT_PAYMENT_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
+                    Log.d(TAG, "Received onPaymentAction from PaymentFragment w/ Status("
+                            + payment.getStatus() + ")");
+                    if (payment.getStatus().equals(PaymentStatus.COMPLETED)) {
+                        Toast.makeText(this, "Payment Completed", Toast.LENGTH_LONG).show();
+                    } else if (payment.getStatus().equals(PaymentStatus.AUTHORIZED)) {
+                        Toast.makeText(this, "Payment Authorized", Toast.LENGTH_LONG).show();
+                    } else if (payment.getStatus().equals(PaymentStatus.CANCELED)) {
+                        Toast.makeText(this, "Payment Canceled", Toast.LENGTH_LONG).show();
+                    } else if (payment.getStatus().equals(PaymentStatus.FAILED)) {
+                        Toast.makeText(this, "Payment Failed", Toast.LENGTH_LONG).show();
+                    } else if (payment.getStatus().equals(PaymentStatus.REFUNDED)) {
+                        Toast.makeText(this, "Payment Refunded", Toast.LENGTH_LONG).show();
+                    } else if (payment.getStatus().equals(PaymentStatus.VOIDED)) {
+                        Toast.makeText(this, "Payment Voided", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Payment Completed", Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Payment Canceled", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
 }
