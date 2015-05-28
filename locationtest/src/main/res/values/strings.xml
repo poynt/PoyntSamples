@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Poynt Location Test</string>
+    <string name="Time">Time</string>
+    <string name="Providers">Available providers</string>
+    <string name="LastLocation">Last Location</string>
+    <string name="LastLocationTime">Last Location Time</string>
+
+    <string name="Location">Current Location</string>
+    <string name="LocationAcquiring">Acquiring Location</string>
+    <string name="LocationTime">Current Location Time</string>
+    <string name="action_settings">Settings</string>
+</resources>
