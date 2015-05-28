@@ -261,6 +261,7 @@ public class MainActivity extends Activity {
         if (mLastLocation != null) {
             GeoPoint geoPoint = new GeoPoint(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             mMapView.getController().setCenter(geoPoint);
+            mMapView.getController().animateTo(geoPoint);
         }
 
         // Register for getting first location lock on a location overlay.
