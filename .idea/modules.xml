@@ -4,7 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PoyntSamples.iml" filepath="$PROJECT_DIR$/PoyntSamples.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/locationtest/locationtest.iml" filepath="$PROJECT_DIR$/locationtest/locationtest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/locationsample/locationsample.iml" filepath="$PROJECT_DIR$/locationsample/locationsample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/locationtest/locationsample.iml" filepath="$PROJECT_DIR$/locationtest/locationsample.iml" />
     </modules>
   </component>
 </project>

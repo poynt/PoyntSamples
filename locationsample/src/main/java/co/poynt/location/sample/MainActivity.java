@@ -1,4 +1,4 @@
-package co.poynt.location.test;
+package co.poynt.location.sample;
 
 import android.app.Activity;
 import android.location.Criteria;
@@ -30,10 +30,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Main activity that shows how to get location and
@@ -48,25 +44,13 @@ import butterknife.InjectView;
 public class MainActivity extends Activity {
     private static final String TAG = "LocationActivity";
 
-    @Inject
     LocationManager mLocationManager;
 
-    @InjectView(R.id.providers)
     TextView mProvidersText;
-
-    @InjectView(R.id.last_location)
     TextView mLastLocationText;
-
-    @InjectView(R.id.last_location_time)
     TextView mLastLocationTimeText;
-
-    @InjectView(R.id.location)
     TextView mLocationText;
-
-    @InjectView(R.id.location_time)
     TextView mLocationTimeText;
-
-    @InjectView(R.id.mapview)
     MapView mMapView;
 
 
@@ -94,11 +78,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Perform injection so that when this call returns
-        // all dependencies will be available for use.
-        ((LocationTestApplication) getApplication())
-                .getApplicationComponent().injectActivity(this);
-        ButterKnife.inject(this);
+        mProvidersText = (TextView) findViewById(R.id.providers);
+        mLastLocationText = (TextView) findViewById(R.id.last_location);
+        mLastLocationTimeText = (TextView) findViewById(R.id.last_location_time);
+        mLocationText = (TextView) findViewById(R.id.location);
+        mLocationTimeText = (TextView) findViewById(R.id.location_time);
+        mMapView = (MapView) findViewById(R.id.mapview);
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         // display available providers.
         displayProviders();
@@ -310,9 +297,9 @@ public class MainActivity extends Activity {
         mCompassOverlay.disableCompass();
     }
 
-        /**
-         * Display list of providers.
-         */
+    /**
+     * Display list of providers.
+     */
     private void displayProviders() {
         Log.d(TAG, " List of Provider");
         List<String> providers = mLocationManager.getAllProviders();

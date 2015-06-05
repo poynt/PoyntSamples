@@ -1,4 +1,4 @@
-package poynt.co.locationtest;
+package co.poynt.locationtest;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

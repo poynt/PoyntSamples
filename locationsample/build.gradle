@@ -16,7 +16,7 @@ android {
     buildToolsVersion "22.0.0"
 
     defaultConfig {
-        applicationId "test.location.poynt.com.locationtest"
+        applicationId "test.location.poynt.com.locationsample"
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
@@ -32,13 +32,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    // used for @inject.
-    provided 'org.glassfish:javax.annotation:10.0-b28'
-    // dependency injection framework.
-    compile 'com.google.dagger:dagger:2.0'
-    apt 'com.google.dagger:dagger-compiler:2.0'
-    // dependency injection framework for android views
-    compile 'com.jakewharton:butterknife:6.1.0'
     // open street map viewer.
     compile 'org.osmdroid:osmdroid-android:4.2'
     compile 'org.slf4j:slf4j-android:1.6.1-RC1'

@@ -1,1 +1,1 @@
-include ':app', ':locationtest'
+include ':app', ':locationsample'
