@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><!-- This xml defines what capabilities are supported by the service that uses this xml.
+  Capabilities will be used by PoyntOS to produce custom UI on behalf of the service to
+  get inputs from merchant/customer. -->
+<capability xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- REQUIRED: application id of this app
+         this appid is issued by poynt web portal
+         IMPORTANT: Replace this appid with your appid.-->
+    <!--<appid>urn:aid:0f39b7a3-b9db-41f1-9cdb-9f04a3620ade</appid>-->
+    <appid>urn:aid:d3462a56-737b-4419-b54c-39a59f4dc8d6</appid>
+
+
+    <!-- REQUIRED: type of capbility, should be one of
+            PAYMENT, DISCOUNT, RECEIPT, PRINTER
+            please see CapabilityProvider.Type defined in PoyntSDK for list of types supported.
+    -->
+    <type>DISCOUNT</type>
+
+    <!-- descriptive name of this capability -->
+    <provider>Poynt Coupon</provider>>
+
+    <!-- optional processor name -->
+    <processor></processor>
+
+    <!-- entry method could be one of the following
+       MANUAL -> will result in showing a icon to the merchant to manually launch the capability.
+       CARDREAD -> card data will be directly passed to this capability provider.
+       QRCODE -> qr code entry.
+       OTHER -> other entry methods.
+       each entry method can be additionally filtered with eval tag.
+    -->
+    <entry_method type="MANUAL"></entry_method>
+
+    <entry_method type="QRCODE"></entry_method>
+
+</capability>
