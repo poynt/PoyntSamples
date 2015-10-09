@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">CustomPayment</string>
+    <string name="customTenderName">Gift Card</string>
+    <string name="Done">Done</string>
+    <string name="Cancel">Cancel</string>
+</resources>

@@ -88,12 +88,13 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="poynt-sdk-1.2.8-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="json-smart-1.2" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="jcip-annotations-1.0" level="project" />
     <orderEntry type="library" exported="" name="android-api-model-1.2.28" level="project" />
     <orderEntry type="library" exported="" name="nimbus-jose-jwt-2.26" level="project" />
+    <orderEntry type="library" exported="" name="poynt-sdk-development-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.4" level="project" />
   </component>
 </module>
