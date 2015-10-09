@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -58,6 +57,8 @@ import co.poynt.os.services.v1.IPoyntCapabilityManager;
 import co.poynt.os.services.v1.IPoyntCapabilityManagerListener;
 import co.poynt.os.services.v1.IPoyntCustomDiscountService;
 import co.poynt.os.services.v1.IPoyntCustomDiscountServiceListener;
+import co.poynt.os.services.v1.IPoyntSecondScreenCheckInListener;
+import co.poynt.os.services.v1.IPoyntSecondScreenCodeScanListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
 import co.poynt.os.services.v1.IPoyntSessionService;
 import co.poynt.os.services.v1.IPoyntSessionServiceListener;
@@ -87,14 +88,11 @@ public class SampleActivity extends Activity {
     Account currentAccount = null;
     String userName;
     String accessToken;
-    TextView tokenInfo;
-    TextView userInfo;
     LinearLayout discountLayout;
     Button applyDiscount;
     EditText discountCode;
     Order sampleOrder;
     List<CapabilityServiceConnection> capabilityServiceConnections;
-    TextView discountProviders;
 
     Gson gson;
 
@@ -105,8 +103,6 @@ public class SampleActivity extends Activity {
         accountManager = AccountManager.get(this);
         gson = new GsonBuilder().setPrettyPrinting().create();
 
-        tokenInfo = (TextView) findViewById(R.id.tokenInfo);
-        userInfo = (TextView) findViewById(R.id.userInfo);
         bizInfo = (TextView) findViewById(R.id.bizInfo);
         chargeBtn = (Button) findViewById(R.id.chargeBtn);
         discountLayout = (LinearLayout) findViewById(R.id.discountLayout);
@@ -176,8 +172,32 @@ public class SampleActivity extends Activity {
             }
         });
 
-        // Discount providers
-        discountProviders = (TextView) findViewById(R.id.discountProviders);
+        Button displayWelcome = (Button) findViewById(R.id.displayWelcome);
+        displayWelcome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * Request second screen service to display welcome screen w/ checkin button
+                 * Enable second screen emulator from the developer options on your android
+                 * emulator or device.
+                 */
+                try {
+                    if (mSecondScreenService != null) {
+                        mSecondScreenService.displayWelcome(secondScreenCheckInListener);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button clearLog = (Button) findViewById(R.id.clearLog);
+        clearLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearLog();
+            }
+        });
 
         applyDiscount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,10 +378,10 @@ public class SampleActivity extends Activity {
                 public void run() {
                     if (account != null) {
                         userName = account.name;
-                        userInfo.setText(userName);
+                        logData("User: " + userName);
                         currentAccount = account;
                     } else {
-                        userInfo.setText("n/a");
+                        logData("User: N/A");
                         currentAccount = null;
                         userName = null;
                     }
@@ -409,8 +429,7 @@ public class SampleActivity extends Activity {
                     for (Map.Entry<String, Object> entry : customClaims.entrySet()) {
                         claimsStr.append(", " + entry.getKey() + ": " + entry.getValue());
                     }
-                    tokenInfo.setText(claimsStr.toString());
-
+                    logData(claimsStr.toString());
                 }
             } catch (Exception e) {
                 Log.d("TransactionTestActivity", "Exception received: " + e.getMessage());
@@ -475,7 +494,7 @@ public class SampleActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    discountProviders.setText("No Discount Capability providers found");
+                    logData("No Discount Capability providers found");
                 }
             });
         }
@@ -505,7 +524,8 @@ public class SampleActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    discountProviders.setText(providerToDisplay);
+                    logData("Discount Providers found:");
+                    logData(providerToDisplay);
                 }
             });
         }
@@ -612,6 +632,7 @@ public class SampleActivity extends Activity {
         Log.d(TAG, "Received onActivityResult (" + requestCode + ")");
         // Check which request we're responding to
         if (requestCode == COLLECT_PAYMENT_REQUEST) {
+            logData("Received onActivityResult from Payment Action");
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
@@ -619,25 +640,26 @@ public class SampleActivity extends Activity {
                     Log.d(TAG, "Received onPaymentAction from PaymentFragment w/ Status("
                             + payment.getStatus() + ")");
                     if (payment.getStatus().equals(PaymentStatus.COMPLETED)) {
-                        Toast.makeText(this, "Payment Completed", Toast.LENGTH_LONG).show();
+                        logData("Payment Completed");
                     } else if (payment.getStatus().equals(PaymentStatus.AUTHORIZED)) {
-                        Toast.makeText(this, "Payment Authorized", Toast.LENGTH_LONG).show();
+                        logData("Payment Authorized");
                     } else if (payment.getStatus().equals(PaymentStatus.CANCELED)) {
-                        Toast.makeText(this, "Payment Canceled", Toast.LENGTH_LONG).show();
+                        logData("Payment Canceled");
                     } else if (payment.getStatus().equals(PaymentStatus.FAILED)) {
-                        Toast.makeText(this, "Payment Failed", Toast.LENGTH_LONG).show();
+                        logData("Payment Failed");
                     } else if (payment.getStatus().equals(PaymentStatus.REFUNDED)) {
-                        Toast.makeText(this, "Payment Refunded", Toast.LENGTH_LONG).show();
+                        logData("Payment Refunded");
                     } else if (payment.getStatus().equals(PaymentStatus.VOIDED)) {
-                        Toast.makeText(this, "Payment Voided", Toast.LENGTH_LONG).show();
+                        logData("Payment Voided");
                     } else {
-                        Toast.makeText(this, "Payment Completed", Toast.LENGTH_LONG).show();
+                        logData("Payment Completed");
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(this, "Payment Canceled", Toast.LENGTH_LONG).show();
+                logData("Payment Canceled");
             }
         } else if (requestCode == DISCOUNT_REQUEST) {
+            logData("Received onActivityResult from Discount Provider");
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
@@ -654,7 +676,7 @@ public class SampleActivity extends Activity {
                     });
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(this, "Failed to validate discount", Toast.LENGTH_LONG).show();
+                logData("Failed to validate discount");
             }
         }
     }
@@ -707,9 +729,41 @@ public class SampleActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mDumpTextView.append("\n");
                 mDumpTextView.append(data);
                 mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
             }
         });
     }
+
+    public void clearLog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // clear the output
+                mDumpTextView.setText("");
+                mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
+            }
+        });
+    }
+
+    private IPoyntSecondScreenCheckInListener secondScreenCheckInListener = new IPoyntSecondScreenCheckInListener.Stub() {
+        @Override
+        public void onCheckIn() throws RemoteException {
+            logData("Customer check-in requested");
+            mSecondScreenService.scanCode(new IPoyntSecondScreenCodeScanListener.Stub() {
+                @Override
+                public void onCodeScanned(String s) throws RemoteException {
+                    logData("Code Scanned: " + s);
+                    mSecondScreenService.displayWelcome(secondScreenCheckInListener);
+                }
+
+                @Override
+                public void onCodeEntryCanceled() throws RemoteException {
+                    logData("\nCode scan canceled");
+                    mSecondScreenService.displayWelcome(secondScreenCheckInListener);
+                }
+            });
+        }
+    };
 }
