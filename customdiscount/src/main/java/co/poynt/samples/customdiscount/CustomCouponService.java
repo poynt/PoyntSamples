@@ -41,7 +41,7 @@ public class CustomCouponService extends Service {
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    private List<String> saved_coupons = new ArrayList<>();
+    private String saved_coupon = null;
     private String saved_customerId = null;
 
     public CustomCouponService() {
@@ -76,22 +76,22 @@ public class CustomCouponService extends Service {
 
         @Override
         public void applyDiscount(String requestId, Order order, Transaction transaction,
-                                  List<String> couponsList,
+                                  String coupon,
                                   IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
 
-            if (couponsList != null && !couponsList.isEmpty()) {
-                saved_coupons = couponsList;
+            if (saved_coupon == null) {
+                saved_coupon = coupon;
             }
 
             Timber.d("applyDiscount  (%s)", order.getId().toString());
-            new ApplyDiscountTask(requestId, saved_customerId, order, saved_coupons,
+            new ApplyDiscountTask(requestId, saved_customerId, order, saved_coupon,
                     iPoyntCustomDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         @Override
         public void confirmDiscount(String requestId, Order order, Transaction transaction, IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
             Timber.d("confirmDiscount  (%s)", order.getId().toString());
-            saved_coupons = null;
+            saved_coupon = null;
             saved_customerId = null;
             new ConfirmDiscountTask(requestId, order,
                     iPoyntCustomDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -100,7 +100,7 @@ public class CustomCouponService extends Service {
         @Override
         public void cancelDiscount(String requestId, Order order, Transaction transaction, IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
             Timber.d("cancelDiscount  (%s)", order.getId().toString());
-            saved_coupons = null;
+            saved_coupon = null;
             saved_customerId = null;
             new CancelDiscountTask(requestId, order,
                     iPoyntCustomDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -130,20 +130,20 @@ public class CustomCouponService extends Service {
         private IPoyntCustomDiscountServiceListener callback;
         private String requestId;
         private String customerId;
-        private List<String> couponsList;
+        private String coupon;
         private Order inputOrder;
         private PoyntError poyntError;
 
         public ApplyDiscountTask(String requestId, String customerId,
                                  Order order,
-                                 List<String> couponsList,
+                                 String coupon,
                                  IPoyntCustomDiscountServiceListener
                                          iPoyntDiscountServiceListener) {
             this.callback = iPoyntDiscountServiceListener;
             this.requestId = requestId;
             this.customerId = customerId;
             this.inputOrder = order;
-            this.couponsList = couponsList;
+            this.coupon = coupon;
             Timber.d("apply discount for requestId (%s)", this.requestId);
         }
 
@@ -157,62 +157,60 @@ public class CustomCouponService extends Service {
             }
 
             // Check to see if we have a coupon available.
-            if (couponsList != null && !couponsList.isEmpty()) {
-                for (String couponCode : couponsList) {
-                    // validate the coupon here.
-                    if (couponCode.equalsIgnoreCase("onedollaroff")) {
-                        //add discount to the order object.
-                        Discount discount = new Discount();
-                        discount.setCustomName(" Poynt 10% order discount");
+            if (coupon != null) {
+                // validate the coupon here.
+                if (coupon.equalsIgnoreCase("onedollaroff")) {
+                    //add discount to the order object.
+                    Discount discount = new Discount();
+                    discount.setCustomName(" Poynt 10% order discount");
+
+                    // some discount id to identify this discount.
+                    discount.setId(TimeBasedUUIDGenerator.generateId().toString());
+
+                    // 10% discount.
+                    long total = (long) ((getSubtotal(inputOrder) * 10) / 100f);
+
+                    // Order level discount amounts are negative
+                    discount.setAmount(total * -1);
+                    List<Discount> discounts = inputOrder.getDiscounts();
+                    if (discounts == null) {
+                        discounts = new ArrayList<>();
+                    }
+                    addProcessorResponse(discount);
+                    discounts.add(discount);
+                    inputOrder.setDiscounts(discounts);
+
+                    // Apply item level discount
+                    // For this sample we will apply discount to first item.
+                    if (inputOrder.getItems() != null && !inputOrder.getItems().isEmpty()) {
+                        OrderItem orderItem = inputOrder.getItems().get(0);
+                        // clear previously applied discount if any.
+                        orderItem.setDiscounts(null);
+                        Discount itemDiscount = new Discount();
+
+                        itemDiscount.setCustomName(" Poynt 5% item discount");
 
                         // some discount id to identify this discount.
-                        discount.setId(TimeBasedUUIDGenerator.generateId().toString());
+                        itemDiscount.setId(TimeBasedUUIDGenerator.generateId().toString());
+                        // 5% discount.
+                        long itemTotal = (long) ((getOrderItemPrice(orderItem) * 5) / 100f);
 
-                        // 10% discount.
-                        long total = (long) ((getSubtotal(inputOrder) * 10) / 100f);
-
-                        // Order level discount amounts are negative
-                        discount.setAmount(total * -1);
-                        List<Discount> discounts = inputOrder.getDiscounts();
-                        if (discounts == null) {
-                            discounts = new ArrayList<>();
+                        // Order item level discount amounts are always positive
+                        itemDiscount.setAmount(itemTotal);
+                        List<Discount> itemDiscounts = orderItem.getDiscounts();
+                        if (itemDiscounts == null) {
+                            itemDiscounts = new ArrayList<>();
                         }
-                        addProcessorResponse(discount);
-                        discounts.add(discount);
-                        inputOrder.setDiscounts(discounts);
-
-                        // Apply item level discount
-                        // For this sample we will apply discount to first item.
-                        if (inputOrder.getItems() != null && !inputOrder.getItems().isEmpty()) {
-                            OrderItem orderItem = inputOrder.getItems().get(0);
-                            // clear previously applied discount if any.
-                            orderItem.setDiscounts(null);
-                            Discount itemDiscount = new Discount();
-
-                            itemDiscount.setCustomName(" Poynt 5% item discount");
-
-                            // some discount id to identify this discount.
-                            itemDiscount.setId(TimeBasedUUIDGenerator.generateId().toString());
-                            // 5% discount.
-                            long itemTotal = (long) ((getOrderItemPrice(orderItem) * 5) / 100f);
-
-                            // Order item level discount amounts are always positive
-                            itemDiscount.setAmount(itemTotal);
-                            List<Discount> itemDiscounts = orderItem.getDiscounts();
-                            if (itemDiscounts == null) {
-                                itemDiscounts = new ArrayList<>();
-                            }
-                            addProcessorResponse(itemDiscount);
-                            itemDiscounts.add(itemDiscount);
-                            orderItem.setDiscounts(itemDiscounts);
-                        }
-                    } else if (couponCode.equalsIgnoreCase("expired")) {
-                        // expired discount
-
-                    } else {
-                        // invalid discount
-                        return null;
+                        addProcessorResponse(itemDiscount);
+                        itemDiscounts.add(itemDiscount);
+                        orderItem.setDiscounts(itemDiscounts);
                     }
+                } else if (coupon.equalsIgnoreCase("expired")) {
+                    // expired discount
+
+                } else {
+                    // invalid discount
+                    return null;
                 }
             }
             return inputOrder;
