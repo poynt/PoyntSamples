@@ -8,56 +8,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SampleActivity">
 
-    <LinearLayout
-        android:id="@+id/userInfoRow"
+
+    <TextView
+        android:id="@+id/bizInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/userInfoTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User:" />
-
-        <TextView
-            android:id="@+id/userInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="no user yet!" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/tokenInfoRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/userInfoRow"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tokenTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="AccessToken:" />
-
-        <TextView
-            android:id="@+id/tokenInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/userInfo"
-            android:text="no token yet!" />
-    </LinearLayout>
+        android:text="-n/a-"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/buttonRow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tokenInfoRow"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@id/bizInfo"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:padding="20dp">
+        android:paddingTop="20dp">
 
         <Button
             android:id="@+id/currentUser"
@@ -74,40 +40,37 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/bizInfo"
+    <Button
+        android:id="@+id/displayItems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonRow"
-        android:text="@string/hello_world" />
+        android:text="Display items"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/displayWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonRow"
+        android:layout_toRightOf="@id/displayItems"
+        android:text="Display welcome"
+        android:visibility="visible" />
 
     <Button
         android:id="@+id/chargeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bizInfo"
+        android:layout_below="@id/displayItems"
         android:text="Charge $10.00"
         android:visibility="invisible" />
 
-    <Button
-        android:id="@+id/displayItems"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chargeBtn"
-        android:text="Display items in second screen"
-        android:visibility="visible" />
-
-    <TextView
-        android:id="@+id/discountProviders"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/displayItems" />
 
     <LinearLayout
         android:id="@+id/discountLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/discountProviders"
+        android:layout_below="@id/chargeBtn"
         android:orientation="horizontal"
         android:visibility="invisible">
 
@@ -127,11 +90,18 @@
             android:text="Apply Discount" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/clearLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/discountLayout"
+        android:text="Clear Log" />
+
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:layout_below="@+id/discountLayout"
+        android:layout_below="@+id/clearLog"
         android:background="#000000" />
 
     <ScrollView
