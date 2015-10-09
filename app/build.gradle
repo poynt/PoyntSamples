@@ -24,7 +24,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     // Poynt Dependencies
     compile 'co.poynt.api:android-api-model:1.2.28@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:development-SNAPSHOT@aar'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.2.8-SNAPSHOT@aar'
     // JWT dependencies - if you want to parse JWTs
     compile 'net.jcip:jcip-annotations:1.0@jar'
     compile 'com.nimbusds:nimbus-jose-jwt:2.26@jar'
