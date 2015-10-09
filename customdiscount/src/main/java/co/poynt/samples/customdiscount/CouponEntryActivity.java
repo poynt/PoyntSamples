@@ -98,8 +98,6 @@ public class CouponEntryActivity extends Activity {
         if (couponCode != null && couponCode.length() > 4) {
             resultIntent = new Intent();
             resultIntent.putExtra("order", order);
-            List<String> couponsList = new ArrayList<>();
-            couponsList.add(couponCode);
             // get the transaction authorized.
             // for sample sake we are calling the same service but this is where you call you own backend
             String requestId = UUID.randomUUID().toString();
@@ -108,7 +106,7 @@ public class CouponEntryActivity extends Activity {
                         requestId,
                         order,
                         null,
-                        couponsList,
+                        couponCode,
                         discountServiceListener);
             } catch (RemoteException e) {
                 e.printStackTrace();
