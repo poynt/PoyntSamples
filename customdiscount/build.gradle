@@ -24,10 +24,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.jakewharton.timber:timber:4.0.1'
     compile 'co.poynt.api:android-api-model:1.2.28@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:1.2.8-SNAPSHOT@aar'
+    compile 'co.poynt.android.sdk:poynt-sdk:development-SNAPSHOT@aar'
     // key signing and verification.
     compile 'com.madgag.spongycastle:prov:1.51.0.0'
     compile 'com.madgag.spongycastle:pkix:1.51.0.0'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.madgag.spongycastle:pg:1.51.0.0'
+    compile 'com.google.code.gson:gson:2.4'
 }

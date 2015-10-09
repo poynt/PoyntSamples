@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/PoyntSamples.iml" filepath="$PROJECT_DIR$/PoyntSamples.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/customdiscount/customdiscount.iml" filepath="$PROJECT_DIR$/customdiscount/customdiscount.iml" />
+      <module fileurl="file://$PROJECT_DIR$/custompayment/custompayment.iml" filepath="$PROJECT_DIR$/custompayment/custompayment.iml" />
     </modules>
   </component>
 </project>

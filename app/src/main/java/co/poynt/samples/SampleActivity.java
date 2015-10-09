@@ -19,9 +19,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -34,14 +39,25 @@ import java.util.Map;
 import java.util.UUID;
 
 import co.poynt.api.model.Business;
+import co.poynt.api.model.Order;
+import co.poynt.api.model.OrderAmounts;
 import co.poynt.api.model.OrderItem;
+import co.poynt.api.model.Transaction;
 import co.poynt.os.Constants;
+import co.poynt.os.model.CapabilityProvider;
+import co.poynt.os.model.CapabilityProviderFilter;
+import co.poynt.os.model.CapabilityType;
+import co.poynt.os.model.DiscountStatus;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
 import co.poynt.os.model.PaymentStatus;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntBusinessReadListener;
 import co.poynt.os.services.v1.IPoyntBusinessService;
+import co.poynt.os.services.v1.IPoyntCapabilityManager;
+import co.poynt.os.services.v1.IPoyntCapabilityManagerListener;
+import co.poynt.os.services.v1.IPoyntCustomDiscountService;
+import co.poynt.os.services.v1.IPoyntCustomDiscountServiceListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
 import co.poynt.os.services.v1.IPoyntSessionService;
 import co.poynt.os.services.v1.IPoyntSessionServiceListener;
@@ -55,32 +71,51 @@ public class SampleActivity extends Activity {
     private static final int AUTHORIZATION_CODE = 1993;
     // request code for payment service activity
     private static final int COLLECT_PAYMENT_REQUEST = 13132;
+    private static final int DISCOUNT_REQUEST = 13133;
     private static final String TAG = "SampleActivity";
 
     private AccountManager accountManager;
     private IPoyntSessionService mSessionService;
     private IPoyntBusinessService mBusinessService;
     private IPoyntSecondScreenService mSecondScreenService;
+    private IPoyntCapabilityManager mCapabilityManager;
     ProgressDialog progress;
-    private TextView bizInfo;
-    private Button chargeBtn;
+    TextView mDumpTextView;
+    TextView bizInfo;
+    Button chargeBtn;
+    ScrollView mScrollView;
     Account currentAccount = null;
     String userName;
     String accessToken;
     TextView tokenInfo;
     TextView userInfo;
-    List<OrderItem> items;
+    LinearLayout discountLayout;
+    Button applyDiscount;
+    EditText discountCode;
+    Order sampleOrder;
+    List<CapabilityServiceConnection> capabilityServiceConnections;
+    TextView discountProviders;
+
+    Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
         accountManager = AccountManager.get(this);
+        gson = new GsonBuilder().setPrettyPrinting().create();
+
         tokenInfo = (TextView) findViewById(R.id.tokenInfo);
         userInfo = (TextView) findViewById(R.id.userInfo);
         bizInfo = (TextView) findViewById(R.id.bizInfo);
         chargeBtn = (Button) findViewById(R.id.chargeBtn);
-
+        discountLayout = (LinearLayout) findViewById(R.id.discountLayout);
+        discountCode = (EditText) findViewById(R.id.discountCode);
+        applyDiscount = (Button) findViewById(R.id.applyDiscount);
+        mDumpTextView = (TextView) findViewById(R.id.consoleText);
+        mScrollView = (ScrollView) findViewById(R.id.demoScroller);
+        sampleOrder = generateOrder();
+        capabilityServiceConnections = new ArrayList<>();
         chargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,28 +155,6 @@ public class SampleActivity extends Activity {
             }
         });
 
-        // create some dummy items to display in second screen
-        items = new ArrayList<OrderItem>();
-        OrderItem item1 = new OrderItem();
-        // these are the only required fields for second screen display
-        item1.setName("Item1");
-        item1.setUnitPrice(100l);
-        item1.setQuantity(1.0f);
-        items.add(item1);
-
-        OrderItem item2 = new OrderItem();
-        // these are the only required fields for second screen display
-        item2.setName("Item2");
-        item2.setUnitPrice(100l);
-        item2.setQuantity(1.0f);
-        items.add(item2);
-
-        OrderItem item3 = new OrderItem();
-        // these are the only required fields for second screen display
-        item3.setName("Item3");
-        item3.setUnitPrice(100l);
-        item3.setQuantity(2.0f);
-        items.add(item3);
 
         Button displayItems = (Button) findViewById(R.id.displayItems);
         displayItems.setOnClickListener(new View.OnClickListener() {
@@ -154,17 +167,63 @@ public class SampleActivity extends Activity {
                  */
                 try {
                     if (mSecondScreenService != null) {
-                        BigDecimal total = new BigDecimal(0);
-                        for (OrderItem item : items) {
-                            BigDecimal price = new BigDecimal(item.getUnitPrice());
-                            price.setScale(2, RoundingMode.HALF_UP);
-                            price = price.multiply(new BigDecimal(item.getQuantity()));
-                            total = total.add(price);
-                        }
-                        mSecondScreenService.showItem(items, total.longValue(), "USD");
+                        mSecondScreenService.showItem(sampleOrder.getItems(),
+                                sampleOrder.getAmounts().getSubTotal(), "USD");
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                }
+            }
+        });
+
+        // Discount providers
+        discountProviders = (TextView) findViewById(R.id.discountProviders);
+
+        applyDiscount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String code = discountCode.getText().toString();
+                List<String> discountCodes = new ArrayList<String>();
+                discountCodes.add(code);
+                Log.d(TAG, "Applying discount code: " + code);
+                for (final CapabilityServiceConnection capabilityServiceConnection : capabilityServiceConnections) {
+                    String requestId = UUID.randomUUID().toString();
+                    String customerId = null;
+                    try {
+                        capabilityServiceConnection.getDiscountService().applyDiscount(
+                                requestId, sampleOrder, null, discountCodes,
+                                new IPoyntCustomDiscountServiceListener.Stub() {
+                                    @Override
+                                    public void onResponse(final DiscountStatus discountStatus, Transaction transaction, final Order order, String s) throws RemoteException {
+                                        if (discountStatus.getCode() == DiscountStatus.Code.SUCCESS) {
+                                            Log.d(TAG, "Applied discount: " + order.toString());
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    logData(gson.toJson(order));
+                                                }
+                                            });
+                                        } else {
+                                            Log.d(TAG, "Apply discount failed: " + discountStatus.getCode().name());
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    logData(discountStatus.getCode().name() + " --" + discountStatus.getMessage());
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onLaunchActivity(Intent intent, String s) throws RemoteException {
+                                        Log.d(TAG, "Activity launch requested with intent: " + intent.toString());
+                                        logData("Launching activity:" + intent.toString());
+                                        startActivityForResult(intent, DISCOUNT_REQUEST);
+                                    }
+                                });
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Remote Exception received when applying discount", e);
+                    }
                 }
             }
         });
@@ -200,6 +259,14 @@ public class SampleActivity extends Activity {
                 mSessionConnection, Context.BIND_AUTO_CREATE);
         bindService(new Intent(IPoyntSecondScreenService.class.getName()),
                 mSecondScreenConnection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(IPoyntCapabilityManager.class.getName()),
+                mCapabilityManagerConnection, Context.BIND_AUTO_CREATE);
+        // no need to bind as the binding happens after capability manager is connected
+//        if (capabilityServiceConnections != null && capabilityServiceConnections.size() > 0) {
+//            for (CapabilityServiceConnection serviceConnection : capabilityServiceConnections) {
+//                serviceConnection.bind();
+//            }
+//        }
     }
 
     @Override
@@ -209,6 +276,12 @@ public class SampleActivity extends Activity {
         unbindService(mBusinessServiceConnection);
         unbindService(mSessionConnection);
         unbindService(mSecondScreenConnection);
+        unbindService(mCapabilityManagerConnection);
+        if (capabilityServiceConnections != null) {
+            for (CapabilityServiceConnection serviceConnection : capabilityServiceConnections) {
+//                serviceConnection.unBind();
+            }
+        }
     }
 
     /**
@@ -364,6 +437,155 @@ public class SampleActivity extends Activity {
         }
     };
 
+    /**
+     * Class for interacting with the Poynt Capability Manager
+     */
+    private ServiceConnection mCapabilityManagerConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d(TAG, "IPoyntCapabilityManager is now connected");
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            mCapabilityManager = IPoyntCapabilityManager.Stub.asInterface(service);
+            // we are only interested in Discount providers
+            CapabilityProviderFilter filter = new CapabilityProviderFilter(
+                    CapabilityType.DISCOUNT,
+                    null);
+            try {
+                mCapabilityManager.getCapabilityProviders(filter, poyntCapabilityManagerListener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Failed to retrieve discount capabilities");
+            }
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d(TAG, "IPoyntCapabilityManager has unexpectedly disconnected");
+            mCapabilityManager = null;
+        }
+    };
+
+    private IPoyntCapabilityManagerListener poyntCapabilityManagerListener
+            = new IPoyntCapabilityManagerListener.Stub() {
+
+        @Override
+        public void onError(PoyntError poyntError) throws RemoteException {
+            Log.e(TAG, "Failed connecting to discount capability providers");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    discountProviders.setText("No Discount Capability providers found");
+                }
+            });
+        }
+
+        @Override
+        public void onSuccess(final List<CapabilityProvider> providers) throws RemoteException {
+            if (providers != null) {
+                Log.d(TAG, "Got Discount capabilities: " + providers.size());
+            } else {
+                Log.d(TAG, "No Discount capabilities found");
+            }
+
+            StringBuilder providerStr = new StringBuilder();
+            for (CapabilityProvider provider : providers) {
+                // try to bind to providers
+                providerStr.append("Provider:\n");
+                providerStr.append("   Type [" + provider.getCapabilityType() + "]\n");
+                providerStr.append("   Package Name [" + provider.getPackageName() + "]\n");
+                // connect to each
+                CapabilityServiceConnection capabilityServiceConnection =
+                        new CapabilityServiceConnection(provider);
+                capabilityServiceConnection.bind();
+                // and add it for reference
+                capabilityServiceConnections.add(capabilityServiceConnection);
+            }
+            final String providerToDisplay = providerStr.toString();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    discountProviders.setText(providerToDisplay);
+                }
+            });
+        }
+    };
+
+    public class CapabilityServiceConnection implements ServiceConnection {
+
+        CapabilityProvider capabilityProvider;
+        IPoyntCustomDiscountService discountService;
+
+        public CapabilityServiceConnection(CapabilityProvider capabilityProvider) {
+            this.capabilityProvider = capabilityProvider;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        public IPoyntCustomDiscountService getDiscountService() {
+            return discountService;
+        }
+
+        public CapabilityProvider getCapabilityProvider() {
+            return capabilityProvider;
+        }
+
+        public void bind() {
+            Log.d(TAG, "Binding to discount provider " + capabilityProvider.toString());
+            Intent discountServiceIntent = new Intent();
+            ComponentName component =
+                    new ComponentName(capabilityProvider.getPackageName(),
+                            capabilityProvider.getClassName());
+            discountServiceIntent.setComponent(component);
+            bindService(discountServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        }
+
+        public void unBind() {
+            Log.d(TAG, "Unbinding from discount provider " + capabilityProvider.toString());
+            if (serviceConnection != null) {
+                unbindService(serviceConnection);
+            }
+        }
+
+        private ServiceConnection serviceConnection = new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                Log.d(TAG, "IPoyntCustomDiscountService is now connected");
+                // Following the example above for an AIDL interface,
+                // this gets an instance of the IRemoteInterface, which we can use to call on the service
+                discountService = IPoyntCustomDiscountService.Stub.asInterface(service);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        discountLayout.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Log.d(TAG, "IPoyntCustomDiscountService has unexpectedly disconnected");
+                mSecondScreenService = null;
+                serviceConnection = null;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        discountLayout.setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+        };
+    }
+
     private void launchPoyntPayment(Long amount) {
         String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
 
@@ -415,7 +637,79 @@ public class SampleActivity extends Activity {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(this, "Payment Canceled", Toast.LENGTH_LONG).show();
             }
+        } else if (requestCode == DISCOUNT_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    final Order order = data.getParcelableExtra("order");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (order != null) {
+                                logData("Received order: " + order.toString());
+                            } else {
+                                logData("No ORDER RECEIVED");
+                            }
+                        }
+                    });
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Failed to validate discount", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
+    private Order generateOrder() {
+        Order order = new Order();
+        order.setId(UUID.randomUUID());
+        List<OrderItem> items = new ArrayList<OrderItem>();
+        // create some dummy items to display in second screen
+        items = new ArrayList<OrderItem>();
+        OrderItem item1 = new OrderItem();
+        // these are the only required fields for second screen display
+        item1.setName("Item1");
+        item1.setUnitPrice(100l);
+        item1.setQuantity(1.0f);
+        items.add(item1);
+
+        OrderItem item2 = new OrderItem();
+        // these are the only required fields for second screen display
+        item2.setName("Item2");
+        item2.setUnitPrice(100l);
+        item2.setQuantity(1.0f);
+        items.add(item2);
+
+        OrderItem item3 = new OrderItem();
+        // these are the only required fields for second screen display
+        item3.setName("Item3");
+        item3.setUnitPrice(100l);
+        item3.setQuantity(2.0f);
+        items.add(item3);
+        order.setItems(items);
+
+        BigDecimal subTotal = new BigDecimal(0);
+        for (OrderItem item : items) {
+            BigDecimal price = new BigDecimal(item.getUnitPrice());
+            price.setScale(2, RoundingMode.HALF_UP);
+            price = price.multiply(new BigDecimal(item.getQuantity()));
+            subTotal = subTotal.add(price);
+        }
+
+        OrderAmounts amounts = new OrderAmounts();
+        amounts.setCurrency("USD");
+        amounts.setSubTotal(subTotal.longValue());
+        order.setAmounts(amounts);
+
+        return order;
+    }
+
+    public void logData(final String data) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDumpTextView.append(data);
+                mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
+            }
+        });
+    }
 }

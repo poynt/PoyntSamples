@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/black"
+     >
+
+    <LinearLayout
+        android:id="@+id/firstRow"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- row 1 -->
+        <ImageButton
+            android:id="@+id/custom_icon"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/custom_tender"
+            android:clickable="true"
+            android:textColor="@android:color/white"
+            android:textSize="28sp" />
+        <LinearLayout
+            android:id="@+id/firstRowright"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/customPaymentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/fragment_vertical_margin"
+            android:paddingRight="@dimen/fragment_vertical_margin"
+            android:text="@string/customTenderName"
+            android:textColor="@android:color/white"
+            android:textSize="28sp" />
+        <TextView
+            android:id="@+id/customPaymentAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/fragment_vertical_margin"
+            android:paddingRight="@dimen/fragment_vertical_margin"
+            android:text="@string/customTenderName"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- row 2 -->
+
+    <LinearLayout
+        android:id="@+id/secondRow"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:weightSum="4"
+        android:padding="@dimen/fragment_vertical_margin"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/cardnumber"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp"
+            android:inputType="number"
+            android:textColor="@android:color/white"
+            android:hint="Enter gift card number" />
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp">
+
+        <Button
+            android:id="@+id/yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:textSize="26dp"
+            android:text="@string/Done" />
+
+        <Button
+            android:id="@+id/no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="26dp"
+            android:text="@string/Cancel" />
+    </LinearLayout>
+</LinearLayout>

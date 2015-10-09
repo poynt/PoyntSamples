@@ -6,6 +6,7 @@
 
     <!-- Poynt Service Permissions -->
     <uses-permission android:name="poynt.permission.BUSINESS_SERVICE" />
+    <uses-permission android:name="poynt.permission.CAPABILITY_MANAGER" />
     <!-- Permissions needed by the Payment Fragments -->
     <uses-permission android:name="poynt.permission.TRANSACTION_SERVICE" />
     <uses-permission android:name="poynt.permission.CARD_READER" />

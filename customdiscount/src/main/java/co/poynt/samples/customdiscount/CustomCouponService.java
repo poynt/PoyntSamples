@@ -21,6 +21,8 @@ import co.poynt.api.model.Order;
 import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.ProcessorResponse;
 import co.poynt.api.model.ProviderVerification;
+import co.poynt.api.model.Transaction;
+import co.poynt.os.model.DiscountStatus;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntCustomDiscountService;
 import co.poynt.os.services.v1.IPoyntCustomDiscountServiceListener;
@@ -73,26 +75,21 @@ public class CustomCouponService extends Service {
     private final IPoyntCustomDiscountService.Stub mBinder = new IPoyntCustomDiscountService.Stub() {
 
         @Override
-        public void applyDiscount(String requestId, String customerId,
-                                  Order order,
+        public void applyDiscount(String requestId, Order order, Transaction transaction,
                                   List<String> couponsList,
-                                  IPoyntCustomDiscountServiceListener iPoyntDiscountServiceListener)
-                throws RemoteException {
+                                  IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
 
-            if (customerId != null) {
-                saved_customerId = customerId;
-            }
             if (couponsList != null && !couponsList.isEmpty()) {
                 saved_coupons = couponsList;
             }
 
             Timber.d("applyDiscount  (%s)", order.getId().toString());
             new ApplyDiscountTask(requestId, saved_customerId, order, saved_coupons,
-                    iPoyntDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    iPoyntCustomDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         @Override
-        public void confirmDiscount(String requestId, Order order, IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
+        public void confirmDiscount(String requestId, Order order, Transaction transaction, IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
             Timber.d("confirmDiscount  (%s)", order.getId().toString());
             saved_coupons = null;
             saved_customerId = null;
@@ -101,14 +98,13 @@ public class CustomCouponService extends Service {
         }
 
         @Override
-        public void cancelDiscount(String requestId, Order order, IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
+        public void cancelDiscount(String requestId, Order order, Transaction transaction, IPoyntCustomDiscountServiceListener iPoyntCustomDiscountServiceListener) throws RemoteException {
             Timber.d("cancelDiscount  (%s)", order.getId().toString());
             saved_coupons = null;
             saved_customerId = null;
             new CancelDiscountTask(requestId, order,
                     iPoyntCustomDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-
     };
 
     private static long getOrderItemPrice(OrderItem item) {
@@ -135,7 +131,7 @@ public class CustomCouponService extends Service {
         private String requestId;
         private String customerId;
         private List<String> couponsList;
-        private Order order;
+        private Order inputOrder;
         private PoyntError poyntError;
 
         public ApplyDiscountTask(String requestId, String customerId,
@@ -146,7 +142,7 @@ public class CustomCouponService extends Service {
             this.callback = iPoyntDiscountServiceListener;
             this.requestId = requestId;
             this.customerId = customerId;
-            this.order = order;
+            this.inputOrder = order;
             this.couponsList = couponsList;
             Timber.d("apply discount for requestId (%s)", this.requestId);
         }
@@ -156,93 +152,93 @@ public class CustomCouponService extends Service {
         protected Order doInBackground(Void... p) {
             // validate the coupon code.
             // check to see if we already applied this coupon to the order.
-            if (order.getDiscounts() != null && !order.getDiscounts().isEmpty()) {
-                order.setDiscounts(null);
+            if (inputOrder.getDiscounts() != null && !inputOrder.getDiscounts().isEmpty()) {
+                inputOrder.setDiscounts(null);
             }
 
             // Check to see if we have a coupon available.
             if (couponsList != null && !couponsList.isEmpty()) {
                 for (String couponCode : couponsList) {
                     // validate the coupon here.
-                    //add discount to the order object.
-                    Discount discount = new Discount();
-                    discount.setCustomName(" Poynt 10% order discount");
-
-                    // some discount id to identify this discount.
-                    discount.setId(TimeBasedUUIDGenerator.generateId().toString());
-
-                    // 10% discount.
-                    long total = (long) ((getSubtotal(order) * 10) / 100f);
-
-                    // Order level discount amounts are negative
-                    discount.setAmount(total * -1);
-                    List<Discount> discounts = order.getDiscounts();
-                    if (discounts == null) {
-                        discounts = new ArrayList<>();
-                    }
-                    addProcessorResponse(discount);
-                    discounts.add(discount);
-                    order.setDiscounts(discounts);
-
-                    // Apply item level discount
-                    // For this sample we will apply discount to first item.
-                    if (order.getItems() != null && !order.getItems().isEmpty()) {
-                        OrderItem orderItem = order.getItems().get(0);
-                        // clear previously applied discount if any.
-                        orderItem.setDiscounts(null);
-                        Discount itemDiscount = new Discount();
-
-                        itemDiscount.setCustomName(" Poynt 5% item discount");
+                    if (couponCode.equalsIgnoreCase("onedollaroff")) {
+                        //add discount to the order object.
+                        Discount discount = new Discount();
+                        discount.setCustomName(" Poynt 10% order discount");
 
                         // some discount id to identify this discount.
-                        itemDiscount.setId(TimeBasedUUIDGenerator.generateId().toString());
-                        // 5% discount.
-                        long itemTotal = (long) ((getOrderItemPrice(orderItem) * 5) / 100f);
+                        discount.setId(TimeBasedUUIDGenerator.generateId().toString());
 
-                        // Order item level discount amounts are always positive
-                        itemDiscount.setAmount(itemTotal);
-                        List<Discount> itemDiscounts = orderItem.getDiscounts();
-                        if (itemDiscounts == null) {
-                            itemDiscounts = new ArrayList<>();
+                        // 10% discount.
+                        long total = (long) ((getSubtotal(inputOrder) * 10) / 100f);
+
+                        // Order level discount amounts are negative
+                        discount.setAmount(total * -1);
+                        List<Discount> discounts = inputOrder.getDiscounts();
+                        if (discounts == null) {
+                            discounts = new ArrayList<>();
                         }
-                        addProcessorResponse(itemDiscount);
-                        itemDiscounts.add(itemDiscount);
-                        orderItem.setDiscounts(itemDiscounts);
+                        addProcessorResponse(discount);
+                        discounts.add(discount);
+                        inputOrder.setDiscounts(discounts);
+
+                        // Apply item level discount
+                        // For this sample we will apply discount to first item.
+                        if (inputOrder.getItems() != null && !inputOrder.getItems().isEmpty()) {
+                            OrderItem orderItem = inputOrder.getItems().get(0);
+                            // clear previously applied discount if any.
+                            orderItem.setDiscounts(null);
+                            Discount itemDiscount = new Discount();
+
+                            itemDiscount.setCustomName(" Poynt 5% item discount");
+
+                            // some discount id to identify this discount.
+                            itemDiscount.setId(TimeBasedUUIDGenerator.generateId().toString());
+                            // 5% discount.
+                            long itemTotal = (long) ((getOrderItemPrice(orderItem) * 5) / 100f);
+
+                            // Order item level discount amounts are always positive
+                            itemDiscount.setAmount(itemTotal);
+                            List<Discount> itemDiscounts = orderItem.getDiscounts();
+                            if (itemDiscounts == null) {
+                                itemDiscounts = new ArrayList<>();
+                            }
+                            addProcessorResponse(itemDiscount);
+                            itemDiscounts.add(itemDiscount);
+                            orderItem.setDiscounts(itemDiscounts);
+                        }
+                    } else if (couponCode.equalsIgnoreCase("expired")) {
+                        // expired discount
+
+                    } else {
+                        // invalid discount
+                        return null;
                     }
                 }
             }
-            return order;
+            return inputOrder;
         }
 
         @Override
         protected void onPostExecute(Order order) {
             super.onPostExecute(order);
             try {
-                // if customerId is not null and we havn't collected qr code
-                // then we will launch activity to get qr code
-                // from the merchant side.
-                if (customerId != null && couponsList == null
-                        || (couponsList != null && couponsList.isEmpty())) {
-                    // prepare intent to launch activity.
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("co.poynt.customtender",
-                            "co.poynt.customtender.CouponEntryActivity"));
-                    // start the activity.
-                    // order will be passed back to the intent as a extra bundle.
-                    callback.onLaunchActivity(requestId, intent, order);
-                    return;
-                }
 
                 if (order != null) {
                     Timber.d("apply discount for order (%s)", (order != null ? order.getId() : "-failed-"));
-                    callback.onSuccess(requestId, "processed", order);
-                }
-
-                if (poyntError != null) {
-                    PoyntError poyntError = new PoyntError(PoyntError.CODE_UNAUTHORIZED);
-                    poyntError.setReason(" Failed to get order");
-                    Timber.e("Error received (%s)", poyntError.toString());
-                    callback.onError(requestId, poyntError);
+                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.SUCCESS, "Applied");
+                    callback.onResponse(discountStatus, null, order, requestId);
+                } else {
+//                    Timber.e("no discount applied");
+//                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.INVALID, "Invalid");
+//                    callback.onResponse(discountStatus, null, order, requestId);
+                    // prepare intent to launch activity.
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName("co.poynt.samples.customdiscount",
+                            CouponEntryActivity.class.getName()));
+                    intent.putExtra("order", inputOrder);
+                    // start the activity.
+                    // order will be passed back to the intent as a extra bundle.
+                    callback.onLaunchActivity(intent, requestId);
                 }
 
             } catch (RemoteException e) {
@@ -280,10 +276,12 @@ public class CustomCouponService extends Service {
             try {
                 if (order != null) {
                     Timber.d("cancel discount for order (%s)", (order != null ? order.getId() : "-failed-"));
-                    callback.onSuccess(requestId, "cancelled", order);
+                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.CANCELED, "Canceled");
+                    callback.onResponse(discountStatus, null, order, requestId);
                 } else {
-                    Timber.e(" Discount cancel error");
-                    callback.onError(requestId, new PoyntError(PoyntError.CODE_UNAUTHORIZED));
+                    Timber.e("Discount cancel error");
+                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.CANCELED, "Canceled");
+                    callback.onResponse(discountStatus, null, order, requestId);
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -318,10 +316,12 @@ public class CustomCouponService extends Service {
             try {
                 if (order != null) {
                     Timber.d("confirm discount for order (%s)", (order != null ? order.getId() : "-failed-"));
-                    callback.onSuccess(requestId, "completed", order);
+                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.SUCCESS, "Confirmed");
+                    callback.onResponse(discountStatus, null, order, requestId);
                 } else {
                     Timber.e(" confirm discount error");
-                    callback.onError(requestId, new PoyntError(PoyntError.CODE_UNAUTHORIZED));
+                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.CANCELED, "Canceled");
+                    callback.onResponse(discountStatus, null, order, requestId);
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();

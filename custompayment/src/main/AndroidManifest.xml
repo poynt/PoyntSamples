@@ -1,0 +1,40 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="co.poynt.samples.custompayment">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
+        <!-- activity to collect card info manually -->
+        <activity
+            android:name=".CardEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Holo.Dialog"></activity>
+
+        <!-- service that implements custom tender payment service. -->
+        <service
+            android:name=".CustomPaymentService"
+            android:enabled="true"
+            android:exported="true">
+
+            <!-- define the intent filter with an action as IPoyntCustomPaymentService interface -->
+            <intent-filter>
+                <action android:name="co.poynt.os.services.v1.IPoyntCustomTransactionService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="co.poynt.os.service.capability"
+                android:resource="@xml/payment_gift_card_capabilities" />
+
+            <!-- Optional: Provide a logo that will appear on screen -->
+            <meta-data
+                android:name="co.poynt.os.service.logo"
+                android:resource="@drawable/custom_tender" />
+        </service>
+
+    </application>
+
+</manifest>
