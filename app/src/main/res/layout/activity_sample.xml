@@ -8,6 +8,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SampleActivity">
 
+    <!-- dummy layout to prevent keyboard from poping out-->
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <TextView
         android:id="@+id/bizInfo"
@@ -37,14 +43,36 @@
             android:layout_height="wrap_content"
             android:text="Get Token" />
 
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/grantTokenLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonRow"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/appId"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
+            android:text="urn:aid:b32fb540-e730-42b9-9b1d-c131087d1dcd" />
+
+        <Button
+            android:id="@+id/requestToken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request Token" />
     </LinearLayout>
 
     <Button
         android:id="@+id/displayItems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonRow"
+        android:layout_below="@id/grantTokenLayout"
         android:text="Display items"
         android:visibility="visible" />
 
@@ -52,7 +80,7 @@
         android:id="@+id/displayWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonRow"
+        android:layout_below="@id/grantTokenLayout"
         android:layout_toRightOf="@id/displayItems"
         android:text="Display welcome"
         android:visibility="visible" />
@@ -119,12 +147,5 @@
             android:typeface="monospace" />
     </ScrollView>
 
-
-    <!-- dummy layout to prevent keyboard from poping out-->
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
 
 </RelativeLayout>
