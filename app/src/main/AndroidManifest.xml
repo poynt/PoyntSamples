@@ -6,17 +6,9 @@
 
     <!-- Poynt Service Permissions -->
     <uses-permission android:name="poynt.permission.BUSINESS_SERVICE" />
-    <uses-permission android:name="poynt.permission.CAPABILITY_MANAGER" />
-    <!-- Permissions needed by the Payment Fragments -->
-    <uses-permission android:name="poynt.permission.TRANSACTION_SERVICE" />
-    <uses-permission android:name="poynt.permission.CARD_READER" />
     <uses-permission android:name="poynt.permission.SECOND_SCREEN_SERVICE" />
-    <uses-permission android:name="poynt.permission.CASH_REGISTER_SERVICE" />
-    <uses-permission android:name="poynt.permission.RECEIPT_PRINTING_SERVICE" />
-    <uses-permission android:name="poynt.permission.EMAIL_SERVICE" />
-    <uses-permission android:name="poynt.permission.CUSTOMER_SERVICE" />
-    <uses-permission android:name="poynt.permission.OFFLINE_SERVICE" />
-    <!-- /Permissions needed by the Payment Fragments -->
+    <uses-permission android:name="poynt.permission.TOKEN_SERVICE" />
+    <uses-permission android:name="poynt.permission.CAPABILITY_MANAGER" />
 
     <application
         android:allowBackup="true"

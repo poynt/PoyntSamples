@@ -32,6 +32,7 @@ import com.nimbusds.jwt.SignedJWT;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import co.poynt.api.model.Business;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.OrderAmounts;
 import co.poynt.api.model.OrderItem;
+import co.poynt.api.model.TokenResponse;
 import co.poynt.api.model.Transaction;
 import co.poynt.os.Constants;
 import co.poynt.os.model.CapabilityProvider;
@@ -62,6 +64,8 @@ import co.poynt.os.services.v1.IPoyntSecondScreenCodeScanListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
 import co.poynt.os.services.v1.IPoyntSessionService;
 import co.poynt.os.services.v1.IPoyntSessionServiceListener;
+import co.poynt.os.services.v1.IPoyntTokenService;
+import co.poynt.os.services.v1.IPoyntTokenServiceListener;
 
 /**
  * A simple sample app demonstrating how to get business info from the device using
@@ -80,6 +84,7 @@ public class SampleActivity extends Activity {
     private IPoyntBusinessService mBusinessService;
     private IPoyntSecondScreenService mSecondScreenService;
     private IPoyntCapabilityManager mCapabilityManager;
+    private IPoyntTokenService mTokenService;
     ProgressDialog progress;
     TextView mDumpTextView;
     TextView bizInfo;
@@ -93,6 +98,8 @@ public class SampleActivity extends Activity {
     EditText discountCode;
     Order sampleOrder;
     List<CapabilityServiceConnection> capabilityServiceConnections;
+    Button requestToken;
+    EditText appId;
 
     Gson gson;
 
@@ -191,6 +198,54 @@ public class SampleActivity extends Activity {
             }
         });
 
+        requestToken = (Button) findViewById(R.id.requestToken);
+        appId = (EditText) findViewById(R.id.appId);
+        requestToken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTokenService != null) {
+                    try {
+                        mTokenService.grantToken(appId.getText().toString(), new IPoyntTokenServiceListener.Stub() {
+                            @Override
+                            public void onResponse(TokenResponse tokenResponse, PoyntError poyntError) throws RemoteException {
+                                if (poyntError != null) {
+                                    logData("Failed obtaining token: " + poyntError.toString());
+                                } else {
+                                    logData("Token received: " + tokenResponse.toString());
+                                    String accessToken = tokenResponse.getAccessToken();
+                                    try {
+                                        SignedJWT signedJWT = SignedJWT.parse(accessToken);
+                                        StringBuilder claimsStr = new StringBuilder();
+                                        ReadOnlyJWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+                                        claimsStr.append("Subject: " + claims.getSubject());
+                                        claimsStr.append(", Type: " + claims.getType());
+                                        claimsStr.append(", Issuer: " + claims.getIssuer());
+                                        for (String audience : claims.getAudience()) {
+                                            claimsStr.append(", Audience: " + audience);
+                                        }
+                                        claimsStr.append(", JWT ID: " + claims.getJWTID());
+                                        claimsStr.append(", IssueTime : " + claims.getIssueTime());
+                                        claimsStr.append(", Expiration Time: " + claims.getExpirationTime());
+                                        claimsStr.append(", Not Before Time: " + claims.getNotBeforeTime());
+                                        Map<String, Object> customClaims = claims.getCustomClaims();
+                                        for (Map.Entry<String, Object> entry : customClaims.entrySet()) {
+                                            claimsStr.append(", " + entry.getKey() + ": " + entry.getValue());
+                                        }
+                                        logData(claimsStr.toString());
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    logData("Not connected with Token Service");
+                }
+            }
+        });
         final Button clearLog = (Button) findViewById(R.id.clearLog);
         clearLog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,15 +258,13 @@ public class SampleActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String code = discountCode.getText().toString();
-                List<String> discountCodes = new ArrayList<String>();
-                discountCodes.add(code);
                 Log.d(TAG, "Applying discount code: " + code);
                 for (final CapabilityServiceConnection capabilityServiceConnection : capabilityServiceConnections) {
                     String requestId = UUID.randomUUID().toString();
                     String customerId = null;
                     try {
                         capabilityServiceConnection.getDiscountService().applyDiscount(
-                                requestId, sampleOrder, null, discountCodes,
+                                requestId, sampleOrder, null, code,
                                 new IPoyntCustomDiscountServiceListener.Stub() {
                                     @Override
                                     public void onResponse(final DiscountStatus discountStatus, Transaction transaction, final Order order, String s) throws RemoteException {
@@ -281,12 +334,8 @@ public class SampleActivity extends Activity {
                 mSecondScreenConnection, Context.BIND_AUTO_CREATE);
         bindService(new Intent(IPoyntCapabilityManager.class.getName()),
                 mCapabilityManagerConnection, Context.BIND_AUTO_CREATE);
-        // no need to bind as the binding happens after capability manager is connected
-//        if (capabilityServiceConnections != null && capabilityServiceConnections.size() > 0) {
-//            for (CapabilityServiceConnection serviceConnection : capabilityServiceConnections) {
-//                serviceConnection.bind();
-//            }
-//        }
+        bindService(new Intent(IPoyntTokenService.class.getName()),
+                mTokenServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -297,11 +346,7 @@ public class SampleActivity extends Activity {
         unbindService(mSessionConnection);
         unbindService(mSecondScreenConnection);
         unbindService(mCapabilityManagerConnection);
-        if (capabilityServiceConnections != null) {
-            for (CapabilityServiceConnection serviceConnection : capabilityServiceConnections) {
-//                serviceConnection.unBind();
-            }
-        }
+        unbindService(mTokenServiceConnection);
     }
 
     /**
@@ -456,6 +501,24 @@ public class SampleActivity extends Activity {
         }
     };
 
+    /**
+     * Class for interacting with the token service
+     */
+    private ServiceConnection mTokenServiceConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d(TAG, "IPoyntTokenService is now connected");
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            mTokenService = IPoyntTokenService.Stub.asInterface(service);
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d(TAG, "IPoyntTokenService has unexpectedly disconnected");
+            mSecondScreenService = null;
+        }
+    };
     /**
      * Class for interacting with the Poynt Capability Manager
      */
