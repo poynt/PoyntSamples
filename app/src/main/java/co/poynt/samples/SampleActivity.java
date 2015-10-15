@@ -11,6 +11,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -100,7 +102,7 @@ public class SampleActivity extends Activity {
     List<CapabilityServiceConnection> capabilityServiceConnections;
     Button requestToken;
     EditText appId;
-
+    Bitmap icon;
     Gson gson;
 
     @Override
@@ -118,6 +120,8 @@ public class SampleActivity extends Activity {
         mDumpTextView = (TextView) findViewById(R.id.consoleText);
         mScrollView = (ScrollView) findViewById(R.id.demoScroller);
         sampleOrder = generateOrder();
+        icon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.notification_order_ready);
         capabilityServiceConnections = new ArrayList<>();
         chargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +194,7 @@ public class SampleActivity extends Activity {
                  */
                 try {
                     if (mSecondScreenService != null) {
-                        mSecondScreenService.displayWelcome(secondScreenCheckInListener);
+                        mSecondScreenService.displayWelcome("PICK UP", icon, secondScreenCheckInListener);
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -818,13 +822,13 @@ public class SampleActivity extends Activity {
                 @Override
                 public void onCodeScanned(String s) throws RemoteException {
                     logData("Code Scanned: " + s);
-                    mSecondScreenService.displayWelcome(secondScreenCheckInListener);
+                    mSecondScreenService.displayWelcome("PICK-UP", icon, secondScreenCheckInListener);
                 }
 
                 @Override
                 public void onCodeEntryCanceled() throws RemoteException {
                     logData("\nCode scan canceled");
-                    mSecondScreenService.displayWelcome(secondScreenCheckInListener);
+                    mSecondScreenService.displayWelcome("PICK-UP", icon, secondScreenCheckInListener);
                 }
             });
         }
