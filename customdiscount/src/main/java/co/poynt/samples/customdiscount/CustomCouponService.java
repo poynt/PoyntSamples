@@ -82,8 +82,10 @@ public class CustomCouponService extends Service {
             if (saved_coupon == null) {
                 saved_coupon = coupon;
             }
+            if ( order != null ) {
+                Timber.d("applyDiscount  (%s)", order.getId().toString());
+            }
 
-            Timber.d("applyDiscount  (%s)", order.getId().toString());
             new ApplyDiscountTask(requestId, saved_customerId, order, saved_coupon,
                     iPoyntCustomDiscountServiceListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -208,10 +210,9 @@ public class CustomCouponService extends Service {
                 } else if (coupon.equalsIgnoreCase("expired")) {
                     // expired discount
 
-                } else {
-                    // invalid discount
-                    return null;
                 }
+            } else {
+                return null;
             }
             return inputOrder;
         }
