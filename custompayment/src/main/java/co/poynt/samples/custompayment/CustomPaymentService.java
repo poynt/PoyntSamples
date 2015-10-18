@@ -265,7 +265,9 @@ public class CustomPaymentService extends Service {
                 // create a new captured object and set the action as captured transaction.
                 // This object will be returned as a child object of original auth transaction.
                 // For on Auth transaction there can be many Captured transaction.
-                Transaction capturedTransaction = new Transaction(false, Calendar.getInstance(), Calendar.getInstance(),
+                Transaction capturedTransaction = new Transaction(false,
+                        false,false,
+                        Calendar.getInstance(), Calendar.getInstance(),
                         transaction.getContext(), transaction.getFundingSource(), transaction.getLinks(),
                         transaction.getReferences(), transaction.get_id(), transaction.get_id(),
                         transaction.getCustomerUserId(), transaction.getProcessorResponse(),
