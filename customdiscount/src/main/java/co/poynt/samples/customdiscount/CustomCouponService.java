@@ -152,6 +152,9 @@ public class CustomCouponService extends Service {
 
         @Override
         protected Order doInBackground(Void... p) {
+            if ( inputOrder == null ){
+                return null;
+            }
             // validate the coupon code.
             // check to see if we already applied this coupon to the order.
             if (inputOrder.getDiscounts() != null && !inputOrder.getDiscounts().isEmpty()) {
@@ -221,6 +224,12 @@ public class CustomCouponService extends Service {
         protected void onPostExecute(Order order) {
             super.onPostExecute(order);
             try {
+                if ( inputOrder == null ){
+                    Timber.d("no order found to process");
+                    DiscountStatus discountStatus = new DiscountStatus(DiscountStatus.Code.INVALID, "Invalid discount");
+                    callback.onResponse(discountStatus, null, null, requestId);
+                    return;
+                }
 
                 if (order != null) {
                     Timber.d("apply discount for order (%s)", (order != null ? order.getId() : "-failed-"));
