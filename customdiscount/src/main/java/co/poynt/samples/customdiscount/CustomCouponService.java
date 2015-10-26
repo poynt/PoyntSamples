@@ -213,7 +213,10 @@ public class CustomCouponService extends Service {
                 } else if (coupon.equalsIgnoreCase("expired")) {
                     // expired discount
 
+                } else {
+                    return null;// let it start new activity.
                 }
+
             } else {
                 return null;
             }
