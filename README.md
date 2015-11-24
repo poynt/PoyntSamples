@@ -18,9 +18,3 @@ project in Android Studio and run it directly from there.
 
     ./gradlew assembleDebug
 
-Maven repository credentials
-============
-Our maven repository is protected with login credentials, which at this point are shared only with
-the developers who've signed up for PoyntOS SDK on a first come first served basis. If you've already
-signed up but haven't received the information from us yet, please be patient as we reach out to
-everyone from the SDK request list.
