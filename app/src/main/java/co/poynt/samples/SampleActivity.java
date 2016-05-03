@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -373,6 +374,11 @@ public class SampleActivity extends Activity {
         payment.setAmount(amount);
         payment.setCurrency(currencyCode);
 
+        // default to cash if the device has no card reader
+        if (!isPoyntTerminal()){
+            payment.setCashOnly(true);
+        }
+
         // start Payment activity for result
         try {
             Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
@@ -416,6 +422,14 @@ public class SampleActivity extends Activity {
                 Toast.makeText(this, "Payment Canceled", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    /**
+     *
+     * @return true is the app is running on a Poynt terminal and has a card reader
+     */
+    private boolean isPoyntTerminal(){
+        return "POYNT".equals(Build.MANUFACTURER);
     }
 
 }
