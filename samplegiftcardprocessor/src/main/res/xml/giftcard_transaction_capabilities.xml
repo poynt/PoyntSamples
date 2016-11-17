@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<capability>
+    <!-- Special App ID for Transaction Processing-->
+    <appid>co.poynt.samplegiftcardprocessor</appid>
+
+    <type>TRANSACTION</type>
+
+    <!-- descriptive name of this capability -->
+    <provider>GIFT CARD</provider>
+
+    <!-- reserved to future use. This icon will show up on your CUSTOM button in Payment Fragment payment options in the future -->
+    <logo>@drawable/ic_launcher</logo>
+
+    <!-- entry method could be one of the following
+        CARDREAD -> card data will be directly passed to this capability provider.
+        CUSTOM -> other entry methods.
+        each entry method can be additionally filtered with eval tag.
+    -->
+    <!-- value is a first6 digits of card number also referred to as binrange.
+        value >=601056 && value <= 601056 -->
+    <!-- for eval expression definition please refer to https://github.com/uklimaschewski/EvalEx -->
+    <entry_method
+        eval="value &lt;= 198000 &amp;&amp; value &gt;=  197000"
+        type="CARDREAD" />
+    <entry_method type="CUSTOM" />
+</capability>

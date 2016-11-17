@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="co.poynt.samplegiftcardprocessor">
+
+    <uses-permission android:name="poynt.permission.SECURITY_SERVICE" />
+    <uses-permission android:name="poynt.permission.CONFIGURATION_SERVICE" />
+    <uses-permission android:name="co.poynt.business.ACCESS_BUSINESS" />
+    <uses-permission android:name="poynt.permission.SECOND_SCREEN_SERVICE" />
+
+    <application
+        android:name=".SampleGiftcardTransactionProcessorApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <service
+            android:name=".SampleGiftCardTransactionProcessorService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="co.poynt.os.services.v1.IPoyntTransactionService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="co.poynt.os.service.capability"
+                android:resource="@xml/giftcard_transaction_capabilities" />
+            <!-- Optional: Provide a logo that will appear on screen -->
+            <meta-data
+                android:name="co.poynt.os.service.logo"
+                android:resource="@mipmap/ic_launcher" />
+        </service>
+
+        <activity
+            android:name=".PaymentActivity"
+            android:label="@string/app_name"
+            android:noHistory="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
