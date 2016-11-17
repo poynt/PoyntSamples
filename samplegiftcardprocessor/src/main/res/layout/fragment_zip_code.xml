@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context="co.poynt.samples.fragments.ZipCodeFragment">
+    <!-- dummy layout to prevent the keyboard from popping out -->
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter Custom Payment Code"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/customPaymentCode"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:maxLength="5"
+        android:text=""
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="CANCEL" />
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="ENTER" />
+    </LinearLayout>
+</LinearLayout>
