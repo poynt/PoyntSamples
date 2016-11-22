@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="co.poynt.samples.codesamples">
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="co.poynt.orders.ACCESS_ORDERS" />
+    <uses-permission android:name="poynt.permission.ORDER_SERVICE" />
+    <uses-permission android:name="poynt.permission.TOKEN_SERVICE" />
+    <uses-permission android:name="poynt.permission.TRANSACTION_SERVICE" />
+    <uses-permission android:name="poynt.permission.CUSTOMER_SERVICE" />
+    <uses-permission android:name="poynt.permission.PRODUCT_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="poynt.permission.SECOND_SCREEN_SERVICE" />
+    <uses-permission android:name="poynt.permission.RECEIPT_PRINTING_SERVICE" />
+    <uses-permission android:name="poynt.permission.BUSINESS_SERVICE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TransactionListActivity"
+            android:label="@string/title_activity_transaction_list" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".OrderActivity"
+            android:label="@string/title_activity_order" />
+        <activity
+            android:name=".TokenServiceActivity"
+            android:label="@string/title_activity_token_service" />
+
+        <receiver
+            android:name=".MyCloudMessageReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="poynt.intent.action.CLOUD_MESSAGE_RECEIVED" />
+
+                <category android:name="poynt.category.CLOUD_MESSAGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".PaymentActivity"
+            android:label="@string/title_activity_payment" />
+        <activity
+            android:name=".ScannerActivity"
+            android:label="@string/title_activity_scanner" />
+        <activity
+            android:name=".utils.MyCaptureActivity"
+            android:label="@string/title_activity_my_capture"
+            android:parentActivityName="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppCompatCaptureTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.journeyapps.barcodescanner.CaptureActivity" />
+        </activity>
+        <activity
+            android:name=".SecondScreenServiceActivity"
+            android:label="@string/title_activity_second_screen_service" />
+
+        <service
+            android:name=".services.CheckinIntentService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receivers.MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- <action android:name="poynt.intent.action.ADD_PRODUCT_TO_CART" /> -->
+                <action android:name="com.poynt.samples.checkin" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receivers.TestReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.poynt.codesamples.ADD_PRODUCT_TO_CART" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".ReceiptPrintingServiceActivity"
+            android:label="@string/title_activity_receipt_printing_service" />
+        <activity
+            android:name=".ProductServiceActivity"
+            android:label="@string/title_activity_product_service" />
+        <activity android:name=".BusinessServiceActivity" />
+    </application>
+
+</manifest>

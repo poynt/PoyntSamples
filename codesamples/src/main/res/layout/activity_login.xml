@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="co.poynt.samples.codesamples.LoginActivity">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login as Another User"
+        android:id="@+id/loginUserBtn"
+        android:layout_alignParentStart="true"
+        android:onClick="onLoginClicked"/>
+
+    <TextView android:text="Current User:"
+        android:layout_below="@+id/loginUserBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/labelTextView"
+        android:layout_marginTop="15dp"
+        android:textAppearance="?android:textAppearanceLarge"/>
+
+    <TextView android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/userTextView"
+        android:layout_toRightOf="@+id/labelTextView"
+        android:layout_alignTop="@+id/labelTextView"
+        android:layout_marginLeft="15dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ScrollView
+        android:id="@+id/demoScroller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userTextView"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/consoleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:typeface="monospace"
+            android:hint="User token info will appear here."/>
+    </ScrollView>
+
+</RelativeLayout>
