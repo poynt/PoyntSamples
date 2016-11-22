@@ -1,0 +1,110 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" >
+
+    <!--
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Go Next"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/poyntSamplesBtn" />
+    -->
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Transaction List"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/transactionListBtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Terminal User Login"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/terminalUserLoginBtn" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="OrderService Examples"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/orderBtn" />
+
+    <Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAlignment="center"
+    android:background="@color/gray"
+    android:text="TokenService Example"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:id="@+id/tokenServiceBtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Payment Fragment Examples"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/paymentFragmentBtn" />
+<!--
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Scanner Activity"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/scannerActivityBtn" />
+-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Second Screen Service Activity"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/secondScreenServiceActivityBtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Receipt Printing Service Activity"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/receiptPrintingServiceActivityBtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Product Service Activity"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/productServiceActivityBtn" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Business Service Activity"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/businessServiceActivityBtn" />
+
+
+</LinearLayout>

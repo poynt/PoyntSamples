@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">CodeSamples</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <color name="green">#00FF00</color>
+    <color name="gray">#CCCCCC</color>
+    <string name="title_activity_transaction_list">TransactionList</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_order">OrderActivity</string>
+    <string name="title_activity_token_service">TokenServiceActivity</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_scanner">ScannerActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_my_capture">MyCaptureActivity</string>
+    <string name="title_activity_second_screen_service">SecondScreenServiceActivity</string>
+    <string name="title_activity_receipt_printing_service">ReceiptPrintingServiceActivity</string>
+    <string name="title_activity_product_service">ProductServiceActivity</string>
+    <string name="title_activity_multi_tender_test">MultiTenderTestActivity</string>
+</resources>

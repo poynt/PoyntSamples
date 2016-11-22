@@ -1,1 +1,1 @@
-include ':app',':samplegiftcardprocessor'
+include ':app',':samplegiftcardprocessor',':codesamples'
