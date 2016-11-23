@@ -104,6 +104,15 @@
             android:name=".ProductServiceActivity"
             android:label="@string/title_activity_product_service" />
         <activity android:name=".BusinessServiceActivity" />
+
+        <receiver
+            android:name=".CustomerDetectedReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="poynt.intent.action.CUSTOMER_DETECTED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
