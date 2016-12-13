@@ -153,6 +153,7 @@ public class TransactionManager {
                 processorResponse.setApprovedAmount(100l);
                 transaction.getAmounts().setTransactionAmount(100l);
                 transaction.getAmounts().setOrderAmount(100l);
+                transaction.setPartiallyApproved(true);
                 processorResponse.setStatusMessage("Partially Approved");
                 processorResponse.setStatusCode("300");
             } else {
