@@ -9,8 +9,13 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +32,8 @@ import co.poynt.api.model.ProcessorStatus;
 import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAction;
 import co.poynt.api.model.TransactionAmounts;
+import co.poynt.api.model.TransactionReference;
+import co.poynt.api.model.TransactionReferenceType;
 import co.poynt.api.model.TransactionStatus;
 import co.poynt.os.model.DateFormatType;
 import co.poynt.os.model.ManualEntryFieldType;
@@ -49,8 +56,14 @@ public class TransactionManager {
     private Context context;
     private Map<UUID, Transaction> TRANSACTION_CACHE;
 
+    // will use this to print out raw JSON of the Transaction object for debugging purposes
+    private Gson gson;
+    private Type transactionType;
+
     private TransactionManager(Context context) {
         this.context = context;
+        gson = new Gson();
+        transactionType = new TypeToken<Transaction>(){}.getType();
         TRANSACTION_CACHE = new HashMap<>();
         bind();
     }
@@ -109,7 +122,9 @@ public class TransactionManager {
         Log.d(TAG, "PROCESSED TRANSACTION");
 
         if (transaction != null) {
-            Log.d(TAG, transaction.toString());
+//            Log.d(TAG, transaction.toString());
+            Log.d(TAG, "processTransaction: received " + transaction.getAction() + " request: " +
+                    gson.toJson(transaction, transactionType));
         }
         // always make sure we set ID, created_at and updated_at time stamps
         if (transaction.getId() == null) {
@@ -131,8 +146,12 @@ public class TransactionManager {
         // based on action handle the transactions
         if (transaction.getAction() == TransactionAction.AUTHORIZE
                 || transaction.getAction() == TransactionAction.SALE) {
+
             transaction.setStatus(TransactionStatus.CAPTURED);
-            processorResponse.setTransactionId(transaction.getId().toString());
+
+            // generating random processor transaction id
+            setProcessorTransactionId(transaction, processorResponse);
+
             transaction.getFundingSource().setType(FundingSourceType.CUSTOM_FUNDING_SOURCE);
             CustomFundingSource customFundingSource = transaction.getFundingSource().getCustomFundingSource();
             if (customFundingSource == null) {
@@ -156,6 +175,7 @@ public class TransactionManager {
                 transaction.setPartiallyApproved(true);
                 processorResponse.setStatusMessage("Partially Approved");
                 processorResponse.setStatusCode("300");
+
             } else {
                 processorResponse.setStatusCode("200");
                 processorResponse.setApprovedAmount(transaction.getAmounts().getTransactionAmount());
@@ -231,7 +251,9 @@ public class TransactionManager {
         if (transaction.getAction() == TransactionAction.AUTHORIZE
                 || transaction.getAction() == TransactionAction.SALE) {
             transaction.setStatus(TransactionStatus.CAPTURED);
-            processorResponse.setTransactionId(transaction.getId().toString());
+
+            setProcessorTransactionId(transaction, processorResponse);
+
             transaction.getFundingSource().setType(FundingSourceType.CUSTOM_FUNDING_SOURCE);
             CustomFundingSource customFundingSource = transaction.getFundingSource().getCustomFundingSource();
             if (customFundingSource == null) {
@@ -284,6 +306,19 @@ public class TransactionManager {
 
         TRANSACTION_CACHE.put(transaction.getId(), transaction);
         return transaction;
+    }
+
+    private void setProcessorTransactionId(Transaction transaction, ProcessorResponse processorResponse) {
+        String processorTransactionId = UUID.randomUUID().toString();
+        processorResponse.setTransactionId(processorTransactionId);
+
+        // if you need processorTransactionId be returned in the refund request
+        // you can add it as a transaction reference
+        TransactionReference processorTxnIdReference = new TransactionReference();
+        processorTxnIdReference.setType(TransactionReferenceType.CUSTOM);
+        processorTxnIdReference.setCustomType("processorTransactionId");
+        processorTxnIdReference.setId(processorTransactionId);
+        transaction.setReferences(Collections.singletonList(processorTxnIdReference));
     }
 
     public void captureTransaction(String transactionId, AdjustTransactionRequest adjustTransactionRequest, String requestId, IPoyntTransactionServiceListener listener) {
