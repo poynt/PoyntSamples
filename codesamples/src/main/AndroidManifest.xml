@@ -15,6 +15,7 @@
     <uses-permission android:name="poynt.permission.SECOND_SCREEN_SERVICE" />
     <uses-permission android:name="poynt.permission.RECEIPT_PRINTING_SERVICE" />
     <uses-permission android:name="poynt.permission.BUSINESS_SERVICE" />
+    <uses-permission android:name="com.poynt.store.BILLING" />
 
     <application
         android:allowBackup="true"
@@ -104,6 +105,9 @@
             android:name=".ProductServiceActivity"
             android:label="@string/title_activity_product_service" />
         <activity android:name=".BusinessServiceActivity" />
+        <activity
+            android:name=".InAppBillingActivity"
+            android:label="@string/title_activity_in_app_billing"></activity>
     </application>
 
 </manifest>

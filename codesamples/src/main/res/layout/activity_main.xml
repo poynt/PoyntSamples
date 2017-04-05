@@ -105,6 +105,14 @@
         android:text="Business Service Activity"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:id="@+id/businessServiceActivityBtn" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/gray"
+        android:text="Billing Service Activity"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/billingServiceActivityBtn" />
 
 
 </LinearLayout>
