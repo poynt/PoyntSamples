@@ -291,13 +291,15 @@ public class PaymentActivity extends Activity {
                             new SaveOrderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, payment.getOrder());
                         }
 
-//                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//                      Gson gson = new GsonBuilder().setPrettyPrinting().create();
                         Gson gson = new Gson();
-                        Type paymentType = new TypeToken<Payment>() {
-                        }.getType();
-                        Log.d(TAG, gson.toJson(payment, paymentType));
+//                        Type paymentType = new TypeToken<Payment>() {
+//                        }.getType();
+//                        Log.d(TAG, gson.toJson(payment, paymentType));
+                        Log.d(TAG, "onActivityResult: " + payment.getTransactions().get(0));
                         for (Transaction t : payment.getTransactions()) {
-
+                            Type txnType = new TypeToken<Transaction>(){}.getType();
+                            Log.d(TAG, "onActivityResult: transaction: " + gson.toJson(t, txnType));
 
                             getTransaction(t.getId().toString());
                             //Log.d(TAG, "Card token: " + t.getProcessorResponse().getCardToken());

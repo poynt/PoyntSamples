@@ -14,12 +14,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
 import co.poynt.api.model.Business;
 import co.poynt.api.model.Phone;
 import co.poynt.api.model.Store;
+import co.poynt.api.model.StoreDevice;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntBusinessReadListener;
@@ -68,6 +73,9 @@ public class BusinessServiceActivity extends Activity {
             //only display 1st store
             if (!stores.isEmpty()){
                 storeName = stores.get(0).getDisplayName();
+                StoreDevice terminal = stores.get(0).getStoreDevices().get(0);
+                Type storeDeviceType = new TypeToken<StoreDevice>(){}.getType();
+                Log.d(TAG, "onResponse: " + new Gson().toJson(terminal, storeDeviceType));
             }
             Map<String,String> attributes = business.getAttributes();
             String firstName = attributes.get("merchantContactFirstName");

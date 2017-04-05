@@ -9,6 +9,8 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +25,11 @@ import co.poynt.api.model.OrderItemStatus;
 import co.poynt.api.model.OrderStatus;
 import co.poynt.api.model.OrderStatuses;
 import co.poynt.api.model.Product;
+import co.poynt.api.model.ProductType;
+import co.poynt.api.model.SelectableValue;
+import co.poynt.api.model.SelectableVariation;
 import co.poynt.api.model.UnitOfMeasure;
+import co.poynt.api.model.Variant;
 
 /**
  * Created by dennis on 2/14/16.
@@ -132,12 +138,95 @@ public class Util {
     }
 
     public static Product createProduct() {
+        String sku = "1234567890";
+        /*
+
+    "selectableVariants": [
+        {
+            "selectableVariations": [
+                {
+                    "values": [
+                        {
+                            "defaultValue": true,
+                            "priceDelta": {
+                                "amount": 0,
+                                "currency": "USD"
+                            },
+                            "name": "M"
+                        },
+                        {
+                            "priceDelta": {
+                                "amount": 0,
+                                "currency": "USD"
+                            },
+                            "name": "L"
+                        },
+                        {
+                            "priceDelta": {
+                                "amount": 0,
+                                "currency": "USD"
+                            },
+                            "name": "XL"
+                        }
+                    ],
+                    "attribute": "Size",
+                    "cardinality": "1"
+                },
+
+
+         */
         Product product = new Product();
-        product.setName("Poynt Terminal");
-        CurrencyAmount price = new CurrencyAmount(49900l, "USD");
+        product.setName("Nike Two");
+        CurrencyAmount price = new CurrencyAmount(19900l, "USD");
         product.setPrice(price);
-        product.setSku("123456");
-       // product.setId(UUID.randomUUID().toString());
+        product.setSku(sku);
+        product.setType(ProductType.SIMPLE);
+        Variant variant = new Variant();
+        variant.setSku(sku);
+
+        // size options (only 1 allowed)
+        SelectableVariation sizeVariation = new SelectableVariation();
+        sizeVariation.setAttribute("Size");
+        sizeVariation.setCardinality("1");
+
+        SelectableValue valueM = new SelectableValue();
+        valueM.setDefaultValue(true);
+        valueM.setName("M");
+        valueM.setPriceDelta(new CurrencyAmount(0l, "USD"));
+
+        SelectableValue valueL = new SelectableValue();
+        valueL.setName("L");
+        valueL.setPriceDelta(new CurrencyAmount(0l, "USD"));
+
+        SelectableValue valueXL = new SelectableValue();
+        valueXL.setName("XL");
+        valueXL.setPriceDelta(new CurrencyAmount(0l, "USD"));
+
+        sizeVariation.setValues(Arrays.asList(valueM, valueL, valueXL));
+
+        // color options (only 1 allowed)
+        SelectableVariation colorVariation = new SelectableVariation();
+        colorVariation.setAttribute("Color");
+        colorVariation.setCardinality("1");
+
+        SelectableValue colorWhite = new SelectableValue();
+        colorWhite.setDefaultValue(true);
+        colorWhite.setName("White");
+        colorWhite.setPriceDelta(new CurrencyAmount(0l, "USD"));
+
+        SelectableValue colorGreen = new SelectableValue();
+        colorGreen.setName("Green");
+        colorGreen.setPriceDelta(new CurrencyAmount(0l, "USD"));
+
+        SelectableValue colorBlue = new SelectableValue();
+        colorBlue.setName("Blue");
+        colorBlue.setPriceDelta(new CurrencyAmount(0l, "USD"));
+
+        colorVariation.setValues(Arrays.asList(colorWhite, colorGreen, colorBlue));
+
+
+        variant.setSelectableVariations(Arrays.asList(sizeVariation, colorVariation));
+        product.setSelectableVariants(Collections.singletonList(variant));
 
         return product;
     }

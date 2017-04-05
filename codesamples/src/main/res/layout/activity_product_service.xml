@@ -18,6 +18,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/progressBarLayout"
+        android:text="Create Product With Variants"
+        android:id="@+id/createProductBtn"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createProductBtn"
         android:text="Get Register Catalog"
         android:id="@+id/getRegisterCatalogBtn"/>
 
