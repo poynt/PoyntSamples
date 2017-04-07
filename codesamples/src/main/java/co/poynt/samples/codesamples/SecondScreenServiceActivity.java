@@ -282,6 +282,12 @@ public class SecondScreenServiceActivity extends Activity {
                     showToast("Checkin Clicked");
                     phoneNumberButtonClicked(null);
                 }
+
+                @Override
+                public void onSecondScreenBusy() throws RemoteException {
+                    //do nothing
+                }
+
             };
     @OnClick(R.id.checkInScreenBtn)
     public void showCheckinScreen(){

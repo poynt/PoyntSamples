@@ -16,6 +16,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 import co.poynt.api.model.CatalogItemWithProduct;
 import co.poynt.api.model.CatalogWithProduct;
@@ -25,12 +31,14 @@ import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntProductCatalogWithProductListener;
 import co.poynt.os.services.v1.IPoyntProductService;
+import co.poynt.samples.codesamples.utils.Util;
 
 public class ProductServiceActivity extends Activity {
 
     private static final String TAG = ProductServiceActivity.class.getSimpleName();
     private IPoyntProductService mProductService;
     private Button mGetRegisterCatalogBtn;
+    private Button mCreateProductBtn;
     private TextView mConsoleText;
     private ProgressBar mProgress;
     private LinearLayout mProgressBarLayout;
@@ -154,6 +162,21 @@ public class ProductServiceActivity extends Activity {
             }
         });
         mConsoleText = (TextView) findViewById(R.id.consoleText);
+
+        mCreateProductBtn = (Button) findViewById(R.id.createProductBtn);
+        mCreateProductBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Product newProduct = Util.createProduct();
+                Gson gson = new Gson();
+                Type productType = new TypeToken<Product>(){}.getType();
+                System.out.println(gson.toJson(newProduct, productType));
+
+                //TODO currently not implemented
+                // productService.createProduct
+                Toast.makeText(ProductServiceActivity.this, "Currently not implemented", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

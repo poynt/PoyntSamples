@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<capability>
+    <!-- Special App ID for Transaction Processing-->
+    <appid>com.sampleloyaltyapp</appid>
+
+    <type>LOYALTY</type>
+
+    <!-- descriptive name of this capability -->
+    <provider>Sample Loyalty</provider>
+
+    <logo>@mipmap/ic_launcher</logo>
+
+    <!-- entry method could be one of the following
+        MANUAL -> will result in showing a icon to the merchant to manually launch the capability.
+        CARDREAD -> card data will be directly passed to this capability provider.
+        QRCODE -> qr code entry.
+        OTHER -> other entry methods.
+        CUSTOM -> custom entry mode managed by capability
+        each entry method can be additionally filtered with eval tag.
+    -->
+    <entry_method type="CUSTOM" />
+</capability>
