@@ -10,9 +10,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="co.poynt.samples.codesamples.InAppBillingActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/checkSubscriptionBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check Subscription" />
+
+    <View
+        android:id="@+id/separator3"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/checkSubscriptionBtn"
+        android:background="#000000" />
+
+
+    <ScrollView
+        android:id="@+id/demoScroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/resultText"/>
+        android:layout_below="@+id/separator3"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/consoleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:typeface="monospace" />
+    </ScrollView>
 
 </RelativeLayout>
