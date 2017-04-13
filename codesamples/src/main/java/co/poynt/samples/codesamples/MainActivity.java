@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
     private Button receiptPrintingServiceActivityBtn;
     private Button productServiceActivityBtn;
     private Button businessServiceActivityBtn;
+    private Button billingServiceActivityBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +107,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, BusinessServiceActivity.class);
+                startActivity(intent);
+            }
+        });
+        billingServiceActivityBtn = (Button) findViewById(R.id.billingServiceActivityBtn);
+        billingServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, InAppBillingActivity.class);
                 startActivity(intent);
             }
         });
