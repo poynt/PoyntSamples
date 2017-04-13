@@ -19,4 +19,5 @@
     <string name="title_activity_receipt_printing_service">ReceiptPrintingServiceActivity</string>
     <string name="title_activity_product_service">ProductServiceActivity</string>
     <string name="title_activity_multi_tender_test">MultiTenderTestActivity</string>
+    <string name="title_activity_in_app_billing">InAppBillingActivity</string>
 </resources>
