@@ -92,14 +92,17 @@ public class SampleActivity extends Activity {
         currentUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    // Android Account Manager does not maintain sessions - so we use Poynt Session
-                    // Service to keep track of the current logged in user.
-                    // NOTE that the access tokens are still managed by the Account Manager.
-                    mSessionService.getCurrentUser(sessionServiceListener);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    // Android Account Manager does not maintain sessions - so we use Poynt Session
+//                    // Service to keep track of the current logged in user.
+//                    // NOTE that the access tokens are still managed by the Account Manager.
+//                    mSessionService.getCurrentUser(sessionServiceListener);
+//                } catch (RemoteException e) {
+//                    e.printStackTrace();
+//                }
+                Intent intent = new Intent("poynt.intent.action.VIEW_TRANSACTIONS");
+                startActivity(intent);
+
             }
         });
 
@@ -210,6 +213,16 @@ public class SampleActivity extends Activity {
         unbindService(mBusinessServiceConnection);
         unbindService(mSessionConnection);
         unbindService(mSecondScreenConnection);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     /**
@@ -375,7 +388,7 @@ public class SampleActivity extends Activity {
         payment.setCurrency(currencyCode);
 
         // default to cash if the device has no card reader
-        if (!isPoyntTerminal()){
+        if (!isPoyntTerminal()) {
             payment.setCashOnly(true);
         }
 
@@ -425,10 +438,9 @@ public class SampleActivity extends Activity {
     }
 
     /**
-     *
      * @return true is the app is running on a Poynt terminal and has a card reader
      */
-    private boolean isPoyntTerminal(){
+    private boolean isPoyntTerminal() {
         return "POYNT".equals(Build.MANUFACTURER);
     }
 

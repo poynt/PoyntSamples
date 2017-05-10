@@ -1,12 +1,8 @@
 package co.poynt.samples.codesamples;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -27,9 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Discount;
 import co.poynt.api.model.OrderItem;
-import co.poynt.api.model.Processor;
-import co.poynt.api.model.ProcessorResponse;
-import co.poynt.api.model.Transaction;
+import co.poynt.os.model.Intents;
 import co.poynt.os.model.SecondScreenLabels;
 import co.poynt.os.services.v1.IPoyntSecondScreenCheckInListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenCodeScanListener;
@@ -40,12 +34,18 @@ import co.poynt.os.services.v1.IPoyntSecondScreenTextEntryListener;
 
 public class SecondScreenServiceActivity extends Activity {
 
-    @Bind(R.id.phoneNumberBtn) Button phoneNumberBtn;
-    @Bind(R.id.scanQRBtn) Button scanQRBtn;
-    @Bind(R.id.displayItemsBtn) Button displayItemsBtn;
-    @Bind(R.id.checkInScreenBtn) Button checkInScreenBtn;
-    @Bind(R.id.emailBtn) Button emailBtn;
-    @Bind(R.id.textEntryBtn) Button textEntryBtn;
+    @Bind(R.id.phoneNumberBtn)
+    Button phoneNumberBtn;
+    @Bind(R.id.scanQRBtn)
+    Button scanQRBtn;
+    @Bind(R.id.displayItemsBtn)
+    Button displayItemsBtn;
+    @Bind(R.id.checkInScreenBtn)
+    Button checkInScreenBtn;
+    @Bind(R.id.emailBtn)
+    Button emailBtn;
+    @Bind(R.id.textEntryBtn)
+    Button textEntryBtn;
     //@Bind(R.id.printImageBtn) Button printImageBtn;
     private IPoyntSecondScreenService secondScreenService;
     private ServiceConnection secondScreenServiceConnection = new ServiceConnection() {
@@ -60,31 +60,33 @@ public class SecondScreenServiceActivity extends Activity {
         }
     };
     private IPoyntSecondScreenPhoneEntryListener phoneEntryListener =
-            new IPoyntSecondScreenPhoneEntryListener.Stub(){
+            new IPoyntSecondScreenPhoneEntryListener.Stub() {
                 @Override
                 public void onPhoneEntered(String phone) throws RemoteException {
                     showToast("Captured Phone: " + phone);
                     showWelcomeScreen();
                 }
+
                 @Override
                 public void onPhoneEntryCanceled() throws RemoteException {
                     showToast("User canceled phone entry");
                 }
             };
     private IPoyntSecondScreenCodeScanListener codeScanListener =
-            new IPoyntSecondScreenCodeScanListener.Stub(){
+            new IPoyntSecondScreenCodeScanListener.Stub() {
                 @Override
                 public void onCodeScanned(String s) throws RemoteException {
                     showToast("Code scanned: " + s);
                 }
+
                 @Override
                 public void onCodeEntryCanceled() throws RemoteException {
                     showWelcomeScreen();
                 }
             };
 
-    @OnClick (R.id.phoneNumberBtn)
-    public void phoneNumberButtonClicked(View view){
+    @OnClick(R.id.phoneNumberBtn)
+    public void phoneNumberButtonClicked(View view) {
         try {
             // @deprecated
             //secondScreenService.collectPhoneNumber(phoneEntryListener);
@@ -104,17 +106,19 @@ public class SecondScreenServiceActivity extends Activity {
                     showToast("Captured email: " + s);
                     showWelcomeScreen();
                 }
+
                 @Override
                 public void onEmailEntryCanceled() throws RemoteException {
                     showWelcomeScreen();
                 }
             };
+
     @OnClick(R.id.emailBtn)
-    public void emailBtnclicked(View view){
+    public void emailBtnclicked(View view) {
         try {
             //@deprecated
             //secondScreenService.collectEmailAddress(null, emailEntryListener);
-            String defaultEmail="jane@domain.com";
+            String defaultEmail = "jane@domain.com";
             secondScreenService.captureEmailAddress(defaultEmail, SecondScreenLabels.CANCEL,
                     SecondScreenLabels.CONFIRM, emailEntryListener);
         } catch (RemoteException e) {
@@ -128,21 +132,24 @@ public class SecondScreenServiceActivity extends Activity {
                 public void onTextEntered(String s) throws RemoteException {
                     showToast("Captured Text: " + s);
                 }
+
                 @Override
                 public void onTextEntryCanceled() throws RemoteException {
                     showWelcomeScreen();
                 }
             };
-    @OnClick (R.id.textEntryBtn)
-    public void textEntryBtnClicked(View view){
+
+    @OnClick(R.id.textEntryBtn)
+    public void textEntryBtnClicked(View view) {
         try {
             secondScreenService.collectTextEntry("Enter Discount Code:", textEntryListener);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
-    @OnClick (R.id.scanQRBtn)
-    public void scanQRCode( View view )  {
+
+    @OnClick(R.id.scanQRBtn)
+    public void scanQRCode(View view) {
         try {
             // @deprecated
             // secondScreenService.scanCode(codeScanListener);
@@ -152,13 +159,14 @@ public class SecondScreenServiceActivity extends Activity {
             e.printStackTrace();
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_screen_service);
 
         android.app.ActionBar actionBar = getActionBar();
-        if (actionBar !=null ) {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         ButterKnife.bind(this);
@@ -167,21 +175,22 @@ public class SecondScreenServiceActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        bindService(new Intent(IPoyntSecondScreenService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_SECOND_SCREEN_SERVICE),
                 secondScreenServiceConnection, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        try{
-            secondScreenService.displayWelcome(null,null,null);
-        } catch (RemoteException|NullPointerException e) {
+        try {
+            secondScreenService.displayWelcome(null, null, null);
+        } catch (RemoteException | NullPointerException e) {
             e.printStackTrace();
         }
         unbindService(secondScreenServiceConnection);
     }
-    private void showToast(final String message){
+
+    private void showToast(final String message) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -189,19 +198,22 @@ public class SecondScreenServiceActivity extends Activity {
             }
         });
     }
-    private void showWelcomeScreen(){
+
+    private void showWelcomeScreen() {
         try {
-            secondScreenService.displayWelcome(null,null,null);
+            secondScreenService.displayWelcome(null, null, null);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_second_screen, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -213,7 +225,7 @@ public class SecondScreenServiceActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 
@@ -221,7 +233,7 @@ public class SecondScreenServiceActivity extends Activity {
     }
 
     @OnClick(R.id.displayItemsBtn)
-    public void showItems(){
+    public void showItems() {
         // create some dummy items to display in second screen
         List<OrderItem> items = new ArrayList<OrderItem>();
         OrderItem item1 = new OrderItem();
@@ -289,8 +301,9 @@ public class SecondScreenServiceActivity extends Activity {
                 }
 
             };
+
     @OnClick(R.id.checkInScreenBtn)
-    public void showCheckinScreen(){
+    public void showCheckinScreen() {
         try {
 //            Bitmap checkin = BitmapFactory.decodeResource(getResources(),R.drawable.button_checkin);
             secondScreenService.displayWelcome("Check-in", null, checkinScreenListener);
