@@ -3,12 +3,11 @@ package co.poynt.samples.codesamples;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,8 +35,7 @@ import co.poynt.api.model.UnitOfMeasure;
 import co.poynt.os.contentproviders.orders.orders.OrdersColumns;
 import co.poynt.os.contentproviders.orders.orders.OrdersCursor;
 import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesColumns;
-import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesContentValues;
-import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesSelection;
+import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntOrderService;
 import co.poynt.os.services.v1.IPoyntOrderServiceListener;
@@ -50,7 +47,8 @@ public class OrderActivity extends Activity {
 
     Business b;
 
-    @Bind(R.id.pullOpenOrders) Button pullOpenOrders;
+    @Bind(R.id.pullOpenOrders)
+    Button pullOpenOrders;
 
     private ServiceConnection orderServiceConnection = new ServiceConnection() {
         @Override
@@ -64,18 +62,18 @@ public class OrderActivity extends Activity {
             Log.d(TAG, "onServiceDisconnected ");
         }
     };
-    private IPoyntOrderServiceListener orderServiceListener = new IPoyntOrderServiceListener.Stub(){
+    private IPoyntOrderServiceListener orderServiceListener = new IPoyntOrderServiceListener.Stub() {
         public void orderResponse(Order order, String s, PoyntError poyntError) throws RemoteException {
             Log.d(TAG, "orderResponse poyntError: " + poyntError);
             Log.d(TAG, "orderResponse order: " + order.toString());
         }
     };
 
-    private IPoyntOrderServiceListener createOrderServiceListener = new IPoyntOrderServiceListener.Stub(){
+    private IPoyntOrderServiceListener createOrderServiceListener = new IPoyntOrderServiceListener.Stub() {
         public void orderResponse(final Order order, String s, PoyntError poyntError) throws RemoteException {
             Log.d(TAG, "orderResponse poyntError: " + poyntError);
             Log.d(TAG, "orderResponse order: " + order.toString());
-            if (poyntError == null){
+            if (poyntError == null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -85,9 +83,11 @@ public class OrderActivity extends Activity {
             }
         }
     };
-    public void onOrderButtonClicked( View view ){
+
+    public void onOrderButtonClicked(View view) {
 
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +97,7 @@ public class OrderActivity extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         createOrderBtn = (Button) findViewById(R.id.createOrderBtn);
-        createOrderBtn.setOnClickListener(new View.OnClickListener(){
+        createOrderBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 try {
                     orderService.createOrder(generateOrder(), UUID.randomUUID().toString(), createOrderServiceListener);
@@ -108,20 +108,25 @@ public class OrderActivity extends Activity {
         });
         ButterKnife.bind(this);
     }
-    protected void onResume(){
+
+    protected void onResume() {
         super.onResume();
-        bindService(new Intent(IPoyntOrderService.class.getName()), orderServiceConnection, BIND_AUTO_CREATE);
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_ORDER_SERVICE),
+                orderServiceConnection, BIND_AUTO_CREATE);
     }
-    protected void onPause(){
+
+    protected void onPause() {
         super.onPause();
         unbindService(orderServiceConnection);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_order, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -133,12 +138,13 @@ public class OrderActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
     private Order generateOrder() {
         Order order = new Order();
         order.setId(UUID.randomUUID());
@@ -195,25 +201,24 @@ public class OrderActivity extends Activity {
     }
 
     /**
-     * @param view
-     * this method will use the local content provider to query for open orders
-     * and will pull the last order using OrderService
+     * @param view this method will use the local content provider to query for open orders
+     *             and will pull the last order using OrderService
      */
-    @OnClick (R.id.pullOpenOrders)
-    public void pullOpenOrdersClicked(View view){
+    @OnClick(R.id.pullOpenOrders)
+    public void pullOpenOrdersClicked(View view) {
 
-        String lastOrderId=null;
+        String lastOrderId = null;
 
-        String [] mProjection = {OrderstatusesColumns.ORDERID};
+        String[] mProjection = {OrderstatusesColumns.ORDERID};
         String mSelectionClause = OrderstatusesColumns.FULFILLMENTSTATUS + "= ?";
-        String [] mSelectionArgs = {OrderStatus.OPENED.status()};
+        String[] mSelectionArgs = {OrderStatus.OPENED.status()};
         String mSortOrder = null;
 
         Cursor cursor = getContentResolver().query(OrdersColumns.CONTENT_URI_WITH_NETTOTAL_TRXN_STATUS_OPEN,
                 mProjection, mSelectionClause, mSelectionArgs, mSortOrder);
         OrdersCursor orderCursor = new OrdersCursor(cursor);
-        if (orderCursor !=null){
-            while (orderCursor.moveToNext()){
+        if (orderCursor != null) {
+            while (orderCursor.moveToNext()) {
 //                    Log.d(TAG, "order id: " + cursor.getString(0));
 //                    Log.d(TAG, "customer id: " + cursor.getString(1));
 //                    Log.d(TAG, "created at: " + cursor.getString(2));
@@ -228,7 +233,7 @@ public class OrderActivity extends Activity {
         orderCursor.close();
         cursor.close();
         try {
-            if (lastOrderId !=null) {
+            if (lastOrderId != null) {
                 orderService.getOrder(lastOrderId, UUID.randomUUID().toString(), orderServiceListener);
             }
         } catch (RemoteException e) {

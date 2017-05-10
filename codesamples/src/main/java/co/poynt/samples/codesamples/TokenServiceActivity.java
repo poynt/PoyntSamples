@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +34,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import co.poynt.api.model.TokenResponse;
+import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntTokenService;
 import co.poynt.os.services.v1.IPoyntTokenServiceListener;
@@ -70,23 +70,23 @@ public class TokenServiceActivity extends Activity {
     private IPoyntTokenServiceListener tokenServiceListener = new IPoyntTokenServiceListener.Stub() {
         @Override
         public void onResponse(TokenResponse tokenResponse, PoyntError poyntError) throws RemoteException {
-            if (tokenResponse != null){
+            if (tokenResponse != null) {
                 Log.d(TAG, "onResponse " + tokenResponse.getAccessToken());
                 String accessToken = tokenResponse.getAccessToken();
                 try {
                     signedJWT = SignedJWT.parse(accessToken);
 
-                   // JWSVerifier verifier
+                    // JWSVerifier verifier
                     StringBuilder claimsBuffer = new StringBuilder();
                     ReadOnlyJWTClaimsSet claims = signedJWT.getJWTClaimsSet();
 
                     claimsBuffer.append("Subject: " + claims.getSubject())
-                                .append("\nType: " + claims.getType())
-                                .append("\nIssuer: " + claims.getIssuer())
-                                .append("\nJWT ID: " + claims.getJWTID())
-                                .append("\nIssueTime : " + claims.getIssueTime())
-                                .append("\nExpiration Time: " + claims.getExpirationTime())
-                                .append("\nNot Before Time: " + claims.getNotBeforeTime());
+                            .append("\nType: " + claims.getType())
+                            .append("\nIssuer: " + claims.getIssuer())
+                            .append("\nJWT ID: " + claims.getJWTID())
+                            .append("\nIssueTime : " + claims.getIssueTime())
+                            .append("\nExpiration Time: " + claims.getExpirationTime())
+                            .append("\nNot Before Time: " + claims.getNotBeforeTime());
                     for (String audience : claims.getAudience()) {
                         claimsBuffer.append("\nAudience: " + audience);
                     }
@@ -133,7 +133,7 @@ public class TokenServiceActivity extends Activity {
                     e.printStackTrace();
                 }
 
-            }else if (poyntError !=null){
+            } else if (poyntError != null) {
                 Log.d(TAG, "onResponse error" + poyntError.getData());
             }
         }
@@ -145,7 +145,7 @@ public class TokenServiceActivity extends Activity {
         setContentView(R.layout.activity_token_service);
 
         android.app.ActionBar actionBar = getActionBar();
-        if (actionBar!=null) actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
         textView = (TextView) findViewById(R.id.consoleText);
         getTokenBtn = (Button) findViewById(R.id.getTokenBtn);
@@ -167,7 +167,7 @@ public class TokenServiceActivity extends Activity {
             }
         });
 
-        verifyJwtBtn.setOnClickListener(new View.OnClickListener(){
+        verifyJwtBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (poyntCert != null && signedJWT != null) {
@@ -180,8 +180,8 @@ public class TokenServiceActivity extends Activity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                        Toast.makeText(TokenServiceActivity.this,
-                                                "JWT signature verified: " + isSignatureVerified, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(TokenServiceActivity.this,
+                                            "JWT signature verified: " + isSignatureVerified, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (JOSEException e) {
@@ -199,7 +199,7 @@ public class TokenServiceActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        bindService(new Intent(IPoyntTokenService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_TOKEN_SERVICE),
                 tokenServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -227,7 +227,7 @@ public class TokenServiceActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 
@@ -246,7 +246,7 @@ public class TokenServiceActivity extends Activity {
             if (cert != null) {
                 getTokenBtn.setEnabled(true);
                 poyntCert = cert;
-            }else{
+            } else {
                 Toast.makeText(TokenServiceActivity.this, "Getting certificate failed", Toast.LENGTH_SHORT).show();
             }
         }
@@ -260,20 +260,20 @@ public class TokenServiceActivity extends Activity {
      */
     private void loadConfig() {
         try {
-            for (String s: getAssets().list(".")) {
-                Log.d(TAG, "loadConfig " + s );
+            for (String s : getAssets().list(".")) {
+                Log.d(TAG, "loadConfig " + s);
             }
             InputStream is = getAssets().open("config.properties");
             Properties props = new Properties();
             props.load(is);
             appId = props.getProperty("appId");
             Log.d(TAG, "loaded appId: " + appId.toString());
-        } catch (IOException|NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Please set \"appId\" property in src/main/assets/config.properties");
             builder.setTitle("Unable to initialize appId");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     finish();
                 }

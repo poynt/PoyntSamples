@@ -22,8 +22,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +31,6 @@ import co.poynt.api.model.Card;
 import co.poynt.api.model.CardType;
 import co.poynt.api.model.FundingSourceAccountType;
 import co.poynt.api.model.Order;
-import co.poynt.api.model.OrderAmounts;
-import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.Transaction;
 import co.poynt.os.contentproviders.orders.transactionreferences.TransactionreferencesColumns;
 import co.poynt.os.model.Intents;
@@ -117,6 +113,17 @@ public class PaymentActivity extends Activity {
                 launchPoyntPayment(order.getAmounts().getNetTotal(), order);
             }
         });
+
+        Button launchTxnList = (Button) findViewById(R.id.launchTxnList);
+        launchTxnList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent("poynt.intent.action.VIEW_TRANSACTIONS");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
 /*
 
         launchRegisterBtn = (Button) findViewById(R.id.launchRegisterBtn);
@@ -141,7 +148,7 @@ public class PaymentActivity extends Activity {
         bindServices();
     }
 
-    private void bindServices(){
+    private void bindServices() {
         bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_ORDER_SERVICE),
                 mOrderServiceConnection, Context.BIND_AUTO_CREATE);
         bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_TRANSACTION_SERVICE),
@@ -180,6 +187,7 @@ public class PaymentActivity extends Activity {
         getMenuInflater().inflate(R.menu.menu_payment, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -191,7 +199,7 @@ public class PaymentActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 
@@ -201,7 +209,8 @@ public class PaymentActivity extends Activity {
     private IPoyntTransactionServiceListener mTransactionServiceListener = new IPoyntTransactionServiceListener.Stub() {
         public void onResponse(Transaction _transaction, String s, PoyntError poyntError) throws RemoteException {
             Gson gson = new Gson();
-            Type transactionType = new TypeToken<Transaction>(){}.getType();
+            Type transactionType = new TypeToken<Transaction>() {
+            }.getType();
             String transactionJson = gson.toJson(_transaction, transactionType);
             Log.d(TAG, "onResponse: " + transactionJson);
 
@@ -217,7 +226,8 @@ public class PaymentActivity extends Activity {
         }
 
     };
-    public void getTransaction(String txnId){
+
+    public void getTransaction(String txnId) {
         try {
 
             mTransactionService.getTransaction(txnId, UUID.randomUUID().toString(),
@@ -231,6 +241,7 @@ public class PaymentActivity extends Activity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTransactionService = IPoyntTransactionService.Stub.asInterface(iBinder);
         }
+
         public void onServiceDisconnected(ComponentName componentName) {
             mTransactionService = null;
         }
@@ -247,14 +258,14 @@ public class PaymentActivity extends Activity {
         // enable multi-tender in payment options
         payment.setMultiTender(true);
 
-        if (order != null){
+        if (order != null) {
             payment.setOrder(order);
             payment.setOrderId(order.getId().toString());
 
             // tip can be preset
             //payment.setTipAmount(500l);
             payment.setAmount(order.getAmounts().getNetTotal());
-        }else{
+        } else {
             // some random amount
             payment.setAmount(1200l);
 
@@ -298,7 +309,8 @@ public class PaymentActivity extends Activity {
 //                        Log.d(TAG, gson.toJson(payment, paymentType));
                         Log.d(TAG, "onActivityResult: " + payment.getTransactions().get(0));
                         for (Transaction t : payment.getTransactions()) {
-                            Type txnType = new TypeToken<Transaction>(){}.getType();
+                            Type txnType = new TypeToken<Transaction>() {
+                            }.getType();
                             Log.d(TAG, "onActivityResult: transaction: " + gson.toJson(t, txnType));
 
                             getTransaction(t.getId().toString());
@@ -377,12 +389,12 @@ public class PaymentActivity extends Activity {
 
         // handle transactions
         // full transaction can get retrieved using IPoyntTransactionService.getTransaction
-        if (!transactions.isEmpty()){
+        if (!transactions.isEmpty()) {
             logData("Found the following transactions for referenceId " + lastReferenceId + ": ");
             for (String txnId : transactions) {
                 logData(txnId);
             }
-        }else{
+        } else {
             logData("No Transactions found");
         }
     }
