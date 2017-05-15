@@ -16,7 +16,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_my_capture">MyCaptureActivity</string>
     <string name="title_activity_second_screen_service">SecondScreenServiceActivity</string>
-    <string name="title_activity_second_screen_service_v2">SecondScreenServiceActivityV2</string>
     <string name="title_activity_receipt_printing_service">ReceiptPrintingServiceActivity</string>
     <string name="title_activity_product_service">ProductServiceActivity</string>
     <string name="title_activity_multi_tender_test">MultiTenderTestActivity</string>
