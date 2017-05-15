@@ -74,9 +74,6 @@
         <activity
             android:name=".SecondScreenServiceActivity"
             android:label="@string/title_activity_second_screen_service" />
-        <activity
-            android:name=".SecondScreenServiceV2Activity"
-            android:label="@string/title_activity_second_screen_service_v2" />
 
         <service
             android:name=".services.CheckinIntentService"
