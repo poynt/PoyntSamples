@@ -32,6 +32,7 @@ import co.poynt.api.model.CardType;
 import co.poynt.api.model.FundingSourceAccountType;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.Transaction;
+import co.poynt.api.model.TransactionAction;
 import co.poynt.os.contentproviders.orders.transactionreferences.TransactionreferencesColumns;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
@@ -47,6 +48,7 @@ public class PaymentActivity extends Activity {
 
     // request code for payment service activity
     private static final int COLLECT_PAYMENT_REQUEST = 13132;
+    private static final int ZERO_DOLLAR_AUTH_REQUEST = 13133;
     private static final String TAG = PaymentActivity.class.getSimpleName();
 
     private IPoyntTransactionService mTransactionService;
@@ -55,6 +57,7 @@ public class PaymentActivity extends Activity {
     Button chargeBtn;
     Button payOrderBtn;
     Button launchRegisterBtn;
+    Button zeroDollarAuthBtn;
 
     private Gson gson;
 
@@ -124,6 +127,14 @@ public class PaymentActivity extends Activity {
             }
         });
 
+        zeroDollarAuthBtn = (Button) findViewById(R.id.zeroDollarAuthBtn);
+        zeroDollarAuthBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doZeroDollarAuth();
+            }
+        });
+
 /*
 
         launchRegisterBtn = (Button) findViewById(R.id.launchRegisterBtn);
@@ -140,6 +151,23 @@ public class PaymentActivity extends Activity {
             }
         });
 */
+    }
+
+    private void doZeroDollarAuth() {
+        Payment p = new Payment();
+        p.setAction(TransactionAction.VERIFY);
+        p.setAuthzOnly(true);
+        p.setVerifyOnly(true);
+
+//        List<Transaction> transactions = new ArrayList<>();
+//        Transaction transaction = TransactionUtil.newInstance();
+//        transaction.setAction(TransactionAction.VERIFY);
+//        transactions.add(transaction);
+//        payment.setTransactions(transactions);
+
+        Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+        collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, p);
+        startActivityForResult(collectPaymentIntent, ZERO_DOLLAR_AUTH_REQUEST);
     }
 
     @Override
@@ -363,6 +391,14 @@ public class PaymentActivity extends Activity {
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 logData("Payment Canceled");
+            }
+        }else if( requestCode == ZERO_DOLLAR_AUTH_REQUEST){
+            Log.d(TAG, "onActivityResult: $0 auth request");
+            if (resultCode == Activity.RESULT_OK) {
+                Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
+                Gson gson = new Gson();
+                Type paymentType = new TypeToken<Payment>() {}.getType();
+                Log.d(TAG, gson.toJson(payment, paymentType));
             }
         }
     }
