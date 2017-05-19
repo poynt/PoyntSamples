@@ -2,9 +2,11 @@ package co.poynt.samples.codesamples;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -28,14 +30,13 @@ import static android.view.View.GONE;
 public class InAppBillingActivity extends Activity {
 
     private static final String TAG = InAppBillingActivity.class.getSimpleName();
+    private static final int BUY_INTENT_REQUEST_CODE = 98765;
     private Button checkSubscriptionBtn;
+    private Button launchBillingFragment;
     private TextView mDumpTextView;
     private ScrollView mScrollView;
 
     IPoyntInAppBillingService mBillingService;
-
-    private static final ComponentName COMPONENT_POYNT_INAPP_BILLING_SERVICE = new ComponentName("com.poynt.store", "co.poynt.os.services.v1.IPoyntInAppBillingService");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,58 @@ public class InAppBillingActivity extends Activity {
             }
         });
 
+        launchBillingFragment = (Button) findViewById(R.id.launchBillingFragment);
+        launchBillingFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mBillingService != null) {
+                    logReceivedMessage("Requesting billing intent...");
+                    try {
+                        Bundle bundle = getBillingFragmentIntent();
+                        if (bundle != null && bundle.containsKey("BUY_INTENT")) {
+                            PendingIntent intent = bundle.getParcelable("BUY_INTENT");
+                            if (intent != null) {
+                                try {
+                                    startIntentSenderForResult(
+                                            intent.getIntentSender(),
+                                            BUY_INTENT_REQUEST_CODE,
+                                            null,
+                                            Integer.valueOf(0),
+                                            Integer.valueOf(0),
+                                            Integer.valueOf(0));
+                                } catch (IntentSender.SendIntentException e) {
+                                    e.printStackTrace();
+                                    logReceivedMessage("Failed to launch billing fragment!");
+                                }
+                            } else {
+                                logReceivedMessage("Did not receive buy intent!");
+                            }
+                        } else {
+                            logReceivedMessage("Failed to obtain billing fragment intent!");
+                        }
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Log.d(TAG, "NOT CONNECTED TO INAPP-BILLING");
+                    logReceivedMessage("Not Connected to inApp Billing Service");
+                    launchBillingFragment.setVisibility(GONE);
+                }
+            }
+        });
+
+    }
+
+    private Bundle getBillingFragmentIntent() throws RemoteException {
+        Bundle bundle = new Bundle();
+        // add plan Id
+        // following is $5 plan
+        bundle.putString("plan_id", "f636522e-d8a5-4be1-9d66-f6df6fada4a0");
+        // following is a $0 plan
+        //bundle.putString("plan_id", "a36c8629-a252-496f-b431-e9301b8acda2");
+        return mBillingService.getBillingIntent(getPackageName(), bundle);
     }
 
     @Override
@@ -80,8 +133,6 @@ public class InAppBillingActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-//        bindService(Intents.getComponentIntent(COMPONENT_POYNT_INAPP_BILLING_SERVICE),
-//                mServiceConn, Context.BIND_AUTO_CREATE);
         Intent serviceIntent =
                 new Intent("com.poynt.store.PoyntInAppBillingService.BIND");
         serviceIntent.setPackage("com.poynt.store");
@@ -97,6 +148,19 @@ public class InAppBillingActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == BUY_INTENT_REQUEST_CODE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                logReceivedMessage("Subscription request was successful - run Check Subscription to confirm!");
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "Result canceled");
+                logReceivedMessage("Subscription request failed!");
+            }
+        }
+    }
 
     private void checkSubscriptionStatus() {
         try {
