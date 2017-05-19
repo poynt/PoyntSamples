@@ -10,17 +10,31 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="co.poynt.samples.codesamples.InAppBillingActivity">
 
-    <Button
-        android:id="@+id/checkSubscriptionBtn"
+    <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Check Subscription" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/checkSubscriptionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check Subscription" />
+
+        <Button
+            android:id="@+id/launchBillingFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Launch Billing" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/separator3"
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:layout_below="@+id/checkSubscriptionBtn"
+        android:layout_below="@id/buttons"
         android:background="#000000" />
 
 
