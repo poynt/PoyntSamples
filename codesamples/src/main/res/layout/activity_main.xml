@@ -62,16 +62,16 @@
         android:background="@color/gray"
         android:text="Payment Fragment Examples"
         android:textAlignment="center" />
-    <!--
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:background="@color/gray"
-            android:text="Scanner Activity"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:id="@+id/scannerActivityBtn" />
-    -->
+
+    <Button
+        android:id="@+id/scannerActivityBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:background="@color/gray"
+        android:text="Scanner Activity"
+        android:textAlignment="center" />
+    
     <Button
         android:id="@+id/secondScreenServiceActivityBtn"
         android:layout_width="match_parent"

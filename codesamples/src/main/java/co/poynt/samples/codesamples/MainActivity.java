@@ -68,14 +68,14 @@ public class MainActivity extends Activity {
             }
         });
 
-//        scannerActivityBtn = (Button) findViewById(R.id.scannerActivityBtn);
-//        scannerActivityBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent (MainActivity.this, ScannerActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        scannerActivityBtn = (Button) findViewById(R.id.scannerActivityBtn);
+        scannerActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ScannerActivity.class);
+                startActivity(intent);
+            }
+        });
 
         secondScreenServiceActivityBtn = (Button) findViewById(R.id.secondScreenServiceActivityBtn);
         secondScreenServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
