@@ -115,9 +115,9 @@ public class InAppBillingActivity extends Activity {
         Bundle bundle = new Bundle();
         // add plan Id
         // following is $5 plan
-        bundle.putString("plan_id", "f636522e-d8a5-4be1-9d66-f6df6fada4a0");
+        bundle.putString("plan_id", "e1b9c0d1-f76a-4e9d-88d0-4a5593a09eab");
         // following is a $0 plan
-        //bundle.putString("plan_id", "a36c8629-a252-496f-b431-e9301b8acda2");
+        //bundle.putString("plan_id", "35f1a863-5ca6-4588-b375-4d5557fc190e");
         return mBillingService.getBillingIntent(getPackageName(), bundle);
     }
 
