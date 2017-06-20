@@ -15,11 +15,12 @@ public class MainActivity extends Activity {
     private Button tokenServiceBtn;
     private Button paymentFragmentBtn;
     private Button scannerActivityBtn;
-    private Button secondScreenServiceActivityBtn;
+    private Button secondScreenServiceActivityBtn, secondScreenServiceV2ActivityBtn;
     private Button receiptPrintingServiceActivityBtn;
     private Button productServiceActivityBtn;
     private Button businessServiceActivityBtn;
     private Button billingServiceActivityBtn;
+    private Button accessoriesActivityBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,26 +69,35 @@ public class MainActivity extends Activity {
             }
         });
 
-//        scannerActivityBtn = (Button) findViewById(R.id.scannerActivityBtn);
-//        scannerActivityBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent (MainActivity.this, ScannerActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
-        secondScreenServiceActivityBtn = (Button) findViewById(R.id.secondScreenServiceActivityBtn);
-        secondScreenServiceActivityBtn.setOnClickListener(new View.OnClickListener(){
+        scannerActivityBtn = (Button) findViewById(R.id.scannerActivityBtn);
+        scannerActivityBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent (MainActivity.this, SecondScreenServiceActivity.class);
+                Intent intent = new Intent(MainActivity.this, ScannerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        secondScreenServiceActivityBtn = (Button) findViewById(R.id.secondScreenServiceActivityBtn);
+        secondScreenServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SecondScreenServiceActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        secondScreenServiceV2ActivityBtn = (Button) findViewById(R.id.secondScreenServiceV2ActivityBtn);
+        secondScreenServiceV2ActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SecondScreenServiceV2Activity.class);
                 startActivity(intent);
             }
         });
 
         receiptPrintingServiceActivityBtn = (Button) findViewById(R.id.receiptPrintingServiceActivityBtn);
-        receiptPrintingServiceActivityBtn.setOnClickListener(new View.OnClickListener(){
+        receiptPrintingServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ReceiptPrintingServiceActivity.class);
@@ -100,7 +110,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProductServiceActivity.class);
-                startActivity(intent);            }
+                startActivity(intent);
+            }
         });
         businessServiceActivityBtn = (Button) findViewById(R.id.businessServiceActivityBtn);
         businessServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +126,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, InAppBillingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        accessoriesActivityBtn = (Button) findViewById(R.id.accessoriesActivityBtn);
+        accessoriesActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AccessoriesActivity.class);
                 startActivity(intent);
             }
         });

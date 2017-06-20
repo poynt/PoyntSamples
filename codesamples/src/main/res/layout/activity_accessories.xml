@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_accessories"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="co.poynt.samples.codesamples.ScannerActivity">
+    tools:context="co.poynt.samples.codesamples.AccessoriesActivity">
 
     <LinearLayout
         android:id="@+id/buttons"
@@ -16,11 +17,10 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/scanCode"
+            android:id="@+id/openCashDrawer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scan Code" />
-
+            android:text="Open Cash Drawer" />
 
     </LinearLayout>
 
@@ -46,5 +46,4 @@
             android:textIsSelectable="true"
             android:typeface="monospace" />
     </ScrollView>
-
 </RelativeLayout>

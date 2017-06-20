@@ -65,7 +65,7 @@ public class TransactionListActivity extends Activity
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 
@@ -78,7 +78,7 @@ public class TransactionListActivity extends Activity
             case URL_LOADER:
                 return new CursorLoader(
                         this,
-                        TransactionsColumns.CONTENT_URI_TRXN_WITH_AMOUNT_AND_CARD,
+                        TransactionsColumns.CONTENT_URI_TRXN_WITH_AMOUNT_AND_CARD_AND_BUSINESS_ID,
                         null,
                         null,
                         null,
@@ -101,7 +101,7 @@ public class TransactionListActivity extends Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null){
+        if (data != null) {
             Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
             Log.d(TAG, "onActivityResult: " + payment);
         }
