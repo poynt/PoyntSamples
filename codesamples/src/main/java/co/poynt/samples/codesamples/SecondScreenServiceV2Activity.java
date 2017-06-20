@@ -14,6 +14,10 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -329,25 +333,27 @@ public class SecondScreenServiceV2Activity extends Activity {
             options.putString(Intents.EXTRA_TITLE, "Save trees!");
             options.putString(Intents.EXTRA_FOOTER_TEXT, "*Global warming is real - let's get serious about it!");
             List<ReceiptOption> receiptOptions = new ArrayList<>();
-            ReceiptOption option3 = new ReceiptOption();
-            option3.setType(ReceiptType.EMAIL);
-            option3.setId("EMAIL");
-            option3.setData("notthepraveenuknow@gmail.com");
-            receiptOptions.add(option3);
+
             ReceiptOption option4 = new ReceiptOption();
             option4.setType(ReceiptType.SMS);
-            option4.setId("TEXT");
+            option4.setId("Phone");
             option4.setData("40802183491");
-            receiptOptions.add(option4);
-            ReceiptOption option2 = new ReceiptOption();
-            option2.setType(ReceiptType.NONE);
-            option2.setId("NO-PAPER");
-            receiptOptions.add(option2);
+//            receiptOptions.add(option4);
             ReceiptOption option1 = new ReceiptOption();
             option1.setType(ReceiptType.PAPER);
             option1.setId("PAPER");
             option1.setLabel("Kill a tree");
             receiptOptions.add(option1);
+            ReceiptOption option3 = new ReceiptOption();
+            option3.setType(ReceiptType.EMAIL);
+            option3.setId("E-MAIL");
+            option3.setData("notthepraveenuknow@gmail.com");
+            receiptOptions.add(option3);
+            ReceiptOption option2 = new ReceiptOption();
+            option2.setType(ReceiptType.NONE);
+            option2.setId("NO-PAPER");
+            option2.setLabel("いいえ");
+            receiptOptions.add(option2);
             secondScreenService.captureReceiptChoice(transactionAmounts,
                     receiptOptions, options, new IPoyntReceiptChoiceListener.Stub() {
                         @Override
@@ -409,11 +415,13 @@ public class SecondScreenServiceV2Activity extends Activity {
     public void showConfirmation() {
         try {
             Bundle options = new Bundle();
-            //secondScreenService.displayMessage("Happy Friday!", options);
-//            options.putString(Intents.EXTRA_CONTENT_TYPE, Intents.EXTRA_CONTENT_TYPE_HTML);
-//            secondScreenService.displayMessage("<h2>Thank You</h2><p>Good-bye!</p>", options);
-            options.putString(Intents.EXTRA_CONTENT_TYPE, Intents.EXTRA_CONTENT_TYPE_URL);
-            secondScreenService.displayMessage("https://poynt.com", options);
+            Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.thank_you_screen_bg);
+            options.putParcelable(Intents.EXTRA_BACKGROUND_IMAGE, background);
+            options.putString("FONT_COLOR", "#eef442");
+            //secondScreenService.displayMessage("", options);
+            // secondScreenService.displayMessage("Happy Friday!", options);
+            options.putString(Intents.EXTRA_CONTENT_TYPE, Intents.EXTRA_CONTENT_TYPE_HTML);
+            secondScreenService.displayMessage("<h2>Thank You</h2><p>Good-bye!</p>", options);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -431,13 +439,48 @@ public class SecondScreenServiceV2Activity extends Activity {
         }
     }
 
+    private String getAgreementText(int resourceId) {
+        try {
+            InputStream inputStream = getResources().openRawResource(resourceId);
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                try {
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                        result.append('\n');
+                    }
+                    return result.toString();
+                } finally {
+                    reader.close();
+                }
+            } finally {
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            // process
+        }
+        return null;
+    }
+
     @OnClick(R.id.collectAgreement)
     public void showCollectAgreement() {
         try {
             Bundle options = new Bundle();
             options.putString(Intents.EXTRA_LEFT_BUTTON_TITLE, "Nope");
             options.putString(Intents.EXTRA_RIGHT_BUTTON_TITLE, "I do");
-            secondScreenService.captureAgreement("https://s3.amazonaws.com/poynt-store/terms/poynt_apps_agreement_US.html",
+            /** AS URL **/
+            options.putString(Intents.EXTRA_CONTENT_TYPE, Intents.EXTRA_CONTENT_TYPE_URL);
+            String agreement = "https://s3.amazonaws.com/poynt-store/terms/poynt_apps_agreement_US.html";
+
+            /** AS HTML **/
+//            options.putString(Intents.EXTRA_CONTENT_TYPE, Intents.EXTRA_CONTENT_TYPE_HTML);
+//            String agreement = getAgreementText(R.raw.customer_agreement_html);
+//            /** AS TEXT **/
+//            options.putString(Intents.EXTRA_CONTENT_TYPE, Intents.EXTRA_CONTENT_TYPE_TEXT);
+//            String agreement = getAgreementText(R.raw.customer_agreement);
+            secondScreenService.captureAgreement(agreement,
                     options, new IPoyntActionButtonListener.Stub() {
                         @Override
                         public void onLeftButtonClicked() throws RemoteException {
