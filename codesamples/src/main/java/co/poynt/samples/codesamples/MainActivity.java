@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
     private Button businessServiceActivityBtn;
     private Button billingServiceActivityBtn;
     private Button accessoriesActivityBtn;
+    private Button cameraActivityBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +114,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
         businessServiceActivityBtn = (Button) findViewById(R.id.businessServiceActivityBtn);
         businessServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +123,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
         billingServiceActivityBtn = (Button) findViewById(R.id.billingServiceActivityBtn);
         billingServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +142,14 @@ public class MainActivity extends Activity {
             }
         });
 
+        cameraActivityBtn = (Button) findViewById(R.id.cameraActivityBtn);
+        cameraActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
