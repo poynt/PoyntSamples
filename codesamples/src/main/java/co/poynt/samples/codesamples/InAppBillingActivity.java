@@ -115,9 +115,9 @@ public class InAppBillingActivity extends Activity {
         Bundle bundle = new Bundle();
         // add plan Id
         // following is $5 plan
-        bundle.putString("plan_id", "e1b9c0d1-f76a-4e9d-88d0-4a5593a09eab");
+        //bundle.putString("plan_id", "e1b9c0d1-f76a-4e9d-88d0-4a5593a09eab");
         // following is a $0 plan
-        //bundle.putString("plan_id", "35f1a863-5ca6-4588-b375-4d5557fc190e");
+        bundle.putString("plan_id", "35f1a863-5ca6-4588-b375-4d5557fc190e");
         return mBillingService.getBillingIntent(getPackageName(), bundle);
     }
 
@@ -196,6 +196,8 @@ public class InAppBillingActivity extends Activity {
             } else {
                 Log.e(TAG, "Not connected to InAppBillingService!");
             }
+        } catch (SecurityException e) {
+            logReceivedMessage(e.getMessage());
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -1,0 +1,253 @@
+Poynt Apps Agreement
+
+
+    NOTE THAT YOUR USE OF AND ACCESS TO THE STORE (DEFINED BELOW) ARE SUBJECT TO THE FOLLOWINGTERMS; IF YOU DO NOT AGREE TO ALL OF THE FOLLOWING, YOU MAY NOT USE OR ACCESS THE STORE ORDOWNLOAD CONTENT (DEFINED BELOW) IN ANY MANNER.
+
+    For purposes of these Terms, the terms “Merchant”, “User of the Device” or “You” (and allderivations thereof) means you individually, and if you are accepting these Terms on behalf of acompany or other legal entity, any such legal entity.
+
+    Welcome to the Store. The "Store" is an online marketplace that Poynt Co. (“Poynt”, “we” and“us”) provides to users of devices provided to Merchants, through which content providers(developers) in certain countries may offer, sell and license a variety of applications,software, digital materials and services provided through such applications ("Content").Merchants registered at Devices may access the Store and use, license, purchase and downloadsuch Content. Please read on to learn the rules and restrictions that govern your use of theStore. If you have any questions, comments, or concerns regarding these Terms or the Store,please contact us at info@poynt.com.
+
+    THE STORE COMPRISES AN ONLINE PLATFORM THROUGH WHICH CONTENT PROVIDERS MAY CREATE LISTINGS FORCONTENT AND MERCHANTS MAY LEARN ABOUT AND LICENSE, SUBSCRIBE AND/OR PURCHASE SUCH CONTENTDIRECTLY WITH CONTENT PROVIDERS. YOU UNDERSTAND AND AGREE THAT POYNT IS NOT A PARTY TO ANYAGREEMENTS ENTERED INTO BETWEEN CONTENT PROVIDERS AND MERCHANTS. POYNT HAS NO CONTROL OVER THECONDUCT OF CONTENT PROVIDERS, MERCHANTS AND OTHER USERS OF THE STORE, AND DISCLAIMS ALLLIABILITY IN THIS REGARD TO THE MAXIMUM EXTENT PERMITTED BY LAW.
+
+    These Terms of Use (the “Terms”) are a binding contract between you and Poynt. When registeringfor the Store or [when you license, subscribe, or download a Content], you will be required toaccept these Terms by clicking "I Agree" when prompted. You may not access the Store to downloadContent if you do not accept these Terms as may be amended from time to time.
+
+    These Terms govern solely your access to and use of the Store. You may also be subject to theterms of use and privacy policy that govern the use and license of the Device, which are part ofa separate agreement between You and the Terminal Provider. In case of any inconsistenciesbetween such terms and these Terms, these Terms shall prevail.
+
+    Your use of the Content and any transactions carried out within such Content may be subject tothe terms of use and privacy policy determined by the provider of the relevant Content (ordeveloper). The relevant Content provider (or developer) shall be solely responsible for itscontent, warranties, and claims that you may have related to the Content and any transactionscarried out therein. The relevant Content provider is also solely responsible for providingmaintenance and support for its Content. Poynt has no control over and does not guarantee theexistence, quality, safety or legality of Content advertised and offered at the Store; or thetruth or accuracy of content providers’ Content.
+
+    1. Will these Terms ever change?
+
+    We are constantly trying to improve the Store, so these Terms may need to change along with theStore. We reserve the right to change the Terms at any time, but if we do, we will bring it toyour attention by placing a notice on our website, on the Device, on the Store, and/or by someother means, and sending you an email to your registered email address explaining the changesmade and inviting you to review the updated Terms.
+
+    In case you don’t agree with the new Terms, you are free to reject them; unfortunately, thatmeans you will no longer be able to download any new Content from the Store. In addition, notethat upon your rejection to the new Terms, you will also may be unable to access and use theContent already downloaded through the Store. In the latter case, should you want to recover theinformation on such Content, you will have to verify any applicable terms of use entered into byand between you and Content provider to check if Content provider undertook to export anyinformation to you in the event you have any access to the Store or to the Content blocked orterminated due to your not acceptance to the new Terms.
+
+    Except for changes by us as described here, no other amendment or modification of these Termswill be effective unless in writing and signed or agreed by both you and us.
+
+    2. Your use of the Store
+
+    2.1. Member Account, Password and Security
+
+    You represent and warrant that you are of legal age to form a binding contract (pursuant to theapplicable local laws in which you are resident) and if you’re agreeing to these Terms on behalfof an organization or entity, you represent and warrant that you are authorized to agree tothese Terms on that organization or entity’s behalf and bind them to these Terms (in which case,the references to “you” and “your” in these Terms, except for in this sentence, refer to thatorganization or entity). You must not access the Store if you are a person who is either barredor otherwise legally prohibited from using the Store or any Content under the laws of thecountry in which you are resident or from which you access or use the Store.
+
+    In order to access the Store, you must log in to the member account you already created at theDevice and you must accept these Terms. We may require you to provide us with additionalinformation to use the Store. You must complete the registration process by providing us withcurrent, complete and accurate information as prompted by the applicable registration form. Youare responsible for keeping your account information and password confidential and areresponsible for all activity that occurs under your account. You agree to notify Poynt withoutdelay of any unauthorized use of your account or any other breach of security.
+
+    2.2. Updates
+
+    You may need to install updates to the Store we may introduce from time to time to use the Storeand to access or download Content. The Store may communicate with Poynt’s servers from time totime to check for available updates, such as bug fixes, patches, enhanced functions, missingplug-ins and new versions (collectively, "Updates"). Your use of the Store requires that youhave agreed to receive such automatically requested Updates. If you do not agree to suchautomatically requested and received Updates then please do not use the Store.
+
+
+    2.3. How does the Store work?
+
+    The Store is an online platform or marketplace where Content providers and Merchants arrange foroffering, purchasing and licensing of Content directly with each other. Such Content is includedin the Store by the Content providers and the license, purchase, subscription or acquisition ofthe Content is governed by separate terms and conditions as may be determined by each of therelevant Content provider in a separate agreement.
+
+    PLEASE NOTE THAT, AS STATED ABOVE, THE STORE IS INTENDED TO BE USED TO FACILITATE CONTENTPROVIDERS' AND MERCHANTS' CONNECTING AND TRANSACTING DIRECTLY WITH EACH OTHER. POYNT DOES NOTENDORSE ANY CONTENT. POYNT CANNOT CONTROL, AND DOES NOT CONTROL ANY CONTENT AND THE CONDITION,LEGALITY OR SUITABILITY OF ANY CONTENT. POYNT IS NOT RESPONSIBLE FOR AND DISCLAIMS ANY AND ALLLIABILITY RELATED TO ANY AND ALL CONTENT OFFERED THROUGH THE STORE. IF YOU HAVE ANY QUESTION,COMPLAINT OR ISSUE IN CONNECTION WITH THE CONTENT PURCHASED OR LICENSED THROUGH THE STORE,PLEASE CONTACT THE RELEVANT CONTENT PROVIDER DIRECTLY.
+
+    2.4. Orders, Fees and Taxes
+
+    Your access to the Store is free of charge. However, you may download and access Content free ofcharge or upon payment of a fee, as determined solely by the provider of the relevant Content.In case of the latter, Content providers may charge a recurring subscription fee, so pleasecarefully review the terms and the financial conditions applicable to each Content you intend todownload (especially in relation to the type of payment that will be performed).
+
+    When Content is offered for a fee, purchase of such Content will be subject to specific termsfrom the respective Content provider applicable for the relevant Content and to approval of therelevant payment, in addition to these Terms. At that time, Content provider, through Poynt orother collecting agent appointed by the Content provider, will capture payment on the paymentinstrument you provided and then authorize the download of the Content. We or the relevantcollecting agent may obtain an additional authorization from your payment instrument to confirmif necessary funds are available for payment of the relevant fees.
+
+    Poynt or the relevant collecting agent appointed by Poynt may attempt to contact you if all or aportion of your order is cancelled, or if additional information is needed to complete andaccept your order for Content. For any order portion Content provider, or Poynt or collectingagent on behalf of Content provider, cancels, you will receive a refund of the price and taxesyou paid for that order portion less the value of any promotional merchandise or discount youreceived.
+
+    Fees for Content may be subject to change at any time without notice or otherwise stipulated interms and conditions for use of the Content, at the Content provider's discretion.
+
+    Poynt may add or remove payment methods at its sole discretion and without notice to you.
+
+    If Poynt or the relevant collecting agent appointed by Poynt requires any information regardingyour credit card or other payment instrument in order to process payment of fees for Content onbehalf of Content provider, you represent and warrant to Poynt that such information is true andthat you are authorized to use such payment instrument. You hereby authorize Poynt or therelevant collecting agent appointed by Poynt to bill your payment instrument in accordance withthe Content you are acquiring. You shall be responsible for all taxes associated with theContent you acquire.
+
+    Each Content provider may appointed Poynt as the Content providers’ limited payment collectionagent solely for the purposes of accepting fees from Merchants for Content licensed and/orpurchased on the Store. Each Content provider agrees that payments made by a Merchant throughPoynt, or the relevant collecting agent shall be considered the same as a payment made directlyto the Content provider, and the Content provider will make the Content available to theMerchant in the agreed-upon manner.
+
+    2.5. General Store rules
+
+    You will only access and use the Store for your own internal use and only in a manner thatcomplies with all laws that apply to you. If your access to and use of the Store is prohibitedby applicable laws, then you are not authorized to access and use the Store. We cannot and willnot be responsible for your accessing and using the Store in a way that breaks the law.
+
+    You will not share your account or password with anyone, and you must protect the security ofyour account and your password. You are responsible for any activity associated with youraccount.
+
+    2.6. Product Availability and Price
+
+    Content prices and availability are at the Content provider's exclusive discretion and may besubject to change at any time and without notice or otherwise stipulated in terms and conditionsfor use of the Content. At the Content provider's instructions, Poynt may refuse or reject anyorder at any time, and Poynt or the collecting agent appointed by Content provider will refundyou any monies you have paid for the order, for reasons which include, but are not limited to,if you have not met the conditions specified at the time of the order, if your payment cannot beprocessed, if the ordered Content is not available, or for errors on the Store or made inconnection with your order or unavailability or issues in the performance of the Store. In theevent of errors on the Store or made in connection with your order, we reserve the right tocorrect the error and charge you the correct price. In that situation, we may contact you andoffer you the option of purchasing the Content at the correct price or canceling your order.Credits or refunds will be made to the same method of payment and account used to place theorder and if this is not feasible, Poynt or the collecting agent appointed by Poynt will contactyou to agree on another payment method. Content may be removed from the Store at the discretionof Content provider, if required by applicable law, governmental authority or a valid courtorder, or if Poynt reasonably believes that the Content violates any applicable terms related tothe Store or applicable laws.
+
+    3. Additional restrictions
+
+    You represent, warrant, and agree that you will not contribute any User Submission (definedbelow) or otherwise use the Store/Content or interact with the Store/Content in a manner that:
+
+    Infringes or violates the intellectual property rights or any other rights of anyone else(including Poynt or the provider of the relevant Content);Violates any law or regulation, including any applicable export control laws;Is harmful, fraudulent, deceptive, threatening, harassing, defamatory, obscene, or otherwiseobjectionable;Jeopardizes the security of your account or anyone else’s (such as allowing someone else to login to the Store as you);Attempts, in any manner, to obtain the password, account, or other security information from anyother user;Violates the security of any computer network, or cracks any passwords or security encryptioncodes;Runs Maillist, Listserv, any form of auto-responder or “spam” on the Store, or any processesthat run or are activated while you are not logged into the Store, or that otherwise interferewith the proper working of the Store (including by placing an unreasonable load on the Store'sinfrastructure);“Crawls,” “scrapes,” or “spiders” any page, data, or portion of or relating to the Store orContent (through use of manual or automated means);Copies or stores any significant portion of the Store or Content;Decompiles, reverse engineers, or otherwise attempts to obtain the source code or underlyingideas or information of or relating to the Store or any Content.A violation of any of the foregoing is grounds for termination of your right to use or accessthe Store, without prejudice to other consequences as set forth by applicable laws.
+
+    4. Intellectual Property
+
+    The Store and Content are protected by copyright and/or other intellectual property laws. Youpromise to abide by all copyright notices, trademark rules, information, and restrictionscontained in any Content you access through the Store, and you will not use, copy, reproduce,modify, translate, publish, broadcast, transmit, distribute, perform, upload, display, license,sell or otherwise exploit for any purpose any Content not owned by you, (i) without the priorconsent of the provider of the relevant Content or (ii) in a way that violates someone else’s(including Poynt's) rights.
+
+    You understand that Poynt owns the Store. You will not modify, publish, transmit, participate inthe transfer or sale of, reproduce (except as expressly provided in this Section), createderivative works based on, or otherwise exploit the Store or any Content made available therein.
+
+    5. User Submissions
+
+    Anything you post, upload, share, store, or otherwise provide through and at the Store, ininstances in the Store where there is room for user’s comments, opinions or upload of content,is your “User Submission”. Some User Submissions may be viewable by other users. In order todisplay your User Submissions on the Store, and to allow other users to enjoy them (whereapplicable), you grant us certain rights in those User Submissions. Please note that all of thefollowing licenses are subject to our privacy policy below to the extent they relate to UserSubmissions that are also your personally-identifiable information.
+
+    For all User Submissions, you hereby grant Poynt a license to translate, modify (for technicalpurposes) and reproduce and otherwise act with respect to such User Submissions, in each case toenable us to operate the Store, as described in more detail below. This is a license only – yourownership in User Submissions is not affected.
+
+    You agree that the licenses you grant are royalty-free, perpetual, sublicenseable, irrevocable,and worldwide, without any limitation on media that is used for such purposes or on the numberof copies that can be made.
+
+    Finally, you understand and agree that Poynt, in performing the required technical steps toprovide the Store to Merchants (including you), may need to make changes to your UserSubmissions to conform and adapt those User Submissions to the technical requirements ofconnection networks, devices, services, or media, and the foregoing licenses include the rightsto do so.
+
+    You are responsible for all User Submissions you contribute, in any manner, to the Store, andyou represent and warrant you have all rights necessary to do so, in the manner in which youcontribute it. You acknowledge and agree that Poynt may remove any User Submissions youcontribute to the extent required by law or by any governmental authority or court order.
+
+    6. Third-Party Content
+
+    The Store may contain links or connections to websites of Content providers, Poynt, or partnersor service providers of Poynt, or services that are not owned or controlled by Poynt.
+
+    When you access third party Content, you accept that there are risks in doing so, and that Poyntis not responsible for such risks. We encourage you to read the terms and conditions and privacypolicy applicable to each third party Content that you utilize.
+
+    Poynt has no control over, and undertakes no responsibility for, the content, accuracy, privacypolicies, or practices of or opinions expressed in any third party Content or by any third partythat you may interact with through the Store. In addition, Poynt will not and cannot monitor,verify, censor or edit the content of any third party Content. By using the Store, you releaseand hold us harmless from any and all liability arising from your use of any third partyContent.
+
+    Your interactions with organizations and/or individuals found on or through the Store, includingpayment and delivery of Content, goods or services, and any other terms, conditions, warrantiesor representations associated with such dealings, are solely between you and such organizationsand/or individuals. You should make whatever investigation you feel necessary or appropriatebefore proceeding with any online or offline transaction with any of these third parties. Youagree that Poynt shall not be responsible or liable for any loss or damage of any sort incurredas the result of any such dealings.
+
+    7. Removal or Unavailability of Content
+
+    Subject to the terms entered into by and between you and the relevant Content providers, Contentthat you license or purchase will be available to you through the Store for the periodestablished in such terms and conditions (except if such Content is removed from the store inaccordance with the rules set forth in item 2.6 above).
+
+    7.1. Content Provider Takedowns
+
+    Content provider may terminate the agreement with you at any time subject to the terms of useentered into by and between you and Content provider. Poynt shall not be liable for anytermination thereof, including any obligations related to refunds of the amounts paid inconnection with the licensing and/or acquisition of such Content.
+
+    Content provider may provide Poynt and you with a written notice requiring the removal of acertain Content from the Store (including, without limitation, the part of the Store wherepreviously purchased or downloaded Content is stored on behalf of users) due to (i) anallegation of infringement, or effective infringement, of any copyright, trademark, tradesecret, trade dress, patent or other intellectual property right of any person, (ii) anallegation of defamation or effective defamation, (iii) an allegation of violation, or effectiveviolation, of any third party's right of publicity or privacy, or (iv) an allegation ordetermination that such Content does not comply with applicable law. In these cases, pleasecheck the terms of use entered into by and between you and Content provider to confirm if arefund will be granted to you by such Content provider.
+
+    7.2. Poynt Takedowns
+
+    Poynt, as the operator of the Store, is not liable for and does not have any obligation tomonitor Content that Content provider distributes on the Store. Notwithstanding the above, ifPoynt is notified by Content provider or otherwise becomes aware and determines in its solediscretion or receives notice (including through a court order) that a specific Content or anyportion thereof (a) violate the intellectual property rights or any other rights of any thirdparty; (b) violate any applicable law or are subject to an injunction; (c) are pornographic,obscene, abusive, objectionable or otherwise violate Poynt's hosting policies or other terms ofservice as may be updated by Poynt from time to time in its sole discretion; (d) are beingdistributed by Content provider improperly, including if they present any defect; (e) may createliability for Poynt; (f) are deemed by Poynt to have a virus or are deemed to be malware,spyware or have an adverse impact on Poynt's property including its network; (g) violate thethese Terms or any other Poynt's guidelines and rules; or (h) the display of the Content isimpacting the integrity of Poynt servers (i.e., Merchants are unable to access such Content orotherwise experience difficulty), Poynt may remove the Content from the Store or may reclassifythe Content at its sole discretion. Poynt reserves the right to suspend and/or bar any Contentprovider from the Store at its sole discretion. If the Content contains elements that couldcause serious harm to the Device or data, Poynt may at its discretion disable the Content orremove it from Devices on which it has been installed. In these cases, please check the terms ofuse entered into by and between you and Content provider to confirm if a refund and/or licensewill be granted to you by such Content provider.
+
+    8. What about my privacy?
+
+    These Terms cover our treatment of personally identifiable information ("Personal Information")and other non-personal information as described under this section 8 (together, “Information”)that we gather when you use the Store and purchase or license any Content. When doing so, youconsent to the transfer of Information to jurisdictions that may not provide an equivalent levelof protection as the laws in your home jurisdiction.
+
+    We gather various types of information from our users, as explained in more detail below, and weuse this Information internally in connection with availability of the Store to the Merchantsand our related services, including to allow you to set up a user account and profile for theStore, to contact you, to process the purchase of Content (“Services”), to personalize, provide,and improve our Services, to analyze how you use the Services and to provide you with otherproducts and services associated with the Services. In certain cases, we may also share someInformation with third parties, but only as described below.
+
+    We do not knowingly collect or solicit Personal Information from anyone under the age of 18. Ifyou are under 18, please do not attempt to register to use the Store or send any PersonalInformation about yourself to us. If we learn that we have collected Personal Information from achild under age 18, we will delete that information as quickly as possible. If you believe thata child under 18 may have provided us Personal Information, please contact us atprivacy@poynt.com.
+
+    8.1. What Information does Poynt Collect?
+
+    8.1.1. Information you provide to us
+
+    We receive, store, treat and use any Information you knowingly provide to us. For example,through [the login process] and/or through your account settings, we may collect:
+
+    PERSONAL INFORMATION: such as your name, address, mobile phone number or fixed phone number,email address, credit card number or information on any alternative method of payment you use atthe Store and age in case of an account in the name of an individual.
+
+    BUSINESS INFORMATION: such as your company’s name, corporate taxpayer registration number,address, mobile phone number or fixed phone number, email address and the company's credit cardnumber or information on any alternative method of payment you use at the Store.
+
+    LOCATION INFORMATION. We may receive location information from your device when you use theServices. This information may include GPS signals or information about Wi-Fi access locations.Poynt will also receive IP addresses, which we may use to derive geographic location.We may also collect, store, treat and use any non-identifiable information on the transactionsprocessed through the Device and on the Store (“Transactions”), such as quantity and value ofthe Transactions, products and services and Content subject to the Transactions, method ofpayment and others.
+
+    Under no circumstances will Poynt access or control your use of the Content once it has beendownloaded from the Store. Your use of such Content and the data that may be inputted oruploaded in such Content is not visible to Poynt and will be governed by the terms andconditions for use of the Content agreed between you and the relevant Content provider.
+
+    In no case will we collect, store, treat or use your customers’ identifiable information andcustomers’ credit card number or other method of payment number (“Customer Information”), exceptfor the exclusive purpose of processing payment in cases where your Customer is granted accessto the Store. We will not use Customer Information to provide new products or services neitherwill we share such confidential information that belongs to your customers with third parties.
+
+    8.1.2. Communication
+
+    You agree that we may communicate with you if you have provided us the means to do so. Forexample, if you have given us your email address, we may send you promotional email offers onbehalf of other businesses if you consented to receive promotional e-mails, or email you aboutyour use of the Services. Also, we may receive a confirmation when you open an email from us.This confirmation helps us make our communications with you more interesting and improve ourservices. If, after you have consented to receive promotional e-mails from us you no longer notwant to receive marketing communications from us, please indicate your preference by clickingthe appropriate unsubscribe link contained within the email.
+
+    8.1.3. Information Collected Automatically
+
+    Whenever you interact with our Services, we automatically receive and record information on ourserver logs from the Device (“Log Data”), which may include your IP address and deviceidentification, Content you visited, the time spent on those Contents, access times and dates,and information you searched. We may collect information about your activity while you are atthe Store
+
+    We may use this data to customize content for you that we think you might like, based on yourusage patterns. We may also use it to improve the Services or the Store, to provide you with newfeatures, products and services associated to the Services or the Store.
+
+    Our Store does not support Do Not Track requests at this time, which means that we collectinformation about your online activity at the Store while you are using the Store.
+
+    9. How Collected Information is Used?
+
+    WE USE THE INFORMATION WE COLLECT FOR THE FOLLOWING GENERAL PURPOSES: TO PROCESS THE PURCHASE OFCONTENT AND RELATED PAYMENTS, IMPROVE OUR SERVICES, CUSTOMIZE THE CONTENT YOU SEE, CONDUCTRESEARCH, PROVIDE ANONYMOUS REPORTING FOR INTERNAL AND EXTERNAL USE REGARDING USE OF THESERVICES AND TRANSACTIONS, CREATE, DEVELOP AND IMPROVE PRODUCTS, SERVICES, APPLICATIONS ANDADDITIONAL FUNCTIONALITIES TO BE OFFERED TO USERS SUCH AS POINT-OF-SALE OPERATIONS, INVENTORYMANAGEMENT, STORE ANALYTICS AND MARKET ANALYTICS AMONG OTHERS.
+
+    We process Personal Information on our servers in many countries around the world. We mayprocess your personal information on a server located outside the country where you live.
+
+    10. Will Poynt share any of the Personal Information it receives?
+
+    We may share your Information (except to credit card number or any method of paymentidentifiable information), including Personal Information (if applicable) with third parties asdescribed in this section:
+
+    Poynt’s Affiliates
+
+    We may share your Information with other companies of the group to which Poynt belongs for thesame purposes as described in Section 9.
+
+    Advertisers
+
+    We may allow advertisers and/or merchant partners (“Advertisers”) to choose the demographicinformation of users who will see their advertisements and/or promotional offers and you agreethat we may provide any of the information we have collected from you in non-personallyidentifiable form to an Advertiser, in order for that Advertiser to select the appropriateaudience for those advertisements and/or offers. Or, we might allow Advertisers to display theirads to users with similar usage patterns to yours, but we will not disclose usage information toAdvertisers except in aggregate form, and not in a manner that would identify you personally.Note that if an Advertiser asks us to show an ad to a certain audience or audience segment andyou respond to that ad, the Advertiser may conclude that you fit the description of the audiencethey were trying to reach.
+
+    Agents
+
+    We employ other companies and people ("Agents") to perform tasks on our behalf and need to shareyour information with them to provide the Services to you. These Agents may be located outsideyour country of residence. Unless we tell you differently, our Agents do not have any right touse the Personal Information we share with them beyond what is necessary to assist us. We securecontractual obligations with these Agents that afford at least the same level of protection toyour Information as afforded hereunder.
+
+    Content Providers
+
+    We may share your Information with third party Content providers in order for them to grant youlicenses for Content you acquire through the Store; to provide you with support and maintenanceservices for Content, create, develop and improve products, services, applications andadditional functionalities to be offered to users on the Store, such as point-of-saleoperations, inventory management, store analytics and market analytics, among others.
+
+    Business Transfers
+
+    We may choose to buy or sell assets, and may share and/or transfer customer information inconnection with the assessment and closing of such transactions. Also, if we (or our assets) areacquired, or if we go out of business, file for bankruptcy, or go through some other change ofcontrol, Information, including Personal Information (if applicable), could be one of the assetstransferred to or acquired by a third party. For the avoidance of doubt, transfer ofInformation, including Personal Information, if applicable, will only occur as part of a changeof control transaction, and under no circumstances will Information, including PersonalInformation (if applicable) be the sole subject matter of any transactions we undertake.
+
+    Protection of Poynt and others
+
+    We reserve the right to access, read, preserve, and disclose any Information that we believe isnecessary to comply with law or court order to the extent required by law; enforce or apply ourTerms and other agreements; or protect the rights, property, or safety of Poynt, our employees,our users, or others.
+
+    11. Is Personal Information about me secure?
+
+    Your Account is protected by a password for your privacy and security. You must preventunauthorized access to your account and Information by selecting and protecting your passwordappropriately, and limiting access to your computer or device and browser by signing off afteryou have finished accessing your account.
+
+    We endeavor to protect the privacy of your Account and other Information we hold in our records,but unfortunately, due to the state of the art, we cannot guarantee complete security.Unauthorized entry or use, hardware or software failure, and other factors, may compromise thesecurity of user information at any time.
+
+    12. What Personal Information can I access?
+
+    Through your account settings, you may access, and, in some cases, edit or delete, theInformation you provided to us.
+
+    The Information you can view, update, and delete may change as the Services change or asrequired by applicable laws. If you have any questions about viewing or updating Information wehave on file about you, please contact us at privacy@poynt.com.
+
+    13. What choices do I have?
+
+    You can always opt not to disclose Information to us, but keep in mind some Information may beneeded to register with us or to take advantage of some of our features.
+
+    You may be able to add, update, or delete Information as explained above. When you updateInformation, however, we may maintain a copy of the unrevised Information in our records to theextent permitted or required by applicable laws. Some Information may remain in our recordsafter your deletion of such Information from your Account, to the extent permitted or requiredby applicable laws. We may use any aggregated data derived from or incorporating yourInformation after you update or delete it, but not in a manner that would identify youpersonally.
+
+    14. What if I have questions about the privacy protection?
+
+    If you have any questions or concerns regarding our privacy policies, please send us a detailedmessage to privacy@poynt.com, and we will try to resolve your concerns.
+
+    15. What if I want to stop using the Store?
+
+    You are free to stop using the Store at any time, by contacting us at info@poynt.com.
+
+    Poynt is also free to terminate (or suspend access to) your use of the Store or your account, atany time, for any reason in our discretion, including your breach of these Terms. Poynt has thesole right to decide whether you are in violation of any of the restrictions set forth in theseTerms or applicable law. You will be notified by email or other similar means if your access toor use of the Store is suspended or terminated for any reason.
+
+    Account termination may result in destruction of any User Subscription associated with youraccount and since then the Content acquired or downloaded through the Store may not befunctional or accessible so keep that in mind before you decide to terminate your account.
+
+    Please check the terms of use entered into by and between you and Content provider to confirm ifa temporary license will be granted to you by such Content provider.
+
+    Provisions that, by their nature, should survive termination of these Terms shall survivetermination. By way of example, all of the following will survive termination: any obligationyou have to pay us or indemnify us, any limitations on our liability, any terms regardingownership or intellectual property rights, and terms regarding disputes between us.
+
+    16. What else do I need to know?
+
+    16.1. Warranty Disclaimer
+
+    Neither Poynt nor its licensors or suppliers make any representations or warranties concerningany Content contained in or accessed through the Store, and we will not be responsible or liablefor the accuracy, copyright compliance, legality, or decency of material contained in oraccessed through the Store. We (and our licensors and suppliers) make no representations orwarranties regarding suggestions or recommendations of services or products offered or acquiredthrough the Store. You understand that your use of the Store and of any Content acquired ordownloaded through the Store is at your own account and risk.
+
+    YOU ACKNOWLEDGE AND AGREE THAT THE STORE WAS DEVELOPED FOR GENERIC USE AND WAS NOT CUSTOMIZED TOYOUR NEEDS. TO THIS EFFECT, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAWS, THE STORE ISPROVIDED BY POYNT (AND ITS LICENSORS AND SUPPLIERS) ON AN “AS-IS” BASIS, WITHOUT WARRANTIES ORANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, IMPLIED WARRANTIES OFMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR THAT USE OF THE STOREWILL BE UNINTERRUPTED OR ERROR-FREE. SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON WARRANTIES,SO THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
+
+    16.2. Limitation of Liability
+
+    TO THE FULLEST EXTENT ALLOWED BY APPLICABLE LAW, UNDER NO CIRCUMSTANCES AND UNDER NO LEGALTHEORY (INCLUDING, WITHOUT LIMITATION, TORT, CONTRACT, STRICT LIABILITY, OR OTHERWISE) SHALLPOYNT (OR ITS LICENSORS OR SUPPLIERS) BE LIABLE TO YOU OR TO ANY OTHER PERSON FOR (A) ANYINDIRECT, SPECIAL, INCIDENTAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES OF ANY KIND, INCLUDING DAMAGESFOR LOSS OF GOODWILL, LOSS OF DATA, WORK STOPPAGE, ACCURACY OF RESULTS, OR COMPUTER FAILURE ORMALFUNCTION, OR (B) ANY DIRECT DAMAGE IN THE AGGREGATE IN EXCESS OF THE GREATER OF (I) $100 OR(II) THE AMOUNTS PAID BY YOU THROUGH THE STORE IN CONNECTION WITH THE RELEVANT CONTENT IN THETWELVE (12) MONTH PERIOD PRECEDING THIS APPLICABLE CLAIM, WHETHER OR NOT POYNT HAS BEEN ADVISEDOF OR SHOULD HAVE BEEN AWARE OF THE POSSIBILITY OF ANY SUCH LOSSES ARISING. YOU ACKNOWLEDGE THATTHE LIMITATIONS SET FORTH IN SECTIONS 16.1 AND 16.2 (I) REFLECT A FAIR ALLOCATION OF RISKBETWEEN THE PARTIES; AND (II) AN ESSENTIAL ELEMENT OF THIS AGREEMENT, POYNT HAS ENTERED INTOTHIS AGREEMENT IN RELIANCE ON THE DISCLAIMERS OF WARRANTY AND THE LIMITATIONS OF LIABILITY SETFORTH IN THIS AGREEMENT, AND THAT IN THE ABSENCE THEREOF, THE TERMS AND CONDITIONS SET FORTHHEREIN WOULD BE SUBSTANTIALLY DIFFERENT. SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OFCERTAIN DAMAGES, SO THE ABOVE LIMITATION AND EXCLUSIONS MAY NOT APPLY TO YOU.
+
+    16.3. Indemnity
+
+    To the extent permitted by local laws and regulations, You agree to indemnify and hold Poynt,its affiliates, officers, agents, employees, and business partners harmless from and against anyand all claims, liabilities, damages (actual and consequential), losses and expenses (includingattorneys’ fees) arising from or in any way related to any third party claims relating to (a)your use of the Store (including any actions taken by a third party using your account), and (b)your violation of these Terms.
+
+    17. Assignment
+
+    You may not assign, delegate or transfer these Terms or your rights or obligations hereunder, oryour Store account, in any way (by operation of law or otherwise) without Poynt’s prior writtenconsent. We may transfer, assign, or delegate these Terms and our rights and obligations withoutconsent.
+
+    18. Choice of Law; Jurisdiction
+
+    Except as if otherwise provided in the Country Specific Addendum below, these Terms are governedby and will be construed under the laws of [the State of California], without regard itsconflict of laws provisions. You and Poynt further agree to submit to the exclusive jurisdictionof the federal or state courts located within [San Francisco County, California] to resolve anylegal matter arising from or relating to these Terms, except that You agree that Poynt shall beallowed to apply for injunctive relief in any jurisdiction.
+
+    19. Miscellaneous
+
+    You will be responsible for paying, withholding, filing, and reporting all taxes, duties, andother governmental assessments associated with your activity in connection with the Store andacquisition of Content, provided that Poynt may, in its sole discretion, do any of the foregoingon your behalf or for itself as it sees fit. The failure of either you or us to exercise, in anyway, any right herein shall not be deemed a waiver of any further rights hereunder. If anyprovision of these Terms is found to be unenforceable or invalid, that provision will be limitedor eliminated, to the minimum extent necessary, so that these Terms shall otherwise remain infull force and effect and enforceable. You and Poynt agree that these Terms are the complete andexclusive statement of the mutual understanding between you and Poynt, and that it supersedesand cancels all previous written and oral agreements, communications and other understandingsrelating to the subject matter of these Terms. You hereby acknowledge and agree that you are notan employee, agent, partner, or joint venture of Poynt, and you do not have any authority of anykind to bind Poynt in any respect whatsoever. You and Poynt agree there are no third partybeneficiaries intended under these Terms.
+
+    You hereby grant Poynt the right to take steps Poynt believes are reasonably necessary orappropriate to enforce and/or verify compliance with any part of these Terms. You agree thatPoynt has the right, without liability to you, to disclose any data and/or information to lawenforcement authorities, government officials, and/or a third party, as Poynt believes isreasonably necessary or appropriate to enforce, is mandatory by law and/or verify compliancewith any part of these Terms (including but not limited to Poynt's right to cooperate with anylegal process relating to your use of the Store and/or a third-party claim that your use of theStore is unlawful and/or infringes such third party's rights).
+
+    Poynt is responsible for the security of cardholder data we possess or otherwise store, process,or transmit on your behalf, as well as to the extent we could impact the security of yourcardholder data environment.
