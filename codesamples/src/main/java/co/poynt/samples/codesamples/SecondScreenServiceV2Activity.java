@@ -47,7 +47,7 @@ public class SecondScreenServiceV2Activity extends Activity {
 
     private static final String TAG = SecondScreenServiceV2Activity.class.getSimpleName();
     @Bind(R.id.captureTip)
-    Button captureTipphoneNumberBtn;
+    Button captureTip;
     @Bind(R.id.showCartConfirmation)
     Button showCartConfirmation;
     @Bind(R.id.captureReceiptChoice)
@@ -414,6 +414,9 @@ public class SecondScreenServiceV2Activity extends Activity {
     @OnClick(R.id.displayMessage)
     public void showConfirmation() {
         try {
+            // Supported options
+            // Intents.EXTRA_BACKGROUND_IMAGE  (value should be a Bitmap object)
+            // Intents.EXTRA_CONTENT_TYPE
             Bundle options = new Bundle();
             Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.thank_you_screen_bg);
             options.putParcelable(Intents.EXTRA_BACKGROUND_IMAGE, background);
