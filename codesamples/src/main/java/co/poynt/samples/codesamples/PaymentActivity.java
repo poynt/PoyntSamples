@@ -311,6 +311,10 @@ public class PaymentActivity extends Activity {
             // payment.setDisableTip(true);
         }
 
+        payment.setSkipSignatureScreen(true);
+        payment.setSkipReceiptScreen(true);
+        payment.setSkipPaymentConfirmationScreen(true);
+
         // start Payment activity for result
         try {
             Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);

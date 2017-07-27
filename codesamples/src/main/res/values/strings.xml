@@ -11,7 +11,7 @@
     <string name="title_activity_token_service">TokenServiceActivity</string>
     <string name="title_activity_payment">PaymentActivity</string>
     <string name="title_activity_scanner">ScannerActivity</string>
-
+    <string name="title_activity_camera">CameraActivity</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_my_capture">MyCaptureActivity</string>

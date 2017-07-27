@@ -56,33 +56,36 @@ public class TransactionCursorAdapter extends CursorAdapter {
 
 
         calendar.setTime(tc.getCreatedat());
-        createdAt.setText( dateFormat.format(tc.getCreatedat()) );
+        createdAt.setText(dateFormat.format(tc.getCreatedat()));
 
         fundingSource.setText(getFundingSourceString(tc));
 
         // TransactionCursor does not have amount, so using Cursor
-        long doublePayment = data.getLong(transactionAmountIndex);;
+        long doublePayment = data.getLong(transactionAmountIndex);
+        ;
         BigDecimal paymentAmount = new BigDecimal(doublePayment).movePointLeft(2);
 
         amount.setText("$ " + paymentAmount.toPlainString());
         transactionStatus.setText(
-                getTransactionStatus( TransactionStatus.findByStatus(tc.getStatus()) )
+                getTransactionStatus(TransactionStatus.findByStatus(tc.getStatus()))
         );
 
     }
 
-    private String getFundingSourceString(TransactionsCursor tc){
+    private String getFundingSourceString(TransactionsCursor tc) {
         FundingSourceType type = FundingSourceType.findByType(tc.getFundingsourcetype());
-        if (type.equals(FundingSourceType.CASH)){
+        if (type.equals(FundingSourceType.CASH)) {
             return "CASH";
-        }else if (type.equals(FundingSourceType.CREDIT_DEBIT)) {
+        } else if (type.equals(FundingSourceType.CREDIT_DEBIT)) {
             return "CARD";
-        }else if (type.equals(FundingSourceType.CUSTOM_FUNDING_SOURCE)) {
+        } else if (type.equals(FundingSourceType.CUSTOM_FUNDING_SOURCE)) {
             return "CUSTOM";
-        }else return "OTHER";
+        } else {
+            return "OTHER";
+        }
     }
 
-    private String getTransactionStatus (TransactionStatus status) {
+    private String getTransactionStatus(TransactionStatus status) {
         Log.d("CursorAdapter", "getTransactionStatus: " + status);
         String txnStatus = "unknown";
         switch (status) {
@@ -105,7 +108,6 @@ public class TransactionCursorAdapter extends CursorAdapter {
             default:
                 // do nothing
                 break;
-
         }
         return txnStatus;
     }
