@@ -243,6 +243,7 @@ public class PaymentActivity extends Activity {
             }.getType();
             String transactionJson = gson.toJson(_transaction, transactionType);
             Log.d(TAG, "onResponse: " + transactionJson);
+            Log.d(TAG, "onResponse: " + _transaction);
 
         }
 
@@ -270,6 +271,13 @@ public class PaymentActivity extends Activity {
     private ServiceConnection mTransactionServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTransactionService = IPoyntTransactionService.Stub.asInterface(iBinder);
+
+
+            try {
+                mTransactionService.getTransaction("fcf98959-c188-42d1-b085-786d21e552ac", UUID.randomUUID().toString(), mTransactionServiceListener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         public void onServiceDisconnected(ComponentName componentName) {
