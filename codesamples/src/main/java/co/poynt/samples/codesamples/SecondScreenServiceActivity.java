@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,17 +23,22 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Discount;
+import co.poynt.api.model.ExchangeRate;
 import co.poynt.api.model.OrderItem;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.SecondScreenLabels;
 import co.poynt.os.services.v1.IPoyntSecondScreenCheckInListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenCodeScanListener;
+import co.poynt.os.services.v1.IPoyntSecondScreenDynamicCurrConversionListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenEmailEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenPhoneEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
 import co.poynt.os.services.v1.IPoyntSecondScreenTextEntryListener;
 
 public class SecondScreenServiceActivity extends Activity {
+
+    private static final String TAG = SecondScreenServiceActivity.class.getSimpleName();
+    
 
     @Bind(R.id.phoneNumberBtn)
     Button phoneNumberBtn;
@@ -47,6 +53,8 @@ public class SecondScreenServiceActivity extends Activity {
     @Bind(R.id.textEntryBtn)
     Button textEntryBtn;
     //@Bind(R.id.printImageBtn) Button printImageBtn;
+    @Bind(R.id.dccScreenBtn) Button dccScreenBtn;
+
     private IPoyntSecondScreenService secondScreenService;
     private ServiceConnection secondScreenServiceConnection = new ServiceConnection() {
         @Override
@@ -307,6 +315,32 @@ public class SecondScreenServiceActivity extends Activity {
         try {
 //            Bitmap checkin = BitmapFactory.decodeResource(getResources(),R.drawable.button_checkin);
             secondScreenService.displayWelcome("Check-in", null, checkinScreenListener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.dccScreenBtn)
+    public void showDccScreen(){
+        ExchangeRate ex = new ExchangeRate();
+        ex.setProvider("Citibank UAE"); // printed on the receipt
+        ex.setTxnAmount(10000L);
+        ex.setTxnCurrency("USD");
+
+        ex.setRate(367326L);
+        ex.setRatePrecision(5L); // basically the rate above is 3.67326
+
+        ex.setCardCurrency("AED");
+        ex.setMarkupPercentage("250"); // shows the markup in the UI
+        ex.setCardAmount(37651L);
+        try {
+            secondScreenService.captureDccChoice(ex, null, new IPoyntSecondScreenDynamicCurrConversionListener.Stub() {
+                @Override
+                public void onCurrencyConversionSelected(boolean b) throws RemoteException {
+                    Log.d(TAG, "onCurrencyConversionSelected: " + b);
+                    showWelcomeScreen();
+                }
+            });
         } catch (RemoteException e) {
             e.printStackTrace();
         }
