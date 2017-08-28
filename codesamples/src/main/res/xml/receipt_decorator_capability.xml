@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This xml defines what capabilities are supported by the service that uses this xml.
+  Capabilities will be used by PoyntOS to produce custom UI on behalf of the service to
+  get inputs from merchant/customer. -->
+<capability xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- REQUIRED: package name of your android app-->
+    <appid>co.poynt.samples.codesamples</appid>
+
+    <!-- REQUIRED: type of capbility, should be one of
+            CUSTOM_TRANSACTION, DISCOUNT, LOYALTY, RECEIPT_DECORATOR
+            please see CapabilityType defined in PoyntSDK for list of types supported.
+    -->
+    <type>RECEIPT_DECORATOR</type>
+
+    <!-- descriptive name of this capability -->
+    <provider>My Custom Receipt Decorator</provider>>
+
+    <!-- entry method could be one of the following
+        MANUAL -> will result in showing a icon to the merchant to manually launch the capability.
+        CARDREAD -> card data will be directly passed to this capability provider.
+        QRCODE -> qr code entry.
+        NFC -> NFC will be directly passed  to this capability provider.
+        OTHER -> other entry methods.
+        each entry method can be additionally filtered with eval tag.
+    -->
+    <entry_method type="CUSTOM"></entry_method>
+
+</capability>
