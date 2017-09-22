@@ -24,8 +24,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    compile 'co.poynt.api:android-api-model:1.2.98@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:1.2.26-SNAPSHOT@aar'
+    compile 'co.poynt.api:android-api-model:1.2.103@jar'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.2.27@aar'
     compile 'com.google.code.gson:gson:2.8.0'
 
     // JWT dependencies - if you want to parse JWTs
