@@ -1,5 +1,6 @@
 package co.poynt.samples.codesamples;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -19,6 +20,7 @@ import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
 
 
+@SuppressLint("NewApi")
 public class TransactionListActivity extends Activity
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "TxnListActivity";

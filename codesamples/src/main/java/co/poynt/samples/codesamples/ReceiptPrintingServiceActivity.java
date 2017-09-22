@@ -142,6 +142,7 @@ public class ReceiptPrintingServiceActivity extends Activity {
         // BODY
         List<PrintedReceiptLine> body = new ArrayList<PrintedReceiptLine>();
 
+
         body.add(newLine(" Check-in REWARD  "));
         body.add(newLine(""));
         body.add(newLine("FREE Reg. 1/2 Order"));
@@ -178,6 +179,10 @@ public class ReceiptPrintingServiceActivity extends Activity {
         body.add(newLine("Coupon#: 1234-5678"));
         body.add(newLine("  Powered by Poynt"));
         printedReceipt.setBody(body);
+
+        // to print image
+        printedReceipt.setHeaderImage(BitmapFactory.decodeResource(getResources(), R.drawable.poynt_logo));
+        printedReceipt.setFooterImage(BitmapFactory.decodeResource(getResources(), R.drawable.poynt_logo));
 
         return printedReceipt;
     }
