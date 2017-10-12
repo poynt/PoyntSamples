@@ -41,7 +41,8 @@ public class ScannerActivity extends Activity {
             public void onClick(View v) {
                 // launch bar code scanner
                 Intent intent = new Intent("poynt.intent.action.SCANNER");
-                intent.putExtra("MODE", "MULTI");
+                // "MULTI" or "SINGLE"
+                intent.putExtra("MODE", "SINGLE");
                 // if multi mode - also register the receiver
                 IntentFilter scannerIntentFilter = new IntentFilter();
                 scannerIntentFilter.addAction("poynt.intent.action.SCANNER_RESULT");
