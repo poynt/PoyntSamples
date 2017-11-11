@@ -14,19 +14,38 @@
         android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/getPlansBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Plans" />
 
         <Button
             android:id="@+id/checkSubscriptionBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check Subscription" />
+            android:text="Get \nSubscriptions" />
 
         <Button
             android:id="@+id/launchBillingFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Launch Billing" />
+            android:text="Launch \nBilling" />
+
+        <Button
+            android:id="@+id/replaceSubscription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Replace \nSubscription" />
+
+        <Button
+            android:id="@+id/restoreSubscription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restore \nSubscription" />
 
     </LinearLayout>
 

@@ -1,26 +1,23 @@
 package co.poynt.samples.codesamples;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -31,8 +28,11 @@ import java.util.Map;
 
 import co.poynt.os.Constants;
 
+import static co.poynt.os.Constants.Accounts.POYNT_ACCOUNT_TYPE;
+
 public class LoginActivity extends Activity {
 
+    private static final int MY_PERMISSIONS_REQUEST_GET_ACCOUNTS = 84657;
     private AccountManager accountManager;
     private static final String TAG = LoginActivity.class.getName();
     private TextView userView;
@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         ActionBar actionBar = getActionBar();
-        if (actionBar !=null) {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -70,7 +70,7 @@ public class LoginActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 
@@ -91,11 +91,11 @@ public class LoginActivity extends Activity {
                 String user = (String) bundle.get(AccountManager.KEY_ACCOUNT_NAME);
                 String authToken = (String) bundle.get(AccountManager.KEY_AUTHTOKEN);
                 if (authToken != null) {
-                   // Log.d(TAG, "authtoken: " + authToken);
+                    // Log.d(TAG, "authtoken: " + authToken);
                     displayAccessTokenInfo(authToken);
                     Toast.makeText(LoginActivity.this, "User " + user + " successfully logged in", Toast.LENGTH_LONG).show();
                     userView.setText(user);
-                }else{
+                } else {
                     Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
                 }
             } catch (OperationCanceledException e) {
@@ -109,7 +109,7 @@ public class LoginActivity extends Activity {
         }
     }
 
-    private void displayAccessTokenInfo(String accessToken){
+    private void displayAccessTokenInfo(String accessToken) {
         try {
             SignedJWT signedJWT = SignedJWT.parse(accessToken);
 
@@ -169,6 +169,95 @@ public class LoginActivity extends Activity {
             consoleText.setText(claimsStr);
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void onChallengePINClicked(View view) {
+        Log.d(TAG, "onChallengePINClicked called");
+        Account account = new Account("Yes", Constants.Accounts.POYNT_ACCOUNT_TYPE);
+        accountManager.getAuthToken(account,
+                Constants.Accounts.POYNT_AUTH_TOKEN, null, LoginActivity.this,
+                new OnUserLoginAttempt(), null);
+    }
+
+    public void onGetAllUsersClicked(View view) {
+        Log.d(TAG, "onGetAllUsersClicked called");
+        getAccounts();
+    }
+
+    private void getAccounts() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    consoleText.setText("No permission to get accounts - requesting...!");
+                }
+            });
+
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.GET_ACCOUNTS)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.GET_ACCOUNTS},
+                        MY_PERMISSIONS_REQUEST_GET_ACCOUNTS);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+
+            return;
+        }
+        Account[] accounts = accountManager.getAccountsByType(POYNT_ACCOUNT_TYPE);
+        if (accounts != null) {
+            final StringBuilder accountsList = new StringBuilder();
+            for (Account account : accounts) {
+                accountsList.append("\n");
+                accountsList.append(account.name);
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    consoleText.setText(accountsList.toString());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_GET_ACCOUNTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    getAccounts();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 }

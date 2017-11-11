@@ -38,7 +38,7 @@ import co.poynt.os.services.v1.IPoyntSecondScreenTextEntryListener;
 public class SecondScreenServiceActivity extends Activity {
 
     private static final String TAG = SecondScreenServiceActivity.class.getSimpleName();
-    
+
 
     @Bind(R.id.phoneNumberBtn)
     Button phoneNumberBtn;
@@ -53,7 +53,8 @@ public class SecondScreenServiceActivity extends Activity {
     @Bind(R.id.textEntryBtn)
     Button textEntryBtn;
     //@Bind(R.id.printImageBtn) Button printImageBtn;
-    @Bind(R.id.dccScreenBtn) Button dccScreenBtn;
+    @Bind(R.id.dccScreenBtn)
+    Button dccScreenBtn;
 
     private IPoyntSecondScreenService secondScreenService;
     private ServiceConnection secondScreenServiceConnection = new ServiceConnection() {
@@ -321,7 +322,7 @@ public class SecondScreenServiceActivity extends Activity {
     }
 
     @OnClick(R.id.dccScreenBtn)
-    public void showDccScreen(){
+    public void showDccScreen() {
         ExchangeRate ex = new ExchangeRate();
         ex.setProvider("Citibank UAE"); // printed on the receipt
         ex.setTxnAmount(10000L);
@@ -339,6 +340,11 @@ public class SecondScreenServiceActivity extends Activity {
                 public void onCurrencyConversionSelected(boolean b) throws RemoteException {
                     Log.d(TAG, "onCurrencyConversionSelected: " + b);
                     showWelcomeScreen();
+                }
+
+                @Override
+                public void onCancel() throws RemoteException {
+                    Log.d(TAG, "onCancel()");
                 }
             });
         } catch (RemoteException e) {
