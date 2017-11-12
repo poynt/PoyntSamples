@@ -24,7 +24,9 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import co.poynt.api.model.Card;
@@ -315,6 +317,13 @@ public class PaymentActivity extends Activity {
         payment.setSkipReceiptScreen(true);
         payment.setSkipPaymentConfirmationScreen(true);
 
+        payment.setCallerPackageName("co.poynt.sample");
+        Map<String, String> processorOptions = new HashMap<>();
+        processorOptions.put("installments", "2");
+        processorOptions.put("type", "emi");
+        processorOptions.put("originalAmount", "2400");
+        payment.setProcessorOptions(processorOptions);
+
         // start Payment activity for result
         try {
             Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
@@ -406,12 +415,13 @@ public class PaymentActivity extends Activity {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 logData("Payment Canceled");
             }
-        }else if( requestCode == ZERO_DOLLAR_AUTH_REQUEST){
+        } else if (requestCode == ZERO_DOLLAR_AUTH_REQUEST) {
             Log.d(TAG, "onActivityResult: $0 auth request");
             if (resultCode == Activity.RESULT_OK) {
                 Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
                 Gson gson = new Gson();
-                Type paymentType = new TypeToken<Payment>() {}.getType();
+                Type paymentType = new TypeToken<Payment>() {
+                }.getType();
                 Log.d(TAG, gson.toJson(payment, paymentType));
             }
         }

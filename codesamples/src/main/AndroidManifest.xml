@@ -18,6 +18,7 @@
     <uses-permission android:name="com.poynt.store.BILLING" />
     <uses-permission android:name="poynt.permission.ACCESSORY_MANAGER" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="poynt.permission.CARD_READER_SERVICE" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -86,6 +87,9 @@
             android:label="@string/title_activity_in_app_billing" />
         <activity android:name=".AccessoriesActivity" />
 
+        <activity android:name=".NonPaymentCardReaderActivity" />
+
+
         <receiver
             android:name=".CustomerDetectedReceiver"
             android:enabled="true"
@@ -117,7 +121,7 @@
 
             <meta-data
                 android:name="co.poynt.os.service.capability"
-                android:resource="@xml/receipt_decorator_capability"/>
+                android:resource="@xml/receipt_decorator_capability" />
 
         </service>
 
