@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
     private Button billingServiceActivityBtn;
     private Button accessoriesActivityBtn;
     private Button cameraActivityBtn;
+    private Button nonPaymentCardReaderActivityBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,14 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+        Button contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
+        contentProviderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ContentProviderSampleActivity.class);
+                startActivity(intent);
+            }
+        });
         transactionListBtn = (Button) findViewById(R.id.transactionListBtn);
         transactionListBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -154,6 +163,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        nonPaymentCardReaderActivityBtn = (Button) findViewById(R.id.nonPaymentCardReaderActivityBtn);
+        nonPaymentCardReaderActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NonPaymentCardReaderActivity.class);
                 startActivity(intent);
             }
         });
