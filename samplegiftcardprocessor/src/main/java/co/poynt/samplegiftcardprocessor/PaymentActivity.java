@@ -38,7 +38,11 @@ public class PaymentActivity extends Activity implements
         Intent result = new Intent(Intents.ACTION_COLLECT_PAYMENT_RESULT);
         result.putExtra("transaction", transaction);
         result.putExtra("error", error);
-        setResult(Activity.RESULT_OK, result);
+        if (error == null) {
+            setResult(Activity.RESULT_OK, result);
+        }else{
+            setResult(Activity.RESULT_CANCELED, result);
+        }
         finish();
     }
 

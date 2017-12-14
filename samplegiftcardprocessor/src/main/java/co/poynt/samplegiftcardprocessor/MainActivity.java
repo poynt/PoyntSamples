@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bindService(new Intent(IPoyntConfigurationService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_CONFIGURATION_SERVICE),
                 poyntConfigurationServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
