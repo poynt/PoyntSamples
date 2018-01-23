@@ -36,6 +36,7 @@ import co.poynt.api.model.TransactionReference;
 import co.poynt.api.model.TransactionReferenceType;
 import co.poynt.api.model.TransactionStatus;
 import co.poynt.os.model.DateFormatType;
+import co.poynt.os.model.Intents;
 import co.poynt.os.model.ManualEntryFieldType;
 import co.poynt.os.model.ManualEntryInputField;
 import co.poynt.os.model.ManualEntryOutputField;
@@ -77,7 +78,7 @@ public class TransactionManager {
 
     public synchronized void bind() {
         if (poyntSecurityService == null) {
-            context.bindService(new Intent(IPoyntSecurityService.class.getName()),
+            context.bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_SECURITY_SERVICE),
                     mConnection, Context.BIND_AUTO_CREATE);
         } else {
             // already connected ?

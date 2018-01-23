@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import co.poynt.os.model.Intents;
+
 public class MainActivity extends Activity {
     private Button transactionListBtn;
     private Button terminalUserLoginBtn;
@@ -26,6 +28,11 @@ public class MainActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // triggers transaction sync; requires permission poynt.permission.LAST_SYNC_TIME_INFO in manifest
+        Intent sendingIntent = new Intent(Intents.ACTION_SYNC_TRANSACTIONS_FROM_CLOUD);
+        sendBroadcast(sendingIntent);
+
         setContentView(R.layout.activity_main);
 
         Button contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);

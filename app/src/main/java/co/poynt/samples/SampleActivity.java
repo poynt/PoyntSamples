@@ -198,11 +198,11 @@ public class SampleActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "binding to services...");
-        bindService(new Intent(IPoyntBusinessService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_BUSINESS_SERVICE),
                 mBusinessServiceConnection, Context.BIND_AUTO_CREATE);
-        bindService(new Intent(IPoyntSessionService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_SESSION_SERVICE),
                 mSessionConnection, Context.BIND_AUTO_CREATE);
-        bindService(new Intent(IPoyntSecondScreenService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_SECOND_SCREEN_SERVICE),
                 mSecondScreenConnection, Context.BIND_AUTO_CREATE);
     }
 
