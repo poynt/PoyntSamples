@@ -20,8 +20,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.w3c.dom.Text;
 
 import java.util.UUID;
 
@@ -43,6 +46,7 @@ public class InAppBillingActivity extends Activity {
     private Button restoreSubscription;
     private TextView mDumpTextView;
     private ScrollView mScrollView;
+    private TextView status;
 
     IPoyntInAppBillingService mBillingService;
 
@@ -55,6 +59,7 @@ public class InAppBillingActivity extends Activity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        status = (TextView) findViewById(R.id.status);
         mDumpTextView = (TextView) findViewById(R.id.consoleText);
         mScrollView = (ScrollView) findViewById(R.id.demoScroller);
 
@@ -301,6 +306,12 @@ public class InAppBillingActivity extends Activity {
                                             logReceivedMessage("Failed to obtain plans: "
                                                     + poyntError.toString());
                                         } else {
+                                            JsonParser parser = new JsonParser();
+                                            JsonObject json = parser.parse(resultJson).getAsJsonObject();
+                                            JsonArray plans = json.getAsJsonArray("list");
+                                            if (plans.size() > 0){
+                                                setStatus(status, "PLANS RECEIVED");
+                                            }
                                             logReceivedMessage("Result for get plans: "
                                                     + toPrettyFormat(resultJson));
                                         }
@@ -344,6 +355,8 @@ public class InAppBillingActivity extends Activity {
                                         } else {
                                             logReceivedMessage("Result for get subscriptions: "
                                                     + toPrettyFormat(resultJson));
+                                            setStatus(status, "SUBSCRIPTION RESPONSE RECEIVED");
+
                                         }
                                     }
                                 });
@@ -412,5 +425,14 @@ public class InAppBillingActivity extends Activity {
         String prettyJson = gson.toJson(json);
 
         return prettyJson;
+    }
+
+    private void setStatus(final TextView textView, final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(msg);
+            }
+        });
     }
 }

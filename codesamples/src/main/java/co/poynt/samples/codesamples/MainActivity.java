@@ -35,14 +35,14 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        Button contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
-        contentProviderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ContentProviderSampleActivity.class);
-                startActivity(intent);
-            }
-        });
+//        Button contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
+//        contentProviderBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, ContentProviderSampleActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         transactionListBtn = (Button) findViewById(R.id.transactionListBtn);
         transactionListBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +68,16 @@ public class BusinessServiceActivity extends Activity {
                     Country *
                     Email *
                     Phone **/
+
+            if (business != null){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView textView = (TextView) findViewById(R.id.getBusinessStatus);
+                        textView.setText("STATUS: SUCCESS");
+                    }
+                });
+            }
             String businessName = business.getLegalName();
             String mcc = business.getMcc();
             List<Store> stores = business.getStores();

@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -60,6 +61,7 @@ public class PaymentActivity extends Activity {
     Button payOrderBtn;
     Button launchRegisterBtn;
     Button zeroDollarAuthBtn;
+    TextView orderSavedStatus;
 
     private Gson gson;
 
@@ -85,7 +87,17 @@ public class PaymentActivity extends Activity {
     };
     private IPoyntOrderServiceListener saveOrderCallback = new IPoyntOrderServiceListener.Stub() {
         public void orderResponse(Order order, String s, PoyntError poyntError) throws RemoteException {
-            Log.d("orderListener", "poyntError: " + (poyntError == null ? "" : poyntError.toString()));
+            if (order == null) {
+                Log.d("orderListener", "poyntError: " + (poyntError == null ? "" : poyntError.toString()));
+            }else{
+                Log.d(TAG, "orderResponse: " + order);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderSavedStatus.setText("ORDER SAVED");
+                    }
+                });
+            }
         }
     };
 
@@ -109,6 +121,9 @@ public class PaymentActivity extends Activity {
         });
 
         chargeBtn.setEnabled(true);
+
+        orderSavedStatus = (TextView) findViewById(R.id.orderSavedStatus);
+
 
         payOrderBtn = (Button) findViewById(R.id.payOrderBtn);
         payOrderBtn.setOnClickListener(new View.OnClickListener() {

@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mDumpTextView.append("<< " + message + "\n\n");
                 mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
+                Log.d(TAG, "run: " + message);
             }
         });
     }

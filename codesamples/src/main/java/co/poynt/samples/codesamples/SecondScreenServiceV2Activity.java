@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,6 +63,19 @@ public class SecondScreenServiceV2Activity extends Activity {
     Button collectAgreement;
     @Bind(R.id.scanCode)
     Button scanCode;
+
+    @Bind(R.id.tipStatus)
+    TextView tipStatus;
+    @Bind(R.id.showCartStatus)
+    TextView showCartStatus;
+    @Bind(R.id.receiptChoiceStatus)
+    TextView receiptChoiceStatus;
+    @Bind(R.id.captureSignatureStatus)
+    TextView captureSignatureStatus;
+    @Bind(R.id.collectAgreementStatus)
+    TextView collectAgreementStatus;
+    @Bind(R.id.scanStatus)
+    TextView scanStatus;
 
     private IPoyntSecondScreenService secondScreenService;
 
@@ -170,6 +186,7 @@ public class SecondScreenServiceV2Activity extends Activity {
                 public void onTipAdded(long l, double v) throws RemoteException {
                     showToast(String.format("Tip Amount: %d Tip Percent:%f", l, v));
                     showConfirmation("You're awesome!");
+                    setStatus(tipStatus, "collected " + l);
                 }
 
                 @Override
@@ -276,11 +293,13 @@ public class SecondScreenServiceV2Activity extends Activity {
                             @Override
                             public void onLeftButtonClicked() throws RemoteException {
                                 showConfirmation("why did you decline?");
+                                setStatus(showCartStatus, "LEFT BUTTON TAPPED");
                             }
 
                             @Override
                             public void onRightButtonClicked() throws RemoteException {
                                 showConfirmation("Thanks for confirming!");
+                                setStatus(showCartStatus, "LEFT BUTTON TAPPED");
                             }
                         });
             }
@@ -307,6 +326,9 @@ public class SecondScreenServiceV2Activity extends Activity {
                 @Override
                 public void onSignatureEntered(Bitmap bitmap) throws RemoteException {
                     showConfirmation("Thanks for the beautiful signature!");
+                    if (bitmap != null){
+                        setStatus(captureSignatureStatus, "SIGNATURE CAPTURED");
+                    }
                 }
 
             });
@@ -361,6 +383,7 @@ public class SecondScreenServiceV2Activity extends Activity {
                             if (receiptType == ReceiptType.EMAIL) {
                                 if (data != null) {
                                     showConfirmation(data);
+                                    setStatus(receiptChoiceStatus, "EMAIL OPTION");
                                 } else {
                                     Bundle options = new Bundle();
                                     //options.putString(Intents.EXTRA_EMAIL, "praveen@poynt.co");
@@ -370,11 +393,13 @@ public class SecondScreenServiceV2Activity extends Activity {
                                         @Override
                                         public void onEmailEntered(String s) throws RemoteException {
                                             showConfirmation(s);
+                                            setStatus(receiptChoiceStatus, s);
                                         }
 
                                         @Override
                                         public void onCancel() throws RemoteException {
                                             showConfirmation("canceled");
+                                            setStatus(receiptChoiceStatus, "CANCELED");
                                         }
 
                                     });
@@ -382,6 +407,7 @@ public class SecondScreenServiceV2Activity extends Activity {
                             } else if (receiptType == ReceiptType.SMS) {
                                 if (data != null) {
                                     showConfirmation(data);
+                                    setStatus(receiptChoiceStatus, "SMS OPTION");
                                 } else {
                                     Bundle options = new Bundle();
                                     //options.putString(Intents.EXTRA_PHONE, "4082183491");
@@ -391,11 +417,13 @@ public class SecondScreenServiceV2Activity extends Activity {
                                         @Override
                                         public void onPhoneEntered(String s) throws RemoteException {
                                             showConfirmation(s);
+                                            setStatus(receiptChoiceStatus, s);
                                         }
 
                                         @Override
                                         public void onCancel() throws RemoteException {
                                             showConfirmation("canceled");
+                                            setStatus(receiptChoiceStatus, "CANCELED");
                                         }
 
                                     });
@@ -488,11 +516,13 @@ public class SecondScreenServiceV2Activity extends Activity {
                         @Override
                         public void onLeftButtonClicked() throws RemoteException {
                             showConfirmation("Why not ?");
+                            setStatus(collectAgreementStatus, "LEFT BUTTON TAPPED");
                         }
 
                         @Override
                         public void onRightButtonClicked() throws RemoteException {
                             showConfirmation("Yey!");
+                            setStatus(collectAgreementStatus, "RIGHT BUTTON TAPPED");
                         }
 
                     });
@@ -516,11 +546,21 @@ public class SecondScreenServiceV2Activity extends Activity {
                 @Override
                 public void onCodeEntryCanceled() throws RemoteException {
                     showConfirmation("code entry canceled");
+                    setStatus(scanStatus, "CANCELED");
                 }
             });
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setStatus(final TextView textView, final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(msg);
+            }
+        });
     }
 
 }
