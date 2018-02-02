@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.poynt.api.model.Discount;
+import co.poynt.api.model.OrderStatus;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
 
@@ -51,6 +52,9 @@ public class MainActivity extends Activity {
                 if (orderTotal >= discountAmount) {
                     payment.getOrder().getAmounts().setNetTotal(orderTotal - discountAmount);
                     payment.setAmount(orderTotal - discountAmount);
+                    if (orderTotal == discountAmount){
+                        payment.getOrder().getStatuses().setStatus(OrderStatus.COMPLETED);
+                    }
                     Log.d(TAG, "Discount added to order: " + payment);
                     Intent result = new Intent(Intents.ACTION_PROCESS_LOYALTY_RESULT);
                     result.putExtra("payment", payment);

@@ -25,6 +25,8 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
@@ -48,6 +50,8 @@ public class TokenServiceActivity extends Activity {
     private Button getTokenBtn;
     private Button verifyJwtBtn;
     private TextView textView;
+    private TextView getTokenStatus;
+    private TextView verifyJwtStatus;
     // public certified for services.poynt.net
     private X509Certificate poyntCert;
     private SignedJWT signedJWT;
@@ -126,6 +130,7 @@ public class TokenServiceActivity extends Activity {
                         public void run() {
                             textView.setText(claimsStr);
                             verifyJwtBtn.setEnabled(true);
+                            getTokenStatus.setText("SUCCESS");
                         }
                     });
 
@@ -153,6 +158,9 @@ public class TokenServiceActivity extends Activity {
 
         verifyJwtBtn = (Button) findViewById(R.id.verifyJwtBtn);
         verifyJwtBtn.setEnabled(false);
+
+        getTokenStatus = (TextView) findViewById(R.id.getTokenStatusText);
+        verifyJwtStatus = (TextView) findViewById(R.id.verifyJwtStatusText);
 
         getTokenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +190,7 @@ public class TokenServiceActivity extends Activity {
                                 public void run() {
                                     Toast.makeText(TokenServiceActivity.this,
                                             "JWT signature verified: " + isSignatureVerified, Toast.LENGTH_SHORT).show();
+                                    verifyJwtStatus.setText("SUCCESS");
                                 }
                             });
                         } catch (JOSEException e) {

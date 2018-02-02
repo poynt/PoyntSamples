@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
@@ -56,6 +57,20 @@ public class SecondScreenServiceActivity extends Activity {
     @Bind(R.id.dccScreenBtn)
     Button dccScreenBtn;
 
+    @Bind(R.id.phoneStatus)
+    TextView phoneStatus;
+    @Bind(R.id.emailStatus)
+    TextView emailStatus;
+    @Bind(R.id.textStatus)
+    TextView textStatus;
+    @Bind(R.id.scanStatus)
+    TextView scanStatus;
+    @Bind(R.id.checkinStatus)
+    TextView checkinStatus;
+    @Bind(R.id.dccStatus)
+    TextView dccStatus;
+
+
     private IPoyntSecondScreenService secondScreenService;
     private ServiceConnection secondScreenServiceConnection = new ServiceConnection() {
         @Override
@@ -73,6 +88,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onPhoneEntered(String phone) throws RemoteException {
                     showToast("Captured Phone: " + phone);
+                    setStatus(phoneStatus, phone);
                     showWelcomeScreen();
                 }
 
@@ -91,6 +107,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onCodeEntryCanceled() throws RemoteException {
                     showWelcomeScreen();
+                    setStatus(scanStatus, "CANCELED");
                 }
             };
 
@@ -113,6 +130,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onEmailEntered(String s) throws RemoteException {
                     showToast("Captured email: " + s);
+                    setStatus(emailStatus, s);
                     showWelcomeScreen();
                 }
 
@@ -140,6 +158,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onTextEntered(String s) throws RemoteException {
                     showToast("Captured Text: " + s);
+                    setStatus(textStatus, s);
                 }
 
                 @Override
@@ -151,7 +170,7 @@ public class SecondScreenServiceActivity extends Activity {
     @OnClick(R.id.textEntryBtn)
     public void textEntryBtnClicked(View view) {
         try {
-            secondScreenService.collectTextEntry("Enter Discount Code:", textEntryListener);
+            secondScreenService.collectTextEntry("Enter Code:", textEntryListener);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -204,6 +223,15 @@ public class SecondScreenServiceActivity extends Activity {
             @Override
             public void run() {
                 Toast.makeText(SecondScreenServiceActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setStatus(final TextView textView, final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(msg);
             }
         });
     }
@@ -301,6 +329,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onCheckIn() throws RemoteException {
                     showToast("Checkin Clicked");
+                    setStatus(checkinStatus, "CHECK-IN TAPPED");
                     phoneNumberButtonClicked(null);
                 }
 
@@ -339,6 +368,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onCurrencyConversionSelected(boolean b) throws RemoteException {
                     Log.d(TAG, "onCurrencyConversionSelected: " + b);
+                    setStatus(dccStatus, "DCC option selected");
                     showWelcomeScreen();
                 }
 

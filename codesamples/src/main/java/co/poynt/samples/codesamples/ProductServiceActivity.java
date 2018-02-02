@@ -45,6 +45,8 @@ public class ProductServiceActivity extends Activity {
     private int mProgressStatus = 0;
     private boolean mIsCatalogLoaded;
 
+    private TextView getCatalogStatus;
+
     private ServiceConnection productServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -63,6 +65,10 @@ public class ProductServiceActivity extends Activity {
         @Override
         public void onResponse(CatalogWithProduct catalogWithProduct, PoyntError poyntError) throws RemoteException {
             StringBuilder output = new StringBuilder();
+
+            if (catalogWithProduct.getCategories()!=null && catalogWithProduct.getCategories().size() > 0){
+                setStatus(getCatalogStatus, "CATALOG HAS PRODUCTS");
+            }
             // products not nested inside a category
             for (CatalogItemWithProduct catalogItem : catalogWithProduct.getProducts()){
                 Product product = catalogItem.getProduct();
@@ -126,6 +132,9 @@ public class ProductServiceActivity extends Activity {
 
         mProgressBarLayout = (LinearLayout) findViewById(R.id.progressBarLayout);
         mGetRegisterCatalogBtn = (Button) findViewById(R.id.getRegisterCatalogBtn);
+
+        getCatalogStatus = (TextView) findViewById(R.id.getCatalogStatus);
+
         mGetRegisterCatalogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,5 +234,14 @@ public class ProductServiceActivity extends Activity {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
         mProgressBarLayout.addView(mProgress);
+    }
+
+    private void setStatus(final TextView textView, final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(msg);
+            }
+        });
     }
 }
