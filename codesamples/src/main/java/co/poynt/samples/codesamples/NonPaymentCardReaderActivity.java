@@ -236,6 +236,80 @@ public class NonPaymentCardReaderActivity extends Activity {
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
+
+        final Button readIMSI = (Button) findViewById(R.id.readIMSI);
+        readIMSI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectMasterfile(
+                        new IPoyntExchangeAPDUListener.Stub() {
+                            @Override
+                            public void onSuccess(String rAPDU) throws RemoteException {
+                                getSelectMasterfileResponse(new IPoyntExchangeAPDUListener.Stub() {
+                                    @Override
+                                    public void onSuccess(String rAPDU) throws RemoteException {
+                                        logReceivedMessage("Response of Select Masterfile: " + rAPDU);
+                                        selectGSMDirectory(new IPoyntExchangeAPDUListener.Stub() {
+                                            @Override
+                                            public void onSuccess(String rAPDU) throws RemoteException {
+                                                logReceivedMessage("Response of Select GSM Directory: " + rAPDU);
+                                                selectIMSI(new IPoyntExchangeAPDUListener.Stub() {
+                                                    @Override
+                                                    public void onSuccess(String rAPDU) throws RemoteException {
+                                                        logReceivedMessage("Response of select IMSI: " + rAPDU);
+                                                        getSelectIMSIResponse(new IPoyntExchangeAPDUListener.Stub() {
+                                                            @Override
+                                                            public void onSuccess(String rAPDU) throws RemoteException {
+                                                                logReceivedMessage("Response of read IMSI: " + rAPDU);
+                                                                readBinaryIMSI(new IPoyntExchangeAPDUListener.Stub() {
+                                                                    @Override
+                                                                    public void onSuccess(String rAPDU) throws RemoteException {
+                                                                        logReceivedMessage("Response of read IMSI: " + rAPDU);
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onError(PoyntError poyntError) throws RemoteException {
+                                                                        logReceivedMessage("Read IMSI failed: " + poyntError.toString());
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onError(PoyntError poyntError) throws RemoteException {
+                                                                logReceivedMessage("Read IMSI failed: " + poyntError.toString());
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onError(PoyntError poyntError) throws RemoteException {
+                                                        logReceivedMessage("Select IMSI failed: " + poyntError.toString());
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onError(PoyntError poyntError) throws RemoteException {
+                                                logReceivedMessage("Select GSM Directory failed: " + poyntError.toString());
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(PoyntError poyntError) throws RemoteException {
+                                        logReceivedMessage("Read masterfile select failed: " + poyntError.toString());
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onError(PoyntError poyntError) throws RemoteException {
+                                logReceivedMessage("Select Masterfile failed: " + poyntError.toString());
+                            }
+                        });
+            }
+        });
     }
 
     protected void onResume() {
@@ -346,5 +420,80 @@ public class NonPaymentCardReaderActivity extends Activity {
                 mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
             }
         });
+    }
+
+    private void selectMasterfile(IPoyntExchangeAPDUListener listener) {
+        APDUData apduData = new APDUData();
+        apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+        apduData.setTimeout(60);
+        apduData.setCommandAPDU("04A0A40000023F0000");
+        try {
+            cardReaderService.exchangeAPDU(apduData, listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSelectMasterfileResponse(IPoyntExchangeAPDUListener listener) {
+        APDUData apduData = new APDUData();
+        apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+        apduData.setTimeout(60);
+        apduData.setCommandAPDU("02A0C0000000");
+        try {
+            cardReaderService.exchangeAPDU(apduData, listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void selectGSMDirectory(IPoyntExchangeAPDUListener listener) {
+        APDUData apduData = new APDUData();
+        apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+        apduData.setTimeout(60);
+        apduData.setCommandAPDU("04A0A40000027F2000");
+        try {
+            cardReaderService.exchangeAPDU(apduData, listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void selectIMSI(IPoyntExchangeAPDUListener listener) {
+        APDUData apduData = new APDUData();
+        apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+        apduData.setTimeout(60);
+        apduData.setCommandAPDU("04A0A40000026F0700");
+        try {
+            cardReaderService.exchangeAPDU(apduData, listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void getSelectIMSIResponse(IPoyntExchangeAPDUListener listener) {
+        APDUData apduData = new APDUData();
+        apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+        apduData.setTimeout(60);
+        apduData.setCommandAPDU("02A0C0000000");
+        try {
+            cardReaderService.exchangeAPDU(apduData, listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readBinaryIMSI(IPoyntExchangeAPDUListener listener) {
+        APDUData apduData = new APDUData();
+        apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+        apduData.setTimeout(60);
+        apduData.setCommandAPDU("02A0B0000009");
+        try {
+            cardReaderService.exchangeAPDU(apduData, listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 }

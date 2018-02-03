@@ -16,6 +16,9 @@
     <uses-permission android:name="poynt.permission.CUSTOMER_SERVICE" />
     <uses-permission android:name="poynt.permission.OFFLINE_SERVICE" />
     <!-- /Permissions needed by the Payment Fragments -->
+    <!-- Poynt Data Permissions -->
+    <uses-permission android:name="co.poynt.orders.ACCESS_ORDERS" />
+    <uses-permission android:name="co.poynt.orders.WRITE_ORDERS" />
 
     <application
         android:allowBackup="true"

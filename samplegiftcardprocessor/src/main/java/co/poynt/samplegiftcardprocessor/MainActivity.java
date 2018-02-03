@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_CONFIGURATION_SERVICE),
                 poyntConfigurationServiceConnection, Context.BIND_AUTO_CREATE);
+//        bindService(new Intent(IPoyntConfigurationService.class.getName()),
+//                poyntConfigurationServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void launchPoyntPayment() {

@@ -23,10 +23,10 @@
             <meta-data
                 android:name="co.poynt.os.service.capability"
                 android:resource="@xml/giftcard_transaction_capabilities" />
-            <!-- Optional: Provide a logo that will appear on screen -->
-            <meta-data
-                android:name="co.poynt.os.service.logo"
-                android:resource="@mipmap/ic_launcher" />
+            <!--&lt;!&ndash; Optional: Provide a logo that will appear on screen &ndash;&gt;-->
+            <!--<meta-data-->
+            <!--android:name="co.poynt.os.service.logo"-->
+            <!--android:resource="@mipmap/ic_launcher" />-->
         </service>
 
         <activity
