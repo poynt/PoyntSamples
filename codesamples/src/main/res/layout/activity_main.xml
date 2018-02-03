@@ -12,14 +12,14 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
-        <Button
-            android:id="@+id/contentProviderBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:background="@color/gray"
-            android:text="Content Provider*"
-            android:textAlignment="center" />
+        <!--<Button-->
+        <!--android:id="@+id/contentProviderBtn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:background="@color/gray"-->
+        <!--android:text="Content Provider*"-->
+        <!--android:textAlignment="center" />-->
 
         <Button
             android:id="@+id/transactionListBtn"

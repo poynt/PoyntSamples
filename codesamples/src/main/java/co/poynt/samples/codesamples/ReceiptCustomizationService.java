@@ -20,6 +20,7 @@ import co.poynt.os.Constants;
 import co.poynt.os.model.PrintedReceipt;
 import co.poynt.os.model.PrintedReceiptLine;
 import co.poynt.os.printing.ReceiptPrintingPref;
+import co.poynt.os.model.PrintedReceiptSection;
 import co.poynt.os.services.v1.IPoyntReceiptDecoratorService;
 import co.poynt.os.services.v1.IPoyntReceiptDecoratorServiceListener;
 
@@ -35,13 +36,13 @@ public class ReceiptCustomizationService extends Service {
         @Override
         public void decorate(PrintedReceipt printedReceipt, String requestId, IPoyntReceiptDecoratorServiceListener
                 listener) throws RemoteException {
-            List<PrintedReceiptLine> headerLines  = printedReceipt.getHeader();
+            List<PrintedReceiptLine> headerLines = printedReceipt.getHeader();
 
-            if (headerLines == null){
+            if (headerLines == null) {
                 headerLines = new ArrayList<>();
             }
 
-            for (PrintedReceiptLine line : headerLines){
+            for (PrintedReceiptLine line : headerLines) {
                 Log.d(TAG, "decorate: " + line.getText());
             }
             PrintedReceiptLine EMPTY_LINE = new PrintedReceiptLine();
@@ -75,6 +76,37 @@ public class ReceiptCustomizationService extends Service {
         @Override
         public void cancel(String requestId) throws RemoteException {
 
+        }
+
+        @Override
+        public void decorateV2(co.poynt.os.model.PrintedReceiptV2 printedReceiptV2,
+                               String requestId, co.poynt.os.services.v1.IPoyntReceiptDecoratorListener listener) throws RemoteException {
+            PrintedReceiptSection headerSection = printedReceiptV2.getHeader();
+            List<PrintedReceiptLine> headerLines = headerSection.getLines();
+
+            if (headerLines == null) {
+                headerLines = new ArrayList<>();
+            }
+
+            for (PrintedReceiptLine line : headerLines) {
+                Log.d(TAG, "decorate: " + line.getText());
+            }
+            PrintedReceiptLine EMPTY_LINE = new PrintedReceiptLine();
+            EMPTY_LINE.setText("\n");
+
+            PrintedReceiptLine twitterInfo = new PrintedReceiptLine();
+            twitterInfo.setText("We are on twitter @poynt");
+
+            headerLines.add(EMPTY_LINE);
+            headerLines.add(twitterInfo);
+            headerLines.add(EMPTY_LINE);
+            headerLines.add(EMPTY_LINE);
+            headerLines.add(EMPTY_LINE);
+
+            headerSection.setLines(headerLines);
+            printedReceiptV2.setHeader(headerSection);
+            printedReceiptV2.setHeaderImage(BitmapFactory.decodeResource(getResources(), R.drawable.poynt_logo));
+            listener.onReceiptDecorated(requestId, printedReceiptV2);
         }
     };
 

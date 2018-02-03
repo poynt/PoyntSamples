@@ -4,7 +4,6 @@ package co.poynt.samplegiftcardprocessor;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -141,23 +140,18 @@ public class SampleGiftCardTransactionProcessorService extends Service {
             Log.d(TAG, "saveTransaction:" + transaction.toString());
         }
 
+
         @Override
-        public void checkCard(Payment payment, String s, String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8, String s9, String s10, int i, String s11, String s12, String s13, IPoyntCheckCardListener iPoyntCheckCardListener) throws RemoteException {
-
+        public void checkCard(Payment payment, String serviceCode, String cardHolderName,
+                              String expirationDate, String last4, String binRange, String AID,
+                              String applicationLabel, String panSequenceNumber,
+                              String issuerCountryCode, String encryptedPAN,
+                              String encryptedTrack2, int issuerCodeTableIndex, String applicationPreferredName,
+                              String keyIdentifier, String appCurrencyCode, IPoyntCheckCardListener callback)
+                throws RemoteException {
+            Log.d(TAG, "checkCard called");
+            // no op - not applicable for gift cards
         }
-
-
-//        @Override
-//        public void checkCard(Payment payment, String serviceCode, String cardHolderName,
-//                              String expirationDate, String last4, String binRange, String AID,
-//                              String applicationLabel, String panSequenceNumber,
-//                              String issuerCountryCode, String encryptedPAN,
-//                              String encryptedTrack2, int issuerCodeTableIndex, String applicationPreferredName,
-//                              String keyIdentifier, IPoyntCheckCardListener callback)
-//                throws RemoteException {
-//            Log.d(TAG, "checkCard called");
-//            // no op - not applicable for gift cards
-//        }
 
     };
 }
