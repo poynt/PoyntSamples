@@ -40,7 +40,7 @@ dependencies {
     // Poynt SDK and Model Dependencies
     compile 'co.poynt.api:android-api-model:1.2.111-SNAPSHOT@jar'
     compile 'co.poynt.android.sdk:poynt-sdk:1.2.29-SNAPSHOT@aar'
-    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.google.code.gson:gson:2.8.0'
     // bit byte manipulation
     compile 'com.github.devnied:bit-lib4j:1.4.10@jar'
 }
