@@ -6,10 +6,12 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
@@ -22,17 +24,22 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Discount;
+import co.poynt.api.model.ExchangeRate;
 import co.poynt.api.model.OrderItem;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.SecondScreenLabels;
 import co.poynt.os.services.v1.IPoyntSecondScreenCheckInListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenCodeScanListener;
+import co.poynt.os.services.v1.IPoyntSecondScreenDynamicCurrConversionListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenEmailEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenPhoneEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
 import co.poynt.os.services.v1.IPoyntSecondScreenTextEntryListener;
 
 public class SecondScreenServiceActivity extends Activity {
+
+    private static final String TAG = SecondScreenServiceActivity.class.getSimpleName();
+
 
     @Bind(R.id.phoneNumberBtn)
     Button phoneNumberBtn;
@@ -47,6 +54,23 @@ public class SecondScreenServiceActivity extends Activity {
     @Bind(R.id.textEntryBtn)
     Button textEntryBtn;
     //@Bind(R.id.printImageBtn) Button printImageBtn;
+    @Bind(R.id.dccScreenBtn)
+    Button dccScreenBtn;
+
+    @Bind(R.id.phoneStatus)
+    TextView phoneStatus;
+    @Bind(R.id.emailStatus)
+    TextView emailStatus;
+    @Bind(R.id.textStatus)
+    TextView textStatus;
+    @Bind(R.id.scanStatus)
+    TextView scanStatus;
+    @Bind(R.id.checkinStatus)
+    TextView checkinStatus;
+    @Bind(R.id.dccStatus)
+    TextView dccStatus;
+
+
     private IPoyntSecondScreenService secondScreenService;
     private ServiceConnection secondScreenServiceConnection = new ServiceConnection() {
         @Override
@@ -64,6 +88,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onPhoneEntered(String phone) throws RemoteException {
                     showToast("Captured Phone: " + phone);
+                    setStatus(phoneStatus, phone);
                     showWelcomeScreen();
                 }
 
@@ -82,6 +107,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onCodeEntryCanceled() throws RemoteException {
                     showWelcomeScreen();
+                    setStatus(scanStatus, "CANCELED");
                 }
             };
 
@@ -104,6 +130,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onEmailEntered(String s) throws RemoteException {
                     showToast("Captured email: " + s);
+                    setStatus(emailStatus, s);
                     showWelcomeScreen();
                 }
 
@@ -131,6 +158,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onTextEntered(String s) throws RemoteException {
                     showToast("Captured Text: " + s);
+                    setStatus(textStatus, s);
                 }
 
                 @Override
@@ -142,7 +170,7 @@ public class SecondScreenServiceActivity extends Activity {
     @OnClick(R.id.textEntryBtn)
     public void textEntryBtnClicked(View view) {
         try {
-            secondScreenService.collectTextEntry("Enter Discount Code:", textEntryListener);
+            secondScreenService.collectTextEntry("Enter Code:", textEntryListener);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -195,6 +223,15 @@ public class SecondScreenServiceActivity extends Activity {
             @Override
             public void run() {
                 Toast.makeText(SecondScreenServiceActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setStatus(final TextView textView, final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(msg);
             }
         });
     }
@@ -292,6 +329,7 @@ public class SecondScreenServiceActivity extends Activity {
                 @Override
                 public void onCheckIn() throws RemoteException {
                     showToast("Checkin Clicked");
+                    setStatus(checkinStatus, "CHECK-IN TAPPED");
                     phoneNumberButtonClicked(null);
                 }
 
@@ -307,6 +345,38 @@ public class SecondScreenServiceActivity extends Activity {
         try {
 //            Bitmap checkin = BitmapFactory.decodeResource(getResources(),R.drawable.button_checkin);
             secondScreenService.displayWelcome("Check-in", null, checkinScreenListener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.dccScreenBtn)
+    public void showDccScreen() {
+        ExchangeRate ex = new ExchangeRate();
+        ex.setProvider("Citibank UAE"); // printed on the receipt
+        ex.setTxnAmount(10000L);
+        ex.setTxnCurrency("USD");
+
+        ex.setRate(367326L);
+        ex.setRatePrecision(5L); // basically the rate above is 3.67326
+
+        ex.setCardCurrency("AED");
+        ex.setMarkupPercentage("250"); // shows the markup in the UI
+        ex.setCardAmount(37651L);
+        try {
+            secondScreenService.captureDccChoice(ex, null, new IPoyntSecondScreenDynamicCurrConversionListener.Stub() {
+                @Override
+                public void onCurrencyConversionSelected(boolean b) throws RemoteException {
+                    Log.d(TAG, "onCurrencyConversionSelected: " + b);
+                    setStatus(dccStatus, "DCC option selected");
+                    showWelcomeScreen();
+                }
+
+                @Override
+                public void onCancel() throws RemoteException {
+                    Log.d(TAG, "onCancel()");
+                }
+            });
         } catch (RemoteException e) {
             e.printStackTrace();
         }

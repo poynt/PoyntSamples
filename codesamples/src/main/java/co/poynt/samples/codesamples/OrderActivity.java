@@ -13,7 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,6 +52,12 @@ public class OrderActivity extends Activity {
 
     @Bind(R.id.pullOpenOrders)
     Button pullOpenOrders;
+    @Bind(R.id.createOrderText)
+    TextView createOrderText;
+    @Bind(R.id.openOrdersTitle)
+    TextView openOrdersTitle;
+    @Bind(R.id.openOrdersText)
+    TextView openOrdersText;
 
     private ServiceConnection orderServiceConnection = new ServiceConnection() {
         @Override
@@ -73,10 +82,11 @@ public class OrderActivity extends Activity {
         public void orderResponse(final Order order, String s, PoyntError poyntError) throws RemoteException {
             Log.d(TAG, "orderResponse poyntError: " + poyntError);
             Log.d(TAG, "orderResponse order: " + order.toString());
-            if (poyntError == null) {
+            if (order != null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        createOrderText.setText("SUCCESS");
                         Toast.makeText(OrderActivity.this, "Created Order: " + order.getId(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -106,6 +116,7 @@ public class OrderActivity extends Activity {
                 }
             }
         });
+
         ButterKnife.bind(this);
     }
 
@@ -218,6 +229,10 @@ public class OrderActivity extends Activity {
                 mProjection, mSelectionClause, mSelectionArgs, mSortOrder);
         OrdersCursor orderCursor = new OrdersCursor(cursor);
         if (orderCursor != null) {
+            if (orderCursor.getCount() > 0){
+                openOrdersTitle.setText("Found OPEN orders");
+            }
+            Log.d(TAG, "pullOpenOrdersClicked: " + orderCursor.getCount());
             while (orderCursor.moveToNext()) {
 //                    Log.d(TAG, "order id: " + cursor.getString(0));
 //                    Log.d(TAG, "customer id: " + cursor.getString(1));
@@ -227,6 +242,7 @@ public class OrderActivity extends Activity {
                 Log.d(TAG, "order id: " + lastOrderId);
                 Log.d(TAG, "customer user id: " + orderCursor.getCustomeruserid());
                 Log.d(TAG, "order Number: " + orderCursor.getOrdernumber());
+                openOrdersText.append(lastOrderId + "\n");
             }
 
         }

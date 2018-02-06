@@ -18,6 +18,11 @@
     <uses-permission android:name="com.poynt.store.BILLING" />
     <uses-permission android:name="poynt.permission.ACCESSORY_MANAGER" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="poynt.permission.CARD_READER_SERVICE" />
+
+    <uses-permission android:name="co.poynt.receipts.ACCESS_RECEIPT_SETTINGS" />
+    <uses-permission android:name="poynt.permission.LAST_SYNC_TIME_INFO" />
+
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -84,7 +89,11 @@
         <activity
             android:name=".InAppBillingActivity"
             android:label="@string/title_activity_in_app_billing" />
-        <activity android:name=".AccessoriesActivity"></activity>
+        <activity android:name=".AccessoriesActivity" />
+
+        <activity android:name=".NonPaymentCardReaderActivity" />
+
+
         <receiver
             android:name=".CustomerDetectedReceiver"
             android:enabled="true"
@@ -93,6 +102,34 @@
                 <action android:name="poynt.intent.action.CUSTOMER_DETECTED" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".receivers.MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="poynt.intent.action.PAYMENT_CANCELED" />
+                <action android:name="poynt.intent.action.TRANSACTION_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+        android:name=".ReceiptCustomizationService"
+        android:enabled="true"
+        android:exported="true">
+
+        <!-- define the intent filter with an action as IPoyntReceiptDecoratorService interface -->
+        <intent-filter>
+        <action android:name="co.poynt.os.services.v1.IPoyntReceiptDecoratorService" />
+        </intent-filter>
+
+        <meta-data
+        android:name="co.poynt.os.service.capability"
+        android:resource="@xml/receipt_decorator_capability" />
+
+        </service>
+
+
     </application>
 
 </manifest>

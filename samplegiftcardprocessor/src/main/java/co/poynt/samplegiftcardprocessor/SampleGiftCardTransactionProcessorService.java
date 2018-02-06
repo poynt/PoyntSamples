@@ -4,17 +4,18 @@ package co.poynt.samplegiftcardprocessor;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
 import co.poynt.api.model.AdjustTransactionRequest;
+import co.poynt.api.model.BalanceInquiry;
 import co.poynt.api.model.EMVData;
 import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAction;
 import co.poynt.os.model.Payment;
 import co.poynt.os.services.v1.IPoyntCheckCardListener;
+import co.poynt.os.services.v1.IPoyntTransactionBalanceInquiryListener;
 import co.poynt.os.services.v1.IPoyntTransactionService;
 import co.poynt.os.services.v1.IPoyntTransactionServiceListener;
 import co.poynt.samplegiftcardprocessor.core.TransactionManager;
@@ -117,6 +118,11 @@ public class SampleGiftCardTransactionProcessorService extends Service {
         }
 
         @Override
+        public void getBalanceInquiry(BalanceInquiry balanceInquiry, String s, IPoyntTransactionBalanceInquiryListener iPoyntTransactionBalanceInquiryListener) throws RemoteException {
+
+        }
+
+        @Override
         public void reverseTransaction(String originalRequestId, String originalTransactionId, EMVData emvData, String requestId) throws RemoteException {
             Log.d(TAG, "reverseTransaction:" + originalRequestId);
             // reverse transaction - eg. timeout reversal
@@ -141,7 +147,7 @@ public class SampleGiftCardTransactionProcessorService extends Service {
                               String applicationLabel, String panSequenceNumber,
                               String issuerCountryCode, String encryptedPAN,
                               String encryptedTrack2, int issuerCodeTableIndex, String applicationPreferredName,
-                              String keyIdentifier, IPoyntCheckCardListener callback)
+                              String keyIdentifier, String appCurrencyCode, IPoyntCheckCardListener callback)
                 throws RemoteException {
             Log.d(TAG, "checkCard called");
             // no op - not applicable for gift cards

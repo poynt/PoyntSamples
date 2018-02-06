@@ -12,6 +12,15 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
+        <!--<Button-->
+        <!--android:id="@+id/contentProviderBtn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:background="@color/gray"-->
+        <!--android:text="Content Provider*"-->
+        <!--android:textAlignment="center" />-->
+
         <Button
             android:id="@+id/transactionListBtn"
             android:layout_width="match_parent"
@@ -27,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@color/gray"
-            android:text="Terminal User Login"
+            android:text="Terminal User Login*"
             android:textAlignment="center" />
 
         <Button
@@ -72,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@color/gray"
-            android:text="Second Screen Service Activity"
+            android:text="Second Screen Service Activity*"
             android:textAlignment="center" />
 
         <Button
@@ -81,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@color/gray"
-            android:text="Second Screen Service V2 Activity"
+            android:text="Second Screen Service V2 Activity*"
             android:textAlignment="center" />
 
         <Button
@@ -90,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@color/gray"
-            android:text="Receipt Printing Service Activity"
+            android:text="Receipt Printing Service Activity*"
             android:textAlignment="center" />
 
         <Button
@@ -137,6 +146,16 @@
             android:background="@color/gray"
             android:text="Camera Activity"
             android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/nonPaymentCardReaderActivityBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@color/gray"
+            android:text="Non-Payment Card Reader Activity*"
+            android:textAlignment="center" />
+
 
     </LinearLayout>
 </ScrollView>

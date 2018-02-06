@@ -2,9 +2,7 @@ package co.poynt.samplegiftcardprocessor.core;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -13,11 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,15 +31,10 @@ import co.poynt.api.model.TransactionAmounts;
 import co.poynt.api.model.TransactionReference;
 import co.poynt.api.model.TransactionReferenceType;
 import co.poynt.api.model.TransactionStatus;
-import co.poynt.os.model.DateFormatType;
-import co.poynt.os.model.ManualEntryFieldType;
-import co.poynt.os.model.ManualEntryInputField;
-import co.poynt.os.model.ManualEntryOutputField;
+import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
-import co.poynt.os.services.v1.IPoyntManualEntryDataListener;
 import co.poynt.os.services.v1.IPoyntSecurityService;
 import co.poynt.os.services.v1.IPoyntTransactionServiceListener;
-import fr.devnied.bitlib.BytesUtils;
 
 /**
  * Created by palavilli on 11/29/15.
@@ -63,7 +54,8 @@ public class TransactionManager {
     private TransactionManager(Context context) {
         this.context = context;
         gson = new Gson();
-        transactionType = new TypeToken<Transaction>(){}.getType();
+        transactionType = new TypeToken<Transaction>() {
+        }.getType();
         TRANSACTION_CACHE = new HashMap<>();
         bind();
     }
@@ -77,7 +69,7 @@ public class TransactionManager {
 
     public synchronized void bind() {
         if (poyntSecurityService == null) {
-            context.bindService(new Intent(IPoyntSecurityService.class.getName()),
+            context.bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_SECURITY_SERVICE),
                     mConnection, Context.BIND_AUTO_CREATE);
         } else {
             // already connected ?

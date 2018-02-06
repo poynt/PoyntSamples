@@ -38,8 +38,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:24.0.0-beta1'
     // Poynt SDK and Model Dependencies
-    compile 'co.poynt.api:android-api-model:1.2.75@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:1.2.19@aar'
+    compile 'co.poynt.api:android-api-model:1.2.111-SNAPSHOT@jar'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.2.29-SNAPSHOT@aar'
     compile 'com.google.code.gson:gson:2.5'
     // bit byte manipulation
     compile 'com.github.devnied:bit-lib4j:1.4.10@jar'

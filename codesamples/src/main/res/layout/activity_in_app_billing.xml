@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_in_app_billing"
     android:layout_width="match_parent"
@@ -8,25 +8,51 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="co.poynt.samples.codesamples.InAppBillingActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="23sp"
+        android:id="@+id/status"/>
 
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/getPlansBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Plans" />
 
         <Button
             android:id="@+id/checkSubscriptionBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check Subscription" />
+            android:text="Get \nSubscriptions" />
 
         <Button
             android:id="@+id/launchBillingFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Launch Billing" />
+            android:text="Launch \nBilling" />
+
+        <Button
+            android:id="@+id/replaceSubscription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Replace \nSubscription" />
+
+        <Button
+            android:id="@+id/restoreSubscription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restore \nSubscription" />
 
     </LinearLayout>
 
@@ -34,7 +60,6 @@
         android:id="@+id/separator3"
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:layout_below="@id/buttons"
         android:background="#000000" />
 
 
@@ -42,7 +67,6 @@
         android:id="@+id/demoScroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/separator3"
         android:padding="5dp">
 
         <TextView
@@ -53,4 +77,4 @@
             android:typeface="monospace" />
     </ScrollView>
 
-</RelativeLayout>
+</LinearLayout>

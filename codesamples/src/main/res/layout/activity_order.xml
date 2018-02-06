@@ -15,7 +15,12 @@
         android:id="@+id/createOrderBtn"
         android:layout_below="@+id/textView"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="54dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/createOrderText"
         />
 
     <Button
@@ -25,7 +30,17 @@
         android:id="@+id/pullOpenOrders"
         android:layout_below="@+id/textView"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="54dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/openOrdersTitle"
+        android:layout_marginBottom="20dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/openOrdersText"
         />
 
 </LinearLayout>

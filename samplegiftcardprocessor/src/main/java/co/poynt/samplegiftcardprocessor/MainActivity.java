@@ -110,8 +110,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bindService(new Intent(IPoyntConfigurationService.class.getName()),
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_CONFIGURATION_SERVICE),
                 poyntConfigurationServiceConnection, Context.BIND_AUTO_CREATE);
+//        bindService(new Intent(IPoyntConfigurationService.class.getName()),
+//                poyntConfigurationServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void launchPoyntPayment() {
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mDumpTextView.append("<< " + message + "\n\n");
                 mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
+                Log.d(TAG, "run: " + message);
             }
         });
     }

@@ -7,42 +7,96 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" >
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Display Phone Number screen"
-        android:id="@+id/phoneNumberBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
-    <Button
+        android:orientation="horizontal">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Display Phone Number screen*"
+            android:id="@+id/phoneNumberBtn"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="23sp"
+            android:layout_height="match_parent"
+            android:id="@+id/phoneStatus"
+            android:gravity="center"
+            android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Display Email screen"
-        android:id="@+id/emailBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
-    <Button
+        android:orientation="horizontal">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Display Email screen"
+            android:id="@+id/emailBtn"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="23sp"
+            android:layout_height="match_parent"
+            android:id="@+id/emailStatus"
+            android:gravity="center"
+            android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Display Text Entry screen"
-        android:id="@+id/textEntryBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
-    <Button
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Display Text Entry screen"
+            android:id="@+id/textEntryBtn"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="23sp"
+            android:layout_height="match_parent"
+            android:id="@+id/textStatus"
+            android:gravity="center"
+            android:text=""/>
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Scan QR code / Bar code"
-        android:id="@+id/scanQRBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Scan QR code / Bar code"
+            android:id="@+id/scanQRBtn"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="23sp"
+            android:layout_height="match_parent"
+            android:id="@+id/scanStatus"
+            android:gravity="center"
+            android:text=""/>
+    </LinearLayout>
+
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,15 +107,49 @@
         android:layout_alignParentStart="true"
         />
 
-    <Button
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Display Check-in Button"
+            android:id="@+id/checkInScreenBtn"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="23sp"
+            android:layout_height="match_parent"
+            android:id="@+id/checkinStatus"
+            android:gravity="center"
+            android:text=""/>
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Display Check-in Button"
-        android:id="@+id/checkInScreenBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
-
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Dynamic Currency Conversion"
+            android:id="@+id/dccScreenBtn"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="23sp"
+            android:layout_height="match_parent"
+            android:id="@+id/dccStatus"
+            android:gravity="center"
+            android:text=""/>
+    </LinearLayout>
 
 </LinearLayout>
