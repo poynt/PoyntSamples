@@ -30,8 +30,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // triggers transaction sync; requires permission poynt.permission.LAST_SYNC_TIME_INFO in manifest
-        Intent sendingIntent = new Intent(Intents.ACTION_SYNC_TRANSACTIONS_FROM_CLOUD);
-        sendBroadcast(sendingIntent);
+//        Intent sendingIntent = new Intent(Intents.ACTION_SYNC_TRANSACTIONS_FROM_CLOUD);
+//        sendBroadcast(sendingIntent);
 
         setContentView(R.layout.activity_main);
 
