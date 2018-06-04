@@ -21,17 +21,36 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/payWithRefs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pay with Custom Txn Ref's"
+            android:layout_alignParentStart="true"/>
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/payWithRefsResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pay Order"
             android:id="@+id/payOrderBtn"
             android:layout_below="@+id/chargeBtn"
             android:layout_alignParentStart="true" />
-
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/orderSavedStatus"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/orderSavedStatus"/>
     </LinearLayout>
 
 
@@ -46,17 +65,18 @@
         android:layout_height="wrap_content"
         android:text="$0 Auth"
         android:id="@+id/zeroDollarAuthBtn"/>
-<!--
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Product to Cart and Launch Register"
-        android:id="@+id/launchRegisterBtn"
-        android:layout_below="@+id/payOrderBtn"
-        android:layout_alignParentStart="true" />
+    <!--
 
--->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Product to Cart and Launch Register"
+            android:id="@+id/launchRegisterBtn"
+            android:layout_below="@+id/payOrderBtn"
+            android:layout_alignParentStart="true" />
+
+    -->
 
 
 </LinearLayout>
