@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "co.poynt.samples.codesamples"
@@ -17,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        dev {
+            initWith debug
+            applicationIdSuffix ".dev"
+        }
     }
 }
 
@@ -24,9 +28,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    compile 'co.poynt.api:android-api-model:1.2.111-SNAPSHOT@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:1.2.29-SNAPSHOT@aar'
-    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'co.poynt.api:android-api-model:1.2.113-SNAPSHOT@jar'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.2.30-SNAPSHOT@aar'
+    compile 'com.google.code.gson:gson:2.8.2'
 
     // JWT dependencies - if you want to parse JWTs
     compile 'net.jcip:jcip-annotations:1.0@jar'

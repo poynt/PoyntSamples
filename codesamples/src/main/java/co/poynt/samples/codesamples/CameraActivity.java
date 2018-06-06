@@ -1,11 +1,16 @@
 package co.poynt.samples.codesamples;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Surface;
@@ -35,7 +40,7 @@ public class CameraActivity extends Activity {
     private boolean inPreview = false;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-
+    public static final int REQUEST_CAMERA = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,18 +110,62 @@ public class CameraActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private boolean hasPermission(){
+        return ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    Toast.makeText(this, "Camera permission granted",
+                            Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Camera permission not granted",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+        }
+    }
+
 
     private void startCamera(int cameraId) {
-        // Create an instance of Camera
-        mCamera = getCameraInstance(cameraId);
-        currentCameraId = cameraId;
-        if (mCamera != null) {
-            // rotate if it's front facing camera
-            setCameraDisplayOrientation(currentCameraId);
-            // Create our Preview view and set it as the content of our activity.
-            mPreview = new CameraPreview(this, mCamera);
-            preview.addView(mPreview);
-            inPreview = true;
+        if(Build.VERSION.SDK_INT>=23){
+            if(hasPermission()){
+                mCamera = getCameraInstance(cameraId);
+                currentCameraId = cameraId;
+                if (mCamera != null) {
+                    // rotate if it's front facing camera
+                    setCameraDisplayOrientation(currentCameraId);
+                    // Create our Preview view and set it as the content of our activity.
+                    mPreview = new CameraPreview(this, mCamera);
+                    preview.addView(mPreview);
+                    inPreview = true;
+                }
+            }else {
+                // Camera permission has not been granted yet. Request it directly.
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                        REQUEST_CAMERA);
+            }
+        }else {
+            // Create an instance of Camera
+            mCamera = getCameraInstance(cameraId);
+            currentCameraId = cameraId;
+            if (mCamera != null) {
+                // rotate if it's front facing camera
+                setCameraDisplayOrientation(currentCameraId);
+                // Create our Preview view and set it as the content of our activity.
+                mPreview = new CameraPreview(this, mCamera);
+                preview.addView(mPreview);
+                inPreview = true;
+            }
         }
     }
 
