@@ -193,9 +193,6 @@ public class PaymentActivity extends Activity {
         Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
         collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
         startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REFS_REQUEST);
-
-
-
     }
 
     private List<TransactionReference> generateReferences(){
