@@ -34,11 +34,13 @@ import co.poynt.api.model.Discount;
 import co.poynt.api.model.Fee;
 import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.TransactionAmounts;
+import co.poynt.os.model.InstallmentsOption;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.ReceiptOption;
 import co.poynt.os.model.ReceiptType;
 import co.poynt.os.services.v2.IPoyntActionButtonListener;
 import co.poynt.os.services.v2.IPoyntEmailEntryListener;
+import co.poynt.os.services.v2.IPoyntInstallmentPlanListener;
 import co.poynt.os.services.v2.IPoyntPhoneEntryListener;
 import co.poynt.os.services.v2.IPoyntReceiptChoiceListener;
 import co.poynt.os.services.v2.IPoyntScanCodeListener;
@@ -76,6 +78,10 @@ public class SecondScreenServiceV2Activity extends Activity {
     TextView collectAgreementStatus;
     @Bind(R.id.scanStatus)
     TextView scanStatus;
+    @Bind(R.id.showInstallmentsBtn)
+    TextView showInstallmentsBtn;
+    @Bind(R.id.installmentStatus)
+    TextView installmentStatus;
 
     private IPoyntSecondScreenService secondScreenService;
 
@@ -547,6 +553,97 @@ public class SecondScreenServiceV2Activity extends Activity {
                 public void onCodeEntryCanceled() throws RemoteException {
                     showConfirmation("code entry canceled");
                     setStatus(scanStatus, "CANCELED");
+                }
+            });
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.showInstallmentsBtn)
+    public void showInstallments(){
+
+        /*
+            EXTRA_TITLE
+            EXTRA_BACKGROUND_COLOR
+            EXTRA_FONT_COLOR
+            EXTRA_FONT_SIZE
+         */
+        Bundle options = new Bundle();
+        //options.putString(Intents.EXTRA_TITLE, "Custom Title");
+        //options.putString(Intents.EXTRA_BACKGROUND_COLOR, "#0000FF");
+        //options.putString(Intents.EXTRA_FONT_SIZE, "23");
+        options.putString(Intents.EXTRA_FONT_COLOR, "#0A46ED");
+
+
+        List<InstallmentsOption> installmentsOptions = new ArrayList<>();
+
+        InstallmentsOption mainOption = new InstallmentsOption();
+        mainOption.setBackgroundColor("#000000");
+        //mainOption.setTitleColor("#FFFFFF");
+        mainOption.setId("mainOption");
+        mainOption.setTitleText("Pay in Full - $100");
+        mainOption.setSubTitleText("The best option");
+        //mainOption.setTitleFontSize(23f);
+        installmentsOptions.add(mainOption);
+
+        InstallmentsOption option2 = new InstallmentsOption();
+        //option2.setBackgroundColor("#000000");
+        //option2.setTitleColor("#FFFFFF");
+        option2.setTitleFontSize(23f);
+        option2.setWidth(300);
+        option2.setId("option2");
+        option2.setTitleText("3 easy installments of $40");
+        option2.setSubTitleColor("#FFFFFF");
+        option2.setSubTitleText("Fine print goes here...");
+        installmentsOptions.add(option2);
+
+        InstallmentsOption option3 = new InstallmentsOption();
+        //option2.setBackgroundColor("#000000");
+        //option2.setTitleColor("#FFFFFF");
+        option3.setTitleFontSize(23f);
+        option3.setWidth(300);
+        option3.setId("option3");
+        option3.setTitleText("5 Easy Installments of $30");
+        option3.setSubTitleColor("#FFFFFF");
+        option3.setSubTitleText("Fine print goes here...");
+        installmentsOptions.add(option3);
+
+        InstallmentsOption option4 = new InstallmentsOption();
+        //option2.setBackgroundColor("#000000");
+        //option2.setTitleColor("#FFFFFF");
+        option4.setTitleFontSize(23f);
+        option4.setWidth(300);
+        option4.setId("option4");
+        option4.setTitleText("10 Installments of $15");
+        option4.setSubTitleColor("#FFFFFF");
+        option4.setSubTitleText("Fine print goes here...");
+        installmentsOptions.add(option4);
+
+        InstallmentsOption option5 = new InstallmentsOption();
+        //option2.setBackgroundColor("#000000");
+        //option2.setTitleColor("#FFFFFF");
+        option5.setTitleFontSize(23f);
+        option5.setWidth(300);
+        option5.setId("option5");
+        option5.setTitleText("20 Installments of $7");
+        option5.setSubTitleColor("#CCCCCC");
+        option5.setSubTitleText("Fine print goes here...");
+        installmentsOptions.add(option5);
+
+
+        try {
+            secondScreenService.captureInstallmentOption(options, installmentsOptions, new IPoyntInstallmentPlanListener.Stub() {
+                @Override
+                public void onOptionSelection(String s) throws RemoteException {
+                    Log.d(TAG, "onOptionSelection: " + s);
+                    secondScreenService.displayMessage("You've selected option: " + s,  null);
+                    setStatus(installmentStatus, "SUCCESS");
+                }
+
+                @Override
+                public void onError(String s) throws RemoteException {
+                    Log.e(TAG, "onError: " + s);
                 }
             });
         } catch (RemoteException e) {
