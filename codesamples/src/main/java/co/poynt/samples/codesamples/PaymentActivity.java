@@ -36,6 +36,8 @@ import co.poynt.api.model.FundingSourceAccountType;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAction;
+import co.poynt.api.model.TransactionReference;
+import co.poynt.api.model.TransactionReferenceType;
 import co.poynt.os.contentproviders.orders.transactionreferences.TransactionreferencesColumns;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
@@ -52,6 +54,7 @@ public class PaymentActivity extends Activity {
     // request code for payment service activity
     private static final int COLLECT_PAYMENT_REQUEST = 13132;
     private static final int ZERO_DOLLAR_AUTH_REQUEST = 13133;
+    private static final int COLLECT_PAYMENT_REFS_REQUEST = 13134;
     private static final String TAG = PaymentActivity.class.getSimpleName();
 
     private IPoyntTransactionService mTransactionService;
@@ -59,9 +62,10 @@ public class PaymentActivity extends Activity {
 
     Button chargeBtn;
     Button payOrderBtn;
-    Button launchRegisterBtn;
+    Button payWithRefsBtn;
     Button zeroDollarAuthBtn;
     TextView orderSavedStatus;
+    TextView payWithRefsResult;
 
     private Gson gson;
 
@@ -152,6 +156,15 @@ public class PaymentActivity extends Activity {
             }
         });
 
+        payWithRefsBtn = (Button) findViewById(R.id.payWithRefs);
+        payWithRefsResult = (TextView) findViewById(R.id.payWithRefsResult);
+        payWithRefsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                paymentWithCustomRefs();
+            }
+        });
+
 /*
 
         launchRegisterBtn = (Button) findViewById(R.id.launchRegisterBtn);
@@ -169,7 +182,29 @@ public class PaymentActivity extends Activity {
         });
 */
     }
+    private void paymentWithCustomRefs(){
+        Payment payment = new Payment();
+        payment.setCurrency("USD");
+        payment.setAmount(200l);
+        payment.setReferences(generateReferences());
+        payment.setSkipSignatureScreen(true);
+        payment.setSkipReceiptScreen(true);
+        payment.setSkipPaymentConfirmationScreen(true);
+        Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+        collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+        startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REFS_REQUEST);
+    }
 
+    private List<TransactionReference> generateReferences(){
+        List<TransactionReference> transactionReferences = new ArrayList<>();
+        TransactionReference transactionReference1 = new TransactionReference();
+        transactionReference1.setCustomType("posReferenceId");
+        transactionReference1.setType(TransactionReferenceType.CUSTOM);
+        transactionReference1.setId("12345");
+
+        transactionReferences.add(transactionReference1);
+        return transactionReferences;
+    }
     private void doZeroDollarAuth() {
         Payment p = new Payment();
         p.setAction(TransactionAction.VERIFY);
@@ -439,6 +474,19 @@ public class PaymentActivity extends Activity {
                 }.getType();
                 Log.d(TAG, gson.toJson(payment, paymentType));
             }
+        } else if (requestCode == COLLECT_PAYMENT_REFS_REQUEST){
+            Log.d(TAG, "onActivityResult: Payment with References");
+            if(resultCode == Activity.RESULT_OK){
+                if(data!=null){
+                    Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
+                    if(payment!=null && payment.getReferences()!=null) {
+                        Log.d(TAG, payment.getReferences().toString());
+                        if(payment.getReferences().get(0)!=null)
+                            payWithRefsResult.setText(payment.getReferences().get(0).toString());
+                    }
+                }
+            }
+
         }
     }
 
