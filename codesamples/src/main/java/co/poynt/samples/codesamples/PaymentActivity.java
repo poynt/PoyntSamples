@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -64,6 +65,8 @@ public class PaymentActivity extends Activity {
     Button payOrderBtn;
     Button payWithRefsBtn;
     Button zeroDollarAuthBtn;
+    Button launchAndCancelBtn;
+    Button nonRefCredit;
     TextView orderSavedStatus;
     TextView payWithRefsResult;
 
@@ -164,6 +167,52 @@ public class PaymentActivity extends Activity {
                 paymentWithCustomRefs();
             }
         });
+
+        launchAndCancelBtn = (Button) findViewById(R.id.launchAndCancelBtn);
+        launchAndCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment p = new Payment();
+                // disable EMV contact
+                p.setDisableEMVCT(true);
+                p.setAmount(1000L);
+                p.setCurrency("USD");
+
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, p);
+
+                Handler h = new Handler(getMainLooper());
+                // Cancel payment fragment after 2 seconds
+                h.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(Intents.ACTION_CANCEL_PAYMENT_FRAGMENT);
+                        // Only the app that started Payment fragment can cancel it.
+                        intent.putExtra(Intents.INTENT_EXTRAS_CALLER_PACKAGE_NAME, getPackageName());
+                        sendBroadcast(intent);
+                    }
+                }, 2000L);
+
+
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        nonRefCredit = (Button) findViewById(R.id.nonRefCredit);
+        nonRefCredit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment p = new Payment();
+                p.setCurrency("USD");
+                p.setNonReferencedCredit(true);
+                p.setAmount(1000L);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, p);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+
+            }
+        });
+
 
 /*
 

@@ -60,11 +60,24 @@
         android:text="Launch Poynt Txn list"
         android:id="@+id/launchTxnList" />
 
+    <!-- TSYS and Elavon only -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="$0 Auth"
         android:id="@+id/zeroDollarAuthBtn"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Launch Payment and Cancel"
+        android:id="@+id/launchAndCancelBtn"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Non-referenced Credit(Refund)"
+        android:id="@+id/nonRefCredit"/>
 
     <!--
 

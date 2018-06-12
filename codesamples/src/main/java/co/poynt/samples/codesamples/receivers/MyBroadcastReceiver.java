@@ -21,9 +21,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         } else if (Intents.ACTION_PAYMENT_CANCELED.equals(action)) {
             Log.d(TAG, "Receved broadcast: PAYMENT_CANCELED");
         } else if (Intents.ACTION_SECOND_SCREEN_IDLE.equals(action)){ // home screen is displayed
-            Log.d(TAG, "SECOND SCREEN IDLE");
+            Log.d(TAG, action);
         } else if (Intents.ACTION_SECOND_SCREEN_BUSY.equals(action)){ // payment fragment using second screen
-            Log.d(TAG, "SECOND SCREEN BUSY");
+            Log.d(TAG, action);
         }
     }
 }
