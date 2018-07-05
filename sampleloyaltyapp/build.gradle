@@ -44,7 +44,7 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     // Poynt SDK and Model Dependencies
-    compile 'co.poynt.api:android-api-model:1.2.113@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:1.2.30-SNAPSHOT@aar'
+    compile 'co.poynt.api:android-api-model:1.2.114-SNAPSHOT@jar'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.2.31-SNAPSHOT@aar'
     compile 'com.google.code.gson:gson:2.8.2'
 }
