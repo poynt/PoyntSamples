@@ -8,8 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import co.poynt.os.model.Intents;
-
 public class MainActivity extends Activity {
     private Button transactionListBtn;
     private Button terminalUserLoginBtn;
@@ -25,6 +23,7 @@ public class MainActivity extends Activity {
     private Button accessoriesActivityBtn;
     private Button cameraActivityBtn;
     private Button nonPaymentCardReaderActivityBtn;
+    private Button printerServiceActivityBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,6 +171,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NonPaymentCardReaderActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        printerServiceActivityBtn = (Button) findViewById(R.id.printerServiceActivityBtn);
+        printerServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PrinterServiceActivity.class);
                 startActivity(intent);
             }
         });

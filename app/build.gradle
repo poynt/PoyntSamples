@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "co.poynt.samples"
@@ -24,8 +24,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
 
     // Poynt Dependencies
-    compile 'co.poynt.api:android-api-model:1.2.114-SNAPSHOT@jar'
-    compile 'co.poynt.android.sdk:poynt-sdk:1.2.31-SNAPSHOT@aar'
+    compile 'co.poynt.api:android-api-model:1.2.118'
+    compile 'co.poynt.android.sdk:poynt-sdk:1.2.31'
     compile 'com.google.code.gson:gson:2.8.2'
 
     // JWT dependencies - if you want to parse JWTs
