@@ -156,6 +156,13 @@
             android:text="Non-Payment Card Reader Activity*"
             android:textAlignment="center" />
 
-
+        <Button
+            android:id="@+id/printerServiceActivityBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@color/gray"
+            android:text="Printer Service Activity"
+            android:textAlignment="center" />
     </LinearLayout>
 </ScrollView>

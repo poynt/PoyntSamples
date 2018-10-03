@@ -93,6 +93,7 @@
 
         <activity android:name=".NonPaymentCardReaderActivity" />
 
+        <activity android:name=".PrinterServiceActivity" />
 
         <receiver
             android:name=".CustomerDetectedReceiver"

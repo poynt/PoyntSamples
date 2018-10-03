@@ -44,15 +44,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pay Order"
-            android:id="@+id/payOrderBtn"
-            android:layout_below="@+id/chargeBtn"
-            android:layout_alignParentStart="true" />
+            android:id="@+id/payOrderBtn"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/orderSavedStatus"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pay Order with Tip"
+            android:id="@+id/payOrderWithTipBtn"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tipStatus"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cash Txn with Tip"
+            android:id="@+id/cashTxnWithTip" />
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
