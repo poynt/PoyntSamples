@@ -102,6 +102,42 @@
         android:text="Non-referenced Credit(Refund)"
         android:id="@+id/nonRefCredit"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cash With Single Tax"
+        android:id="@+id/cash_with_single_tax"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cash With Multiple Tax"
+        android:id="@+id/cash_with_multiple_tax"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cash With Single Tax And Tip"
+        android:id="@+id/cash_with_single_tax_and_tip"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Card With Single Tax"
+        android:id="@+id/card_with_single_tax"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Card With Multiple Tax"
+        android:id="@+id/card_with_multiple_tax"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Card With Single Tax And Tip"
+        android:id="@+id/card_with_single_tax_and_tip"/>
+
     <!--
 
         <Button

@@ -71,6 +71,12 @@ public class PaymentActivity extends Activity {
     Button nonRefCredit;
     Button payOrderWithTipBtn;
     Button payCashWithTip;
+    Button cashWithSingleTax;
+    Button cashWithMultipleTax;
+    Button cashWithTaxAndTip;
+    Button cardWithSingleTax;
+    Button cardWithMultipleTax;
+    Button cardWithTaxAndTip;
     TextView orderSavedStatus;
     TextView payWithRefsResult;
     TextView tipStatus;
@@ -241,6 +247,110 @@ public class PaymentActivity extends Activity {
                 startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
             }
         });
+
+        cashWithSingleTax = (Button) findViewById(R.id.cash_with_single_tax);
+        cashWithSingleTax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment payment = new Payment();
+                Map<String, String> processorOptions = new HashMap<>();
+                processorOptions.put("stateTaxAmount", "500");
+                payment.setProcessorOptions(processorOptions);
+                payment.setCurrency("USD");
+                payment.setAmount(1000L + 500L);
+                payment.setCashOnly(true);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        cashWithMultipleTax = (Button) findViewById(R.id.cash_with_multiple_tax);
+        cashWithMultipleTax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment payment = new Payment();
+                Map<String, String> processorOptions = new HashMap<>();
+                processorOptions.put("municipalTaxAmount", "1000");
+                processorOptions.put("stateTaxAmount", "500");
+                payment.setProcessorOptions(processorOptions);
+                payment.setCurrency("USD");
+                payment.setAmount(1000L + 1500L);
+                payment.setCashOnly(true);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        cashWithTaxAndTip = (Button) findViewById(R.id.cash_with_single_tax_and_tip);
+        cashWithTaxAndTip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment payment = new Payment();
+                Map<String, String> processorOptions = new HashMap<>();
+                processorOptions.put("stateTaxAmount", "500");
+                payment.setProcessorOptions(processorOptions);
+                payment.setCurrency("USD");
+                payment.setTipAmount(200l);
+                payment.setAmount(1000L + 200L + 500L);
+                payment.setCashOnly(true);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        cardWithSingleTax = (Button) findViewById(R.id.card_with_single_tax);
+        cardWithSingleTax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment payment = new Payment();
+                Map<String, String> processorOptions = new HashMap<>();
+                processorOptions.put("stateTaxAmount", "500");
+                payment.setProcessorOptions(processorOptions);
+                payment.setCurrency("USD");
+                payment.setAmount(1000L + 500L);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        cardWithMultipleTax = (Button) findViewById(R.id.card_with_multiple_tax);
+        cardWithMultipleTax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment payment = new Payment();
+                Map<String, String> processorOptions = new HashMap<>();
+                processorOptions.put("municipalTaxAmount", "1000");
+                processorOptions.put("stateTaxAmount", "500");
+                payment.setProcessorOptions(processorOptions);
+                payment.setCurrency("USD");
+                payment.setAmount(1000L + 1500L);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        cardWithTaxAndTip = (Button) findViewById(R.id.card_with_single_tax_and_tip);
+        cardWithTaxAndTip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment payment = new Payment();
+                Map<String, String> processorOptions = new HashMap<>();
+                processorOptions.put("stateTaxAmount", "500");
+                payment.setProcessorOptions(processorOptions);
+                payment.setCurrency("USD");
+                payment.setTipAmount(200l);
+                payment.setAmount(1000L + 200L + 500L);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
 
 /*
 
