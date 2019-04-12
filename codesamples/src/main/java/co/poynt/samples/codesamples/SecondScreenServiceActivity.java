@@ -3,6 +3,8 @@ package co.poynt.samples.codesamples;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -33,6 +35,7 @@ import co.poynt.os.services.v1.IPoyntSecondScreenCodeScanListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenDynamicCurrConversionListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenEmailEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenPhoneEntryListener;
+import co.poynt.os.services.v1.IPoyntSecondScreenRatingEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
 import co.poynt.os.services.v1.IPoyntSecondScreenTextEntryListener;
 
@@ -56,6 +59,8 @@ public class SecondScreenServiceActivity extends Activity {
     //@Bind(R.id.printImageBtn) Button printImageBtn;
     @Bind(R.id.dccScreenBtn)
     Button dccScreenBtn;
+    @Bind(R.id.collectRatingBtn)
+    Button collectRatingBtn;
 
     @Bind(R.id.phoneStatus)
     TextView phoneStatus;
@@ -69,6 +74,8 @@ public class SecondScreenServiceActivity extends Activity {
     TextView checkinStatus;
     @Bind(R.id.dccStatus)
     TextView dccStatus;
+    @Bind(R.id.collectRatingStatus)
+    TextView ratingStatus;
 
 
     private IPoyntSecondScreenService secondScreenService;
@@ -381,4 +388,32 @@ public class SecondScreenServiceActivity extends Activity {
             e.printStackTrace();
         }
     }
+
+    @OnClick(R.id.collectRatingBtn)
+    public void showRatingScreen(){
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poynt_logo);
+        try {
+            // Scale image is deprecated, just pass null
+            secondScreenService.collectRating(1, 5, 1, "How did we do", bitmap, null, ratingEntryListener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    IPoyntSecondScreenRatingEntryListener ratingEntryListener = new IPoyntSecondScreenRatingEntryListener.Stub() {
+        @Override
+        public void onRatingEntered(int i) throws RemoteException {
+            Log.d(TAG, "Entered rating received");
+            setStatus(ratingStatus, "Received rating");
+            showWelcomeScreen();
+        }
+
+        @Override
+        public void onRatingEntryCanceled() throws RemoteException {
+            Log.d(TAG, "Rating cancelled by user");
+            setStatus(ratingStatus, "Cancelled by user");
+            showWelcomeScreen();
+        }
+    };
 }

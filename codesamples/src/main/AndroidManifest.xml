@@ -93,6 +93,7 @@
 
         <activity android:name=".NonPaymentCardReaderActivity" />
 
+        <activity android:name=".PrinterServiceActivity" />
 
         <receiver
             android:name=".CustomerDetectedReceiver"
@@ -110,6 +111,8 @@
             <intent-filter>
                 <action android:name="poynt.intent.action.PAYMENT_CANCELED" />
                 <action android:name="poynt.intent.action.TRANSACTION_COMPLETED" />
+                <action android:name="poynt.intent.action.SECOND_SCREEN_BUSY" />
+                <action android:name="poynt.intent.action.SECOND_SCREEN_IDLE" />
             </intent-filter>
         </receiver>
 

@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -36,6 +37,9 @@ import co.poynt.api.model.FundingSourceAccountType;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAction;
+import co.poynt.api.model.TransactionAmounts;
+import co.poynt.api.model.TransactionReference;
+import co.poynt.api.model.TransactionReferenceType;
 import co.poynt.os.contentproviders.orders.transactionreferences.TransactionreferencesColumns;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
@@ -50,8 +54,10 @@ import co.poynt.samples.codesamples.utils.Util;
 public class PaymentActivity extends Activity {
 
     // request code for payment service activity
+    private static final int COLLECT_PAYMENT_WITH_TIP_REQUEST = 13131;
     private static final int COLLECT_PAYMENT_REQUEST = 13132;
     private static final int ZERO_DOLLAR_AUTH_REQUEST = 13133;
+    private static final int COLLECT_PAYMENT_REFS_REQUEST = 13134;
     private static final String TAG = PaymentActivity.class.getSimpleName();
 
     private IPoyntTransactionService mTransactionService;
@@ -59,10 +65,15 @@ public class PaymentActivity extends Activity {
 
     Button chargeBtn;
     Button payOrderBtn;
-    Button launchRegisterBtn;
+    Button payWithRefsBtn;
     Button zeroDollarAuthBtn;
+    Button launchAndCancelBtn;
+    Button nonRefCredit;
+    Button payOrderWithTipBtn;
+    Button payCashWithTip;
     TextView orderSavedStatus;
-
+    TextView payWithRefsResult;
+    TextView tipStatus;
     private Gson gson;
 
     String lastReferenceId;
@@ -116,7 +127,7 @@ public class PaymentActivity extends Activity {
         chargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchPoyntPayment(100l, null);
+                launchPoyntPayment(100l,false, null);
             }
         });
 
@@ -130,7 +141,7 @@ public class PaymentActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Order order = Util.generateOrder();
-                launchPoyntPayment(order.getAmounts().getNetTotal(), order);
+                launchPoyntPayment(order.getAmounts().getNetTotal(), false, order);
             }
         });
 
@@ -152,6 +163,85 @@ public class PaymentActivity extends Activity {
             }
         });
 
+        payWithRefsBtn = (Button) findViewById(R.id.payWithRefs);
+        payWithRefsResult = (TextView) findViewById(R.id.payWithRefsResult);
+        payWithRefsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                paymentWithCustomRefs();
+            }
+        });
+
+        launchAndCancelBtn = (Button) findViewById(R.id.launchAndCancelBtn);
+        launchAndCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment p = new Payment();
+                // disable EMV contact
+                p.setDisableEMVCT(true);
+                p.setAmount(1000L);
+                p.setCurrency("USD");
+
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, p);
+
+                Handler h = new Handler(getMainLooper());
+                // Cancel payment fragment after 2 seconds
+                h.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(Intents.ACTION_CANCEL_PAYMENT_FRAGMENT);
+                        // Only the app that started Payment fragment can cancel it.
+                        intent.putExtra(Intents.INTENT_EXTRAS_CALLER_PACKAGE_NAME, getPackageName());
+                        sendBroadcast(intent);
+                    }
+                }, 2000L);
+
+
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
+        nonRefCredit = (Button) findViewById(R.id.nonRefCredit);
+        nonRefCredit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment p = new Payment();
+                p.setCurrency("USD");
+                p.setNonReferencedCredit(true);
+                p.setAmount(1000L);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, p);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+
+            }
+        });
+        // Pay for order with Tip and check for tip amounts in transaction, tip map
+        payOrderWithTipBtn = (Button) findViewById(R.id.payOrderWithTipBtn);
+        tipStatus = (TextView) findViewById(R.id.tipStatus);
+        payOrderWithTipBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Order order = Util.generateOrder();
+                launchPoyntPayment(0l, true, order);
+            }
+        });
+
+        // Pay with cash for a transaction with tip
+        payCashWithTip = (Button) findViewById(R.id.cashTxnWithTip);
+        payCashWithTip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Payment cashPayment = new Payment();
+                cashPayment.setAmount(1000l);
+                cashPayment.setTipAmount(200l);
+                cashPayment.setCashOnly(true);
+                Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+                collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, cashPayment);
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
+        });
+
 /*
 
         launchRegisterBtn = (Button) findViewById(R.id.launchRegisterBtn);
@@ -169,7 +259,29 @@ public class PaymentActivity extends Activity {
         });
 */
     }
+    private void paymentWithCustomRefs(){
+        Payment payment = new Payment();
+        payment.setCurrency("USD");
+        payment.setAmount(200l);
+        payment.setReferences(generateReferences());
+        payment.setSkipSignatureScreen(true);
+        payment.setSkipReceiptScreen(true);
+        payment.setSkipPaymentConfirmationScreen(true);
+        Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+        collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+        startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REFS_REQUEST);
+    }
 
+    private List<TransactionReference> generateReferences(){
+        List<TransactionReference> transactionReferences = new ArrayList<>();
+        TransactionReference transactionReference1 = new TransactionReference();
+        transactionReference1.setCustomType("posReferenceId");
+        transactionReference1.setType(TransactionReferenceType.CUSTOM);
+        transactionReference1.setId("12345");
+
+        transactionReferences.add(transactionReference1);
+        return transactionReferences;
+    }
     private void doZeroDollarAuth() {
         Payment p = new Payment();
         p.setAction(TransactionAction.VERIFY);
@@ -190,8 +302,8 @@ public class PaymentActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         bindServices();
     }
 
@@ -276,12 +388,13 @@ public class PaymentActivity extends Activity {
     };
 
     public void getTransaction(String txnId) {
-        try {
-
-            mTransactionService.getTransaction(txnId, UUID.randomUUID().toString(),
-                    mTransactionServiceListener);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if(mTransactionService!=null) {
+            try {
+                mTransactionService.getTransaction(txnId, UUID.randomUUID().toString(),
+                        mTransactionServiceListener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -289,7 +402,7 @@ public class PaymentActivity extends Activity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTransactionService = IPoyntTransactionService.Stub.asInterface(iBinder);
 
-
+            Log.d(TAG, "Transaction service connected");
             try {
                 mTransactionService.getTransaction("fcf98959-c188-42d1-b085-786d21e552ac", UUID.randomUUID().toString(), mTransactionServiceListener);
             } catch (RemoteException e) {
@@ -299,10 +412,11 @@ public class PaymentActivity extends Activity {
 
         public void onServiceDisconnected(ComponentName componentName) {
             mTransactionService = null;
+            Log.d(TAG, "Transaction service disconnected");
         }
     };
 
-    private void launchPoyntPayment(long amount, Order order) {
+    private void launchPoyntPayment(long amount, boolean collectTip, Order order) {
         String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
 
         Payment payment = new Payment();
@@ -343,7 +457,11 @@ public class PaymentActivity extends Activity {
         try {
             Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
             collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
-            startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            if(collectTip){
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_WITH_TIP_REQUEST);
+            }else {
+                startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+            }
         } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Poynt Payment Activity not found - did you install PoyntServices?", ex);
         }
@@ -438,6 +556,46 @@ public class PaymentActivity extends Activity {
                 Type paymentType = new TypeToken<Payment>() {
                 }.getType();
                 Log.d(TAG, gson.toJson(payment, paymentType));
+            }
+        } else if (requestCode == COLLECT_PAYMENT_REFS_REQUEST) {
+            Log.d(TAG, "onActivityResult: Payment with References");
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
+                    if (payment != null && payment.getReferences() != null) {
+                        Log.d(TAG, payment.getReferences().toString());
+                        if (payment.getReferences().get(0) != null)
+                            payWithRefsResult.setText(payment.getReferences().get(0).toString());
+                    }
+                }
+            }
+
+        } else if (requestCode == COLLECT_PAYMENT_WITH_TIP_REQUEST) {
+            Log.d(TAG, "onActivityResult: Payment with Tip Amount");
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Payment payment = data.getParcelableExtra(Intents.INTENT_EXTRAS_PAYMENT);
+                    if (payment != null) {
+                        if (payment.getTipAmounts() != null && payment.getTransactions().get(0) != null) {
+                            Map tipMap = payment.getTipAmounts();
+                            Log.d(TAG, "TIP_MAP: " + tipMap.toString());
+                            Log.d(TAG, "TIP_AMOUNT: " + payment.getTipAmount());
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tipStatus.setText("Tip Returned");
+                                    }
+                                });
+                        }else{
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tipStatus.setText("Tip Not Returned");
+                                }
+                            });
+                        }
+                    }
+                }
             }
         }
     }
