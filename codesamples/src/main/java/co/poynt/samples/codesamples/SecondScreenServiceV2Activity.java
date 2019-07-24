@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Discount;
@@ -51,36 +49,36 @@ import co.poynt.os.services.v2.IPoyntTipListener;
 public class SecondScreenServiceV2Activity extends Activity {
 
     private static final String TAG = SecondScreenServiceV2Activity.class.getSimpleName();
-    @Bind(R.id.captureTip)
+    @BindView(R.id.captureTip)
     Button captureTip;
-    @Bind(R.id.showCartConfirmation)
+    @BindView(R.id.showCartConfirmation)
     Button showCartConfirmation;
-    @Bind(R.id.captureReceiptChoice)
+    @BindView(R.id.captureReceiptChoice)
     Button captureReceiptChoice;
-    @Bind(R.id.captureSignature)
+    @BindView(R.id.captureSignature)
     Button captureSignature;
-    @Bind(R.id.displayMessage)
+    @BindView(R.id.displayMessage)
     Button displayMessage;
-    @Bind(R.id.collectAgreement)
+    @BindView(R.id.collectAgreement)
     Button collectAgreement;
-    @Bind(R.id.scanCode)
+    @BindView(R.id.scanCode)
     Button scanCode;
 
-    @Bind(R.id.tipStatus)
+    @BindView(R.id.tipStatus)
     TextView tipStatus;
-    @Bind(R.id.showCartStatus)
+    @BindView(R.id.showCartStatus)
     TextView showCartStatus;
-    @Bind(R.id.receiptChoiceStatus)
+    @BindView(R.id.receiptChoiceStatus)
     TextView receiptChoiceStatus;
-    @Bind(R.id.captureSignatureStatus)
+    @BindView(R.id.captureSignatureStatus)
     TextView captureSignatureStatus;
-    @Bind(R.id.collectAgreementStatus)
+    @BindView(R.id.collectAgreementStatus)
     TextView collectAgreementStatus;
-    @Bind(R.id.scanStatus)
+    @BindView(R.id.scanStatus)
     TextView scanStatus;
-    @Bind(R.id.showInstallmentsBtn)
+    @BindView(R.id.showInstallmentsBtn)
     TextView showInstallmentsBtn;
-    @Bind(R.id.installmentStatus)
+    @BindView(R.id.installmentStatus)
     TextView installmentStatus;
 
     private IPoyntSecondScreenService secondScreenService;

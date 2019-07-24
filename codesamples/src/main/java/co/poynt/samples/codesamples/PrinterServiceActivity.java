@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.os.model.AccessoryProvider;
@@ -40,13 +40,13 @@ public class PrinterServiceActivity extends Activity{
     private HashMap<AccessoryProvider, IBinder> mPrinterServices = new HashMap<>();
 
 
-    @Bind(R.id.printJobBtn)
+    @BindView(R.id.printJobBtn)
     Button printJobBtn;
-    @Bind(R.id.printReceiptBtn)
+    @BindView(R.id.printReceiptBtn)
     Button printReceiptBtn;
-    @Bind(R.id.printReceiptJobBtn)
+    @BindView(R.id.printReceiptJobBtn)
     Button printReceiptJobBtn;
-    @Bind(R.id.printerStatus)
+    @BindView(R.id.printerStatus)
     TextView printerStatusText;
 
     @Override

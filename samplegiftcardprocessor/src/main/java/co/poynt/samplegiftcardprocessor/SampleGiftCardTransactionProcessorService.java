@@ -17,6 +17,10 @@ import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAction;
 import co.poynt.os.model.Payment;
 import co.poynt.os.services.v1.IPoyntCheckCardListener;
+import co.poynt.os.services.v1.IPoyntCheckPaymentListener;
+import co.poynt.os.services.v1.IPoyntGetTransactionsListener;
+import co.poynt.os.services.v1.IPoyntTerminalStatusListener;
+import co.poynt.os.services.v1.IPoyntTerminalTotalsListener;
 import co.poynt.os.services.v1.IPoyntTransactionBalanceInquiryListener;
 import co.poynt.os.services.v1.IPoyntTransactionCaptureAllListener;
 import co.poynt.os.services.v1.IPoyntTransactionService;
@@ -128,6 +132,31 @@ public class SampleGiftCardTransactionProcessorService extends Service {
         @Override
         public void captureAllTransactionsWithOptions(String s, Bundle bundle, CaptureAllRequest captureAllRequest, IPoyntTransactionCaptureAllListener iPoyntTransactionCaptureAllListener) throws RemoteException {
             Log.d(TAG, "captureAllTransactionsWithOptions()");
+
+        }
+
+        @Override
+        public void getChildTransactions(String s, String s1, IPoyntGetTransactionsListener iPoyntGetTransactionsListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void checkPayment(Bundle bundle, String s, IPoyntCheckPaymentListener iPoyntCheckPaymentListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getTotals(boolean b, boolean b1, IPoyntTerminalTotalsListener iPoyntTerminalTotalsListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getTerminalStatus(IPoyntTerminalStatusListener iPoyntTerminalStatusListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void checkCardV2(Payment payment, Bundle bundle, IPoyntCheckCardListener iPoyntCheckCardListener) throws RemoteException {
 
         }
 

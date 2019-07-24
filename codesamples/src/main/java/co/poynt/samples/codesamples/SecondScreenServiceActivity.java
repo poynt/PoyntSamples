@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Discount;
@@ -44,37 +44,37 @@ public class SecondScreenServiceActivity extends Activity {
     private static final String TAG = SecondScreenServiceActivity.class.getSimpleName();
 
 
-    @Bind(R.id.phoneNumberBtn)
+    @BindView(R.id.phoneNumberBtn)
     Button phoneNumberBtn;
-    @Bind(R.id.scanQRBtn)
+    @BindView(R.id.scanQRBtn)
     Button scanQRBtn;
-    @Bind(R.id.displayItemsBtn)
+    @BindView(R.id.displayItemsBtn)
     Button displayItemsBtn;
-    @Bind(R.id.checkInScreenBtn)
+    @BindView(R.id.checkInScreenBtn)
     Button checkInScreenBtn;
-    @Bind(R.id.emailBtn)
+    @BindView(R.id.emailBtn)
     Button emailBtn;
-    @Bind(R.id.textEntryBtn)
+    @BindView(R.id.textEntryBtn)
     Button textEntryBtn;
     //@Bind(R.id.printImageBtn) Button printImageBtn;
-    @Bind(R.id.dccScreenBtn)
+    @BindView(R.id.dccScreenBtn)
     Button dccScreenBtn;
-    @Bind(R.id.collectRatingBtn)
+    @BindView(R.id.collectRatingBtn)
     Button collectRatingBtn;
 
-    @Bind(R.id.phoneStatus)
+    @BindView(R.id.phoneStatus)
     TextView phoneStatus;
-    @Bind(R.id.emailStatus)
+    @BindView(R.id.emailStatus)
     TextView emailStatus;
-    @Bind(R.id.textStatus)
+    @BindView(R.id.textStatus)
     TextView textStatus;
-    @Bind(R.id.scanStatus)
+    @BindView(R.id.scanStatus)
     TextView scanStatus;
-    @Bind(R.id.checkinStatus)
+    @BindView(R.id.checkinStatus)
     TextView checkinStatus;
-    @Bind(R.id.dccStatus)
+    @BindView(R.id.dccStatus)
     TextView dccStatus;
-    @Bind(R.id.collectRatingStatus)
+    @BindView(R.id.collectRatingStatus)
     TextView ratingStatus;
 
 
