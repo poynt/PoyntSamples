@@ -7,8 +7,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -20,8 +18,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -30,32 +26,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Business;
 import co.poynt.api.model.ClientContext;
-import co.poynt.api.model.Discount;
 import co.poynt.api.model.Fee;
-import co.poynt.api.model.FulfillmentInstruction;
 import co.poynt.api.model.FulfillmentStatus;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.OrderAmounts;
 import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.OrderItemStatus;
-import co.poynt.api.model.OrderList;
 import co.poynt.api.model.OrderStatus;
 import co.poynt.api.model.OrderStatuses;
 import co.poynt.api.model.Transaction;
-import co.poynt.api.model.TransactionAmounts;
 import co.poynt.api.model.UnitOfMeasure;
 import co.poynt.os.contentproviders.orders.clientcontexts.ClientcontextsColumns;
 import co.poynt.os.contentproviders.orders.clientcontexts.ClientcontextsCursor;
 import co.poynt.os.contentproviders.orders.orders.OrdersColumns;
 import co.poynt.os.contentproviders.orders.orders.OrdersCursor;
-import co.poynt.os.contentproviders.orders.orders.OrdersSelection;
 import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesColumns;
-import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesSelection;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
 import co.poynt.os.model.PoyntError;
@@ -72,23 +62,23 @@ public class OrderActivity extends Activity {
 
     Business b;
 
-    @Bind(R.id.pullOpenOrders)
+    @BindView(R.id.pullOpenOrders)
     Button pullOpenOrders;
-    @Bind(R.id.completeOrder)
+    @BindView(R.id.completeOrder)
     Button completeOrderBtn;
-    @Bind(R.id.updateOrder)
+    @BindView(R.id.updateOrder)
     Button updateOrderBtn;
-    @Bind(R.id.getOrder)
+    @BindView(R.id.getOrder)
     Button getOrderBtn;
-    @Bind(R.id.cancelOrder)
+    @BindView(R.id.cancelOrder)
     Button cancelOrderBtn;
-    @Bind(R.id.resultText)
+    @BindView(R.id.resultText)
     TextView resultTextView;
-    @Bind(R.id.orderStatus)
+    @BindView(R.id.orderStatus)
     TextView orderStatusText;
-    @Bind(R.id.currentOrderId)
+    @BindView(R.id.currentOrderId)
     TextView currentOrderTextView;
-    @Bind(R.id.saveOrder)
+    @BindView(R.id.saveOrder)
     Button saveOrderBtn;
 
 
