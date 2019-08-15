@@ -16,8 +16,6 @@
         android:layout_height="wrap_content"
         android:text="Create Order"
         android:id="@+id/createOrder"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
         />
 
     <Button
@@ -26,8 +24,6 @@
         android:text="Get Order"
         android:enabled="false"
         android:id="@+id/getOrder"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
         />
     <Button
         android:layout_width="match_parent"
@@ -35,7 +31,6 @@
         android:text="Save and clear order"
         android:enabled="false"
         android:id="@+id/saveOrder"
-        android:layout_alignParentStart="true"
         />
 
     <Button
@@ -44,8 +39,6 @@
         android:text="Cancel Order"
         android:enabled="false"
         android:id="@+id/cancelOrder"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
         />
 
     <Button
@@ -53,8 +46,6 @@
         android:layout_height="wrap_content"
         android:text="Pull Open Orders"
         android:id="@+id/pullOpenOrders"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
         />
 
     <Button
@@ -63,8 +54,6 @@
         android:text="Update Order"
         android:id="@+id/updateOrder"
         android:enabled="false"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
         />
 
     <Button
@@ -73,9 +62,16 @@
         android:text="Complete Order"
         android:id="@+id/completeOrder"
         android:enabled="false"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
         />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Capture Order"
+        android:id="@+id/captureOrder"
+        android:enabled="false"
+        />
+
     <TextView
         android:id="@+id/orderStatus"
         android:layout_width="match_parent"
