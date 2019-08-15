@@ -80,7 +80,8 @@ public class OrderActivity extends Activity {
     TextView currentOrderTextView;
     @BindView(R.id.saveOrder)
     Button saveOrderBtn;
-
+    @BindView(R.id.captureOrder)
+    Button captureOrder;
 
 
     private ServiceConnection orderServiceConnection = new ServiceConnection() {
@@ -196,6 +197,7 @@ public class OrderActivity extends Activity {
                         orderStatusText.setText("ORDER COMPLETED");
                         showOrderItems(order);
                         Toast.makeText(OrderActivity.this, "Completed Order: " + order.getId(), Toast.LENGTH_SHORT).show();
+                        captureOrder.setEnabled(true);
                     }
                 });
             }
@@ -221,6 +223,31 @@ public class OrderActivity extends Activity {
         }
     };
 
+    private IPoyntOrderServiceListener captureOrderListener = new IPoyntOrderServiceListener.Stub() {
+        @Override
+        public void orderResponse(final Order order, String s, PoyntError poyntError) throws RemoteException {
+            Log.d(TAG, "Capture order response received");
+            if (poyntError != null){
+                Log.d(TAG, "Error received while capturing order");
+                Log.d(TAG, poyntError.toString());
+            } else {
+                Log.d(TAG, "Capture order successful");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (order != null) {
+                            String s  = "CAPTURED ORDER" + "Order Id :" + order.getId().toString() + "\n";
+                            resultTextView.setText(s);
+                            orderStatusText.setText("ORDER CAPTURED");
+                            showOrderItems(order);
+                            Toast.makeText(OrderActivity.this, "Captured Order: " + order.getId(), Toast.LENGTH_SHORT).show();
+                            captureOrder.setEnabled(false);
+                        }
+                    }
+                });
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -499,8 +526,7 @@ public class OrderActivity extends Activity {
 
         } else {
             // some random amount
-            payment.setAmount(1200l);
-
+            payment.setAmount(1200L);
             // here's how tip can be disabled for tip enabled merchants
             // payment.setDisableTip(true);
         }
@@ -511,8 +537,23 @@ public class OrderActivity extends Activity {
         } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Poynt Payment Activity not found - did you install PoyntServices?", ex);
         }
+    }
 
+    /**
+     * Captures the payment transactions associated with the given order through Poynt Cloud
+     * and also updates the order in local Poynt Order content providerName.
+     * When partial payment captures are required, an order object with the partial capture
+     * information can be passed as an argument. When only orderId is provided,
+     * the payments are captured completely.
+     * */
 
+    @OnClick(R.id.captureOrder)
+    public void captureOrderClicked(View view){
+        try {
+            orderService.captureOrder(currentOrderId, currentOrder, UUID.randomUUID().toString(), captureOrderListener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.cancelOrder)
