@@ -4,10 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -36,7 +32,6 @@ import co.poynt.os.model.PrintedReceiptV2;
 import co.poynt.os.model.PrinterStatus;
 import co.poynt.os.services.v1.IPoyntPrinterService;
 import co.poynt.samples.codesamples.utils.PrinterServiceHelper;
-import co.poynt.samples.codesamples.utils.ReceiptCanvasInfo;
 
 public class PrinterServiceActivity extends Activity{
 
@@ -93,7 +88,7 @@ public class PrinterServiceActivity extends Activity{
             if (printer.isConnected()) {
                 final IPoyntPrinterService printerService = IPoyntPrinterService.Stub.asInterface(printers.get(printer));
                 if (printerService != null) {
-                    Bitmap bitmap = createPrintableImage(generateReceiptv2());
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poynt_logo);
                     try {
                         printerService.printJob(UUID.randomUUID().toString(), bitmap, printerServiceHelper.printerServiceListener);
                     } catch (RemoteException e) {
@@ -226,7 +221,7 @@ public class PrinterServiceActivity extends Activity{
         // Section
         List<PrintedReceiptLine> body = new ArrayList<PrintedReceiptLine>();
 
-        body.add(newLine(" Check-in HELLO  "));
+        body.add(newLine(" Check-in REWARD  "));
         body.add(newLine(""));
         body.add(newLine("FREE Reg. 1/2 Order"));
         body.add(newLine("Nachos or CHEESE"));
@@ -277,117 +272,5 @@ public class PrinterServiceActivity extends Activity{
         printerServiceHelper.unBindServices();
     }
 
-    private static int calculateHeight(PrintedReceiptV2 receipt) {
-        if (receipt == null) {
-            Log.e(TAG,"receipt null");
-            return 0;
-        }
-        //always give some space for user to tear paper
-        int height = ReceiptCanvasInfo.PAPER_TEAR_SPACE;
-
-        height += ReceiptCanvasInfo.calculateTextHeight(receipt);
-        return height;
-    }
-
-    public static Bitmap createPrintableImage(PrintedReceiptV2 receipt) {
-
-        int mediaHeight = calculateHeight(receipt);
-        Log.d(TAG, "Height: " + mediaHeight);
-
-        Bitmap bitmap = Bitmap.createBitmap(ReceiptCanvasInfo.PAPER_WIDTH, mediaHeight,
-                Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-
-        Paint paint = new Paint();
-        int verOffset = 20;
-
-//        if (receipt.getHeaderImage() != null) {
-//            verOffset = PrintingUtil.drawImage(canvas, paint, verOffset,
-//                    receipt.getHeaderImage());
-//        }
-
-        paint.setTextAlign(Paint.Align.CENTER);
-
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getHeader());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getMerchantInfo());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getBody1());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getBody2());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getBody3());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getBody4());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getBody5());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getBody6());
-        verOffset = drawTextV2(canvas, paint, verOffset, Paint.Align.CENTER,
-                receipt.getFooter());
-
-
-//        if (receipt.getFooterImage() != null) {
-//            verOffset = PrintingUtil.drawImage(canvas, paint, verOffset,
-//                    receipt.getFooterImage());
-//        }
-        return bitmap;
-    }
-
-    public static int drawTextV2(Canvas canvas, Paint paint, int verticalOffset,
-                                 Paint.Align alignment,
-                                 PrintedReceiptSection content) {
-        if (content != null && content.getLines() != null) {
-            paint.setColor(Color.BLACK);
-            paint.setTextAlign(alignment);
-            paint.setTextSize(ReceiptCanvasInfo.getDefaultFontSize());
-            Typeface tf = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
-            paint.setTypeface(tf);
-
-            int leftMargin = Paint.Align.CENTER.equals(alignment) ? canvas.getWidth() / 2 :
-                    ReceiptCanvasInfo.getLeftMargin();
-
-            //Change the font size for each section individually
-            if (content.getFont() != null && content.getFont().getFontSize() != null && content.getFont().getFontSize().getValue() != 0) {
-                paint.setTextSize(content.getFont().getFontSize().getValue());
-            } else {
-                paint.setTextSize(ReceiptCanvasInfo.getDefaultFontSize());
-            }
-
-            for (PrintedReceiptLine line : content.getLines()) {
-                if (line != null) {
-                    int margin = 3;
-                    String str = line.getText();
-                    if (str.length() > ReceiptCanvasInfo.getMaxTextLineLength(ReceiptCanvasInfo.PrintType.IMAGE , content.getFont())) {
-                        str = str.substring(0, ReceiptCanvasInfo.getMaxTextLineLength(ReceiptCanvasInfo.PrintType.IMAGE , content.getFont()));
-                    }
-
-                    if (line.invertColor()) {
-                        float backLeftMargin = Paint.Align.CENTER.equals(alignment) ?
-                                leftMargin - paint.measureText(str) / 2 : leftMargin;
-                        float backTopMargin = verticalOffset - ReceiptCanvasInfo.getLineSpacing(content.getFont());
-                        canvas.drawRect(
-                                backLeftMargin - margin,
-                                backTopMargin + margin,
-                                backLeftMargin + paint.measureText(str) + margin,
-                                backTopMargin + ReceiptCanvasInfo.getLineSpacing(content.getFont())
-                                        + margin, paint);
-                        paint.setColor(Color.WHITE);
-                    }
-                    canvas.drawText(str,
-                            leftMargin,
-                            verticalOffset, paint);
-
-                    verticalOffset += ReceiptCanvasInfo.getLineSpacing(content.getFont());
-                }
-            }
-        }
-
-        return verticalOffset;
-    }
 
 }
