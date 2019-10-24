@@ -240,7 +240,6 @@ public class CameraActivity extends Activity {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
             if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions");
@@ -255,34 +254,37 @@ public class CameraActivity extends Activity {
             } catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
             } finally {
-                Toast.makeText(CameraActivity.this, "Picture saved to /sdcard/Pictures/MyCameraApp/", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraActivity.this, "Picture saved to " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 mCamera.startPreview();
             }
         }
     };
 
     /**
-     * Create a file Uri for saving an image or video
-     */
-    private static Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    /**
      * Create a File for saving an image or video
      */
-    private static File getOutputMediaFile(int type) {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
+    private File getOutputMediaFile(int type) {
+//        // To be safe, you should check that the SDCard is mounted
+//        // using Environment.getExternalStorageState() before doing this.
+//        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+//        // This location works best if you want the created images to be shared
+//        // between applications and persist after your app has been uninstalled.
+//
+//        // Create the storage directory if it does not exist
+//        if (!mediaStorageDir.exists()) {
+//            if (!mediaStorageDir.mkdirs()) {
+//                Log.d("MyCameraApp", "failed to create directory");
+//                return null;
+//            }
+//        }
 
+        // Use private app storage to store application files, cleared when an app is uninstalled
+        File mediaStorageDir = new File(getExternalFilesDir(null), "images");
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
+                Log.d(TAG, "failed to create directory");
                 return null;
             }
         }
