@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -22,6 +23,8 @@ public class ScannerActivity extends Activity {
     private Button scanCode;
     private TextView mDumpTextView;
     private ScrollView mScrollView;
+    private Switch ledSwitch;
+    private Switch multiModeSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class ScannerActivity extends Activity {
 
         mDumpTextView = (TextView) findViewById(R.id.consoleText);
         mScrollView = (ScrollView) findViewById(R.id.demoScroller);
+        ledSwitch = (Switch) findViewById(R.id.ledSwitch);
+        multiModeSwitch = (Switch) findViewById(R.id.multiModeSwitch);
 
         scanCode = (Button) findViewById(R.id.scanCode);
         scanCode.setOnClickListener(new View.OnClickListener() {
@@ -42,11 +47,18 @@ public class ScannerActivity extends Activity {
                 // launch bar code scanner
                 Intent intent = new Intent("poynt.intent.action.SCANNER");
                 // "MULTI" or "SINGLE"
-                intent.putExtra("MODE", "SINGLE");
-                // if multi mode - also register the receiver
-                IntentFilter scannerIntentFilter = new IntentFilter();
-                scannerIntentFilter.addAction("poynt.intent.action.SCANNER_RESULT");
-                registerReceiver(scanResultReceiver, scannerIntentFilter);
+                if (multiModeSwitch != null && multiModeSwitch.isChecked()){
+                    // if multi mode - also register the receiver
+                    intent.putExtra("MODE", "MULTI");
+                    IntentFilter scannerIntentFilter = new IntentFilter();
+                    scannerIntentFilter.addAction("poynt.intent.action.SCANNER_RESULT");
+                    registerReceiver(scanResultReceiver, scannerIntentFilter);
+                } else {
+                    intent.putExtra("MODE", "SINGLE");
+                }
+                if (ledSwitch != null && ledSwitch.isChecked()){
+                    intent.putExtra("LED_ON", true);
+                }
                 startActivityForResult(intent, SCANNER_REQUEST_CODE);
             }
         });
@@ -78,7 +90,11 @@ public class ScannerActivity extends Activity {
                 logReceivedMessage("Scanner canceled!");
             }
             // always unregister when it's done
-            unregisterReceiver(scanResultReceiver);
+            try {
+                unregisterReceiver(scanResultReceiver);
+            } catch (IllegalArgumentException e){
+                Log.d(TAG, "Broadcast receiver not registered");
+            }
         }
     }
 
