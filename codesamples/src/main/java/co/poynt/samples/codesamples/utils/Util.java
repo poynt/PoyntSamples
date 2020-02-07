@@ -1,5 +1,9 @@
 package co.poynt.samples.codesamples.utils;
 
+import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,14 +14,19 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import co.poynt.api.model.Card;
 import co.poynt.api.model.CurrencyAmount;
+import co.poynt.api.model.FundingSource;
+import co.poynt.api.model.FundingSourceType;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.OrderAmounts;
 import co.poynt.api.model.OrderItem;
@@ -28,8 +37,13 @@ import co.poynt.api.model.Product;
 import co.poynt.api.model.ProductType;
 import co.poynt.api.model.SelectableValue;
 import co.poynt.api.model.SelectableVariation;
+import co.poynt.api.model.Transaction;
+import co.poynt.api.model.TransactionAmounts;
 import co.poynt.api.model.UnitOfMeasure;
 import co.poynt.api.model.Variant;
+import co.poynt.os.model.PrintedReceipt;
+import co.poynt.os.model.PrintedReceiptLine;
+import co.poynt.samples.codesamples.R;
 
 /**
  * Created by dennis on 2/14/16.
@@ -231,5 +245,89 @@ public class Util {
         return product;
     }
 
+    public static PrintedReceipt generateReceipt(Resources resources) {
+        PrintedReceipt printedReceipt = new PrintedReceipt();
+
+        // BODY
+        List<PrintedReceiptLine> body = new ArrayList<PrintedReceiptLine>();
+
+
+        body.add(newLine(" Check-in REWARD  "));
+        body.add(newLine(""));
+        body.add(newLine("FREE Reg. 1/2 Order"));
+        body.add(newLine("Nachos or CHEESE"));
+        body.add(newLine("Quesadilla with min."));
+        body.add(newLine("$ 15 bill."));
+        body.add(newLine(".................."));
+        body.add(newLine("John Doe"));
+        body.add(newLine("BD: May-5, AN: Aug-4"));
+        body.add(newLine("john.doe@gmail.com"));
+        body.add(newLine("Visit #23"));
+        body.add(newLine("Member since: 15 June 2013"));
+        body.add(newLine(".................."));
+        body.add(newLine("Apr-5-2013 3:25 PM"));
+        body.add(newLine("Casa Orozco, Dublin, CA"));
+        body.add(newLine(".................."));
+        body.add(newLine("Coupon#: 1234-5678"));
+        body.add(newLine(" Check-in REWARD  "));
+        body.add(newLine(""));
+        body.add(newLine("FREE Reg. 1/2 Order"));
+        body.add(newLine("Nachos or CHEESE"));
+        body.add(newLine("Quesadilla with min."));
+        body.add(newLine("$ 15 bill."));
+        body.add(newLine(".................."));
+        body.add(newLine("John Doe"));
+        body.add(newLine("BD: May-5, AN: Aug-4"));
+        body.add(newLine("john.doe@gmail.com"));
+        body.add(newLine("Visit #23"));
+        body.add(newLine("Member since: 15 June 2013"));
+        body.add(newLine(".................."));
+        body.add(newLine("Apr-5-2013 3:25 PM"));
+        body.add(newLine("Casa Orozco, Dublin, CA"));
+        body.add(newLine(".................."));
+        body.add(newLine("Coupon#: 1234-5678"));
+        body.add(newLine("  Powered by Poynt"));
+        printedReceipt.setBody(body);
+
+        // to print image
+        printedReceipt.setHeaderImage(BitmapFactory.decodeResource(resources, R.drawable.poynt_logo));
+        printedReceipt.setFooterImage(BitmapFactory.decodeResource(resources, R.drawable.poynt_logo));
+
+        return printedReceipt;
+    }
+
+    private static PrintedReceiptLine newLine(String s) {
+        PrintedReceiptLine line = new PrintedReceiptLine();
+        line.setText(s);
+        return line;
+    }
+
+    public static Transaction generateTransaction(Long orderAmount){
+        Transaction transaction = new Transaction();
+
+        transaction.setId(UUID.randomUUID());
+
+        TransactionAmounts amounts = new TransactionAmounts();
+        amounts.setCurrency(Currency.getInstance(Locale.getDefault()).getCurrencyCode());
+        amounts.setOrderAmount(orderAmount);
+        amounts.setTransactionAmount(orderAmount);
+        transaction.setAmounts(amounts);
+
+        transaction.setCreatedAt(Calendar.getInstance());
+
+        FundingSource fundingSource = new FundingSource();
+        fundingSource.setType(FundingSourceType.CREDIT_DEBIT);
+
+        Card card = new Card();
+        card.setNumberFirst6("456789");
+        card.setCardHolderFirstName("Daniel");
+        card.setCardHolderLastName("Mark");
+        card.setCurrency(Currency.getInstance(Locale.getDefault()).getCurrencyCode());
+        fundingSource.setCard(card);
+
+        transaction.setFundingSource(fundingSource);
+
+        return transaction;
+    }
 
 }

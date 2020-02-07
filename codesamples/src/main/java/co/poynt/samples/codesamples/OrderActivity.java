@@ -7,8 +7,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -20,8 +18,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -30,32 +26,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.poynt.api.model.Business;
 import co.poynt.api.model.ClientContext;
-import co.poynt.api.model.Discount;
 import co.poynt.api.model.Fee;
-import co.poynt.api.model.FulfillmentInstruction;
 import co.poynt.api.model.FulfillmentStatus;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.OrderAmounts;
 import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.OrderItemStatus;
-import co.poynt.api.model.OrderList;
 import co.poynt.api.model.OrderStatus;
 import co.poynt.api.model.OrderStatuses;
 import co.poynt.api.model.Transaction;
-import co.poynt.api.model.TransactionAmounts;
 import co.poynt.api.model.UnitOfMeasure;
 import co.poynt.os.contentproviders.orders.clientcontexts.ClientcontextsColumns;
 import co.poynt.os.contentproviders.orders.clientcontexts.ClientcontextsCursor;
 import co.poynt.os.contentproviders.orders.orders.OrdersColumns;
 import co.poynt.os.contentproviders.orders.orders.OrdersCursor;
-import co.poynt.os.contentproviders.orders.orders.OrdersSelection;
 import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesColumns;
-import co.poynt.os.contentproviders.orders.orderstatuses.OrderstatusesSelection;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
 import co.poynt.os.model.PoyntError;
@@ -72,25 +62,26 @@ public class OrderActivity extends Activity {
 
     Business b;
 
-    @Bind(R.id.pullOpenOrders)
+    @BindView(R.id.pullOpenOrders)
     Button pullOpenOrders;
-    @Bind(R.id.completeOrder)
+    @BindView(R.id.completeOrder)
     Button completeOrderBtn;
-    @Bind(R.id.updateOrder)
+    @BindView(R.id.updateOrder)
     Button updateOrderBtn;
-    @Bind(R.id.getOrder)
+    @BindView(R.id.getOrder)
     Button getOrderBtn;
-    @Bind(R.id.cancelOrder)
+    @BindView(R.id.cancelOrder)
     Button cancelOrderBtn;
-    @Bind(R.id.resultText)
+    @BindView(R.id.resultText)
     TextView resultTextView;
-    @Bind(R.id.orderStatus)
+    @BindView(R.id.orderStatus)
     TextView orderStatusText;
-    @Bind(R.id.currentOrderId)
+    @BindView(R.id.currentOrderId)
     TextView currentOrderTextView;
-    @Bind(R.id.saveOrder)
+    @BindView(R.id.saveOrder)
     Button saveOrderBtn;
-
+    @BindView(R.id.captureOrder)
+    Button captureOrder;
 
 
     private ServiceConnection orderServiceConnection = new ServiceConnection() {
@@ -206,6 +197,7 @@ public class OrderActivity extends Activity {
                         orderStatusText.setText("ORDER COMPLETED");
                         showOrderItems(order);
                         Toast.makeText(OrderActivity.this, "Completed Order: " + order.getId(), Toast.LENGTH_SHORT).show();
+                        captureOrder.setEnabled(true);
                     }
                 });
             }
@@ -231,6 +223,31 @@ public class OrderActivity extends Activity {
         }
     };
 
+    private IPoyntOrderServiceListener captureOrderListener = new IPoyntOrderServiceListener.Stub() {
+        @Override
+        public void orderResponse(final Order order, String s, PoyntError poyntError) throws RemoteException {
+            Log.d(TAG, "Capture order response received");
+            if (poyntError != null){
+                Log.d(TAG, "Error received while capturing order");
+                Log.d(TAG, poyntError.toString());
+            } else {
+                Log.d(TAG, "Capture order successful");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (order != null) {
+                            String s  = "CAPTURED ORDER" + "Order Id :" + order.getId().toString() + "\n";
+                            resultTextView.setText(s);
+                            orderStatusText.setText("ORDER CAPTURED");
+                            showOrderItems(order);
+                            Toast.makeText(OrderActivity.this, "Captured Order: " + order.getId(), Toast.LENGTH_SHORT).show();
+                            captureOrder.setEnabled(false);
+                        }
+                    }
+                });
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -509,8 +526,7 @@ public class OrderActivity extends Activity {
 
         } else {
             // some random amount
-            payment.setAmount(1200l);
-
+            payment.setAmount(1200L);
             // here's how tip can be disabled for tip enabled merchants
             // payment.setDisableTip(true);
         }
@@ -521,8 +537,23 @@ public class OrderActivity extends Activity {
         } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Poynt Payment Activity not found - did you install PoyntServices?", ex);
         }
+    }
 
+    /**
+     * Captures the payment transactions associated with the given order through Poynt Cloud
+     * and also updates the order in local Poynt Order content providerName.
+     * When partial payment captures are required, an order object with the partial capture
+     * information can be passed as an argument. When only orderId is provided,
+     * the payments are captured completely.
+     * */
 
+    @OnClick(R.id.captureOrder)
+    public void captureOrderClicked(View view){
+        try {
+            orderService.captureOrder(currentOrderId, currentOrder, UUID.randomUUID().toString(), captureOrderListener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.cancelOrder)

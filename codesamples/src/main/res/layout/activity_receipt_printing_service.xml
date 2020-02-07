@@ -11,20 +11,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="Print Receipt Image"
-        android:id="@+id/printImageBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
+        android:text="Print Transaction Receipt"
+        android:id="@+id/printTxnReceiptBtn" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="Print Receipt"
-        android:id="@+id/printReceiptBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
+        android:text="Print Order Receipt"
+        android:id="@+id/printOrderReceiptBtn" />
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAlignment="center"-->
+        <!--android:text="Print Receipt with Options"-->
+        <!--android:id="@+id/printReceiptOptBtn" />-->
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Send Receipt"
+        android:id="@+id/sendReceiptBtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Print Receipt Image(Deprecated)"
+        android:id="@+id/printImageBtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Print Receipt(Deprecated)"
+        android:id="@+id/printReceiptBtn" />
 
 </LinearLayout>

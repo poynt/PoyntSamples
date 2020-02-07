@@ -13,7 +13,23 @@
         android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+
+        <Switch
+            android:id="@+id/ledSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LED"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <Switch
+            android:id="@+id/multiModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Multi-Mode"
+            android:layout_marginBottom="10dp"/>
 
         <Button
             android:id="@+id/scanCode"
