@@ -152,11 +152,18 @@ public class SampleGiftCardTransactionProcessorService extends Service {
 
         @Override
         public void getTerminalStatus(IPoyntTerminalStatusListener iPoyntTerminalStatusListener) throws RemoteException {
-
+            Log.d(TAG, "getTerminalStatus called");
+            // No operation is required, callback with null values
+            iPoyntTerminalStatusListener.onResponse(null, null);
         }
 
         @Override
         public void checkCardV2(Payment payment, Bundle bundle, IPoyntCheckCardListener iPoyntCheckCardListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void captureEmvDataV3(String s, EMVData emvData, String s1, IPoyntTransactionServiceListener iPoyntTransactionServiceListener) throws RemoteException {
 
         }
 
