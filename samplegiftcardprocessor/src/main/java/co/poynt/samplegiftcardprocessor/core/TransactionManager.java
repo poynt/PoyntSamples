@@ -148,12 +148,12 @@ public class TransactionManager {
             CustomFundingSource customFundingSource = transaction.getFundingSource().getCustomFundingSource();
             if (customFundingSource == null) {
                 customFundingSource = new CustomFundingSource();
-                customFundingSource.setType(CustomFundingSourceType.GIFT_CARD);
             }
+            customFundingSource.setType(CustomFundingSourceType.GIFT_CARD);
             customFundingSource.setName("Starbucks");
             customFundingSource.setAccountId("1234567890");
             customFundingSource.setProcessor("co.poynt.samplegiftcardprocessor");
-            customFundingSource.setProvider("Sage");
+            customFundingSource.setProvider("Poynt");
             customFundingSource.setDescription("Starbucks giftcard");
             transaction.getFundingSource().setCustomFundingSource(customFundingSource);
 
@@ -250,12 +250,12 @@ public class TransactionManager {
             CustomFundingSource customFundingSource = transaction.getFundingSource().getCustomFundingSource();
             if (customFundingSource == null) {
                 customFundingSource = new CustomFundingSource();
-                customFundingSource.setType(CustomFundingSourceType.GIFT_CARD);
             }
+            customFundingSource.setType(CustomFundingSourceType.GIFT_CARD);
             customFundingSource.setName("Starbucks");
             customFundingSource.setAccountId("1234567890");
             customFundingSource.setProcessor("co.poynt.samplegiftcardprocessor");
-            customFundingSource.setProvider("Sage");
+            customFundingSource.setProvider("Poynt");
             customFundingSource.setDescription("Starbucks giftcard");
             transaction.getFundingSource().setCustomFundingSource(customFundingSource);
 
