@@ -5,6 +5,9 @@ repositories {
     maven {
         url 'https://nexus.poynt.com/content/repositories/releases'
     }
+    maven {
+        url 'https://nexus.poynt.com/content/repositories/snapshots'
+    }
     mavenCentral()
     jcenter()
 }
@@ -23,6 +26,7 @@ android {
 }
 
 dependencies {
-    implementation 'co.poynt.android.sdk:poynt-sdk:development-SNAPSHOT'
+    implementation 'co.poynt.api:android-api-model:1.2.140'
+    implementation 'co.poynt.android.sdk:poynt-sdk:1.2.44-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.5'
 }

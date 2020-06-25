@@ -14,6 +14,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".AfterAuthActivity"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
+
         <service
             android:name=".SamplePaymentHooksService"
             android:enabled="true"

@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import co.poynt.api.model.Transaction;
 import co.poynt.os.Constants;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.Payment;
@@ -29,10 +30,10 @@ public class SamplePaymentHooksService extends Service {
 
     private final IPoyntPaymentHooks.Stub mBinder = new IPoyntPaymentHooks.Stub() {
         @Override
-        public void onEvent(@PaymentHookEvent.Type String s, Payment payment, Bundle bundle, IPoyntPaymentHooksListener listener) throws RemoteException {
+        public void onEvent(@PaymentHookEvent.Type String s, Payment payment, Transaction transaction, Bundle bundle, IPoyntPaymentHooksListener listener) throws RemoteException {
             Log.d(TAG, "event: " + s + " received");
 
-            if(bundle != null) {
+            if (bundle != null) {
                 for (String key : bundle.keySet()) {
                     Log.d(TAG, key + " " + bundle.get(key));
                 }
@@ -44,7 +45,7 @@ public class SamplePaymentHooksService extends Service {
                     return;
                 }
 
-                String paymentType = bundle.getString(Constants.CardExtras.PAYMENT_TYPE);
+                String paymentType = bundle.getString(Constants.HooksExtras.PAYMENT_TYPE);
 
                 if (StringUtil.isEmpty(paymentType)) {
                     listener.onContinue();
@@ -59,12 +60,17 @@ public class SamplePaymentHooksService extends Service {
                 } else {
                     Intent intent = new Intent(Intents.ACTION_PROCESS_PAYMENT_HOOK);
                     intent.setComponent(new ComponentName(getPackageName(), MainActivity.class.getName()));
-                    intent.putExtra("payment", payment);
+                    intent.putExtra(Constants.HooksExtras.PAYMENT, payment);
 
                     listener.onLaunchActivity(intent);
                 }
             } else if (PaymentHookEvent.PAYMENT_AUTHORIZED.equals(s)) {
-                listener.onContinue();
+                Intent intent = new Intent(Intents.ACTION_PROCESS_PAYMENT_HOOK);
+                intent.setComponent(new ComponentName(getPackageName(), AfterAuthActivity.class.getName()));
+                intent.putExtra(Constants.HooksExtras.PAYMENT, payment);
+                intent.putExtra(Constants.HooksExtras.TRANSACTION, transaction);
+
+                listener.onLaunchActivity(intent);
             } else {
                 listener.onContinue();
             }
