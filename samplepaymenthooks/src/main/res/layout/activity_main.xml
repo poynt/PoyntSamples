@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <Button
+        android:id="@+id/set1usd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_background_color"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Set $1 amount" />
+
+    <Button
+        android:id="@+id/noChanges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_background_color"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Exit with no changes"/>
+
+    <Button
+        android:id="@+id/closeNoPayment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_background_color"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Exit without returning payment object"/>
+
+</LinearLayout>

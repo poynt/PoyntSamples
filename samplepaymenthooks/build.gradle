@@ -1,0 +1,32 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    mavenLocal()
+    maven {
+        url 'https://nexus.poynt.com/content/repositories/releases'
+    }
+    maven {
+        url 'https://nexus.poynt.com/content/repositories/snapshots'
+    }
+    mavenCentral()
+    jcenter()
+}
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        applicationId "com.poynt.samples.paymenthooks"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+    implementation 'co.poynt.api:android-api-model:1.2.140'
+    implementation 'co.poynt.android.sdk:poynt-sdk:1.2.44-SNAPSHOT'
+    implementation 'com.google.code.gson:gson:2.8.5'
+}
