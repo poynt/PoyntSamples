@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,6 @@ import co.poynt.api.model.FundingSourceAccountType;
 import co.poynt.api.model.Order;
 import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAction;
-import co.poynt.api.model.TransactionAmounts;
 import co.poynt.api.model.TransactionReference;
 import co.poynt.api.model.TransactionReferenceType;
 import co.poynt.os.contentproviders.orders.transactionreferences.TransactionreferencesColumns;
@@ -74,7 +74,6 @@ public class PaymentActivity extends Activity {
     TextView orderSavedStatus;
     TextView payWithRefsResult;
     TextView tipStatus;
-    private Gson gson;
 
     String lastReferenceId;
 
@@ -121,8 +120,6 @@ public class PaymentActivity extends Activity {
         android.app.ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-//        gson = new GsonBuilder().setPrettyPrinting().create();
-        gson = new Gson();
         chargeBtn = (Button) findViewById(R.id.chargeBtn);
         chargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,14 +284,6 @@ public class PaymentActivity extends Activity {
         p.setAction(TransactionAction.VERIFY);
         p.setCurrency("USD");
         p.setAuthzOnly(true);
-//        p.setVerifyOnly(true);
-        //p.setManualEntry(true);
-
-//        List<Transaction> transactions = new ArrayList<>();
-//        Transaction transaction = TransactionUtil.newInstance();
-//        transaction.setAction(TransactionAction.VERIFY);
-//        transactions.add(transaction);
-//        payment.setTransactions(transactions);
 
         Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
         collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, p);
@@ -387,6 +376,11 @@ public class PaymentActivity extends Activity {
 
     };
 
+    /**
+     * Get a transaction using Id
+     * This is an async call, the response is returned in a callback
+     * @param txnId transaction Id
+     */
     public void getTransaction(String txnId) {
         if(mTransactionService!=null) {
             try {
@@ -401,13 +395,7 @@ public class PaymentActivity extends Activity {
     private ServiceConnection mTransactionServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTransactionService = IPoyntTransactionService.Stub.asInterface(iBinder);
-
             Log.d(TAG, "Transaction service connected");
-            try {
-                mTransactionService.getTransaction("fcf98959-c188-42d1-b085-786d21e552ac", UUID.randomUUID().toString(), mTransactionServiceListener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
         }
 
         public void onServiceDisconnected(ComponentName componentName) {
@@ -421,7 +409,11 @@ public class PaymentActivity extends Activity {
 
         Payment payment = new Payment();
         lastReferenceId = UUID.randomUUID().toString();
-        payment.setReferenceId(lastReferenceId);
+        TransactionReference lastReference = new TransactionReference();
+        lastReference.setType(TransactionReferenceType.CUSTOM);
+        lastReference.setId(lastReferenceId);
+        lastReference.setCustomType("transactionReference");
+        payment.setReferences(Collections.singletonList(lastReference));
 
         payment.setCurrency(currencyCode);
         // enable multi-tender in payment options
@@ -496,9 +488,6 @@ public class PaymentActivity extends Activity {
                             Type txnType = new TypeToken<Transaction>() {
                             }.getType();
                             Log.d(TAG, "onActivityResult: transaction: " + gson.toJson(t, txnType));
-
-                            getTransaction(t.getId().toString());
-                            //Log.d(TAG, "Card token: " + t.getProcessorResponse().getCardToken());
                             FundingSourceAccountType fsAccountType = t.getFundingSource().getAccountType();
                             if (t.getFundingSource().getCard() != null) {
                                 Card c = t.getFundingSource().getCard();
@@ -619,7 +608,6 @@ public class PaymentActivity extends Activity {
         }
 
         cursor.close();
-
         // handle transactions
         // full transaction can get retrieved using IPoyntTransactionService.getTransaction
         if (!transactions.isEmpty()) {
