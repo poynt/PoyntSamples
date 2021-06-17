@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "co.poynt.samples.codesamples"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -25,8 +25,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'co.poynt.api:android-api-model:1.2.140'
-    implementation 'co.poynt.android.sdk:poynt-sdk:1.2.42'
+    implementation 'co.poynt.api:android-api-model:1.2.149'
+    implementation 'co.poynt.android.sdk:poynt-sdk:1.2.44'
     implementation 'com.google.code.gson:gson:2.8.2'
 
     // JWT dependencies - if you want to parse JWTs
