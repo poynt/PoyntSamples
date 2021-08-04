@@ -20,6 +20,9 @@ allprojects {
         maven {
             url 'https://nexus.poynt.com/content/repositories/releases'
         }
+//        maven {
+//            url 'https://nexus.poynt.com/content/repositories/snapshots'
+//        }
         mavenCentral()
         google()
     }
