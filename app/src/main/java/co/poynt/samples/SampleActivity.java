@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -64,7 +65,7 @@ public class SampleActivity extends Activity {
     private IPoyntSecondScreenService mSecondScreenService;
     ProgressDialog progress;
     private TextView bizInfo;
-    private Button chargeBtn;
+    private Button chargeBtn, chargeWithAdditionalTagsBtn;
     Account currentAccount = null;
     String userName;
     String accessToken;
@@ -81,6 +82,7 @@ public class SampleActivity extends Activity {
         userInfo = (TextView) findViewById(R.id.userInfo);
         bizInfo = (TextView) findViewById(R.id.bizInfo);
         chargeBtn = (Button) findViewById(R.id.chargeBtn);
+        chargeWithAdditionalTagsBtn = (Button) findViewById(R.id.chargeWithAdditionalTagBtn);
 
         chargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +90,14 @@ public class SampleActivity extends Activity {
                 launchPoyntPayment(1000l);
             }
         });
+
+        chargeWithAdditionalTagsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchPoyntPaymentWithAdditionalTags(1000l);
+            }
+        });
+
         Button currentUser = (Button) findViewById(R.id.currentUser);
         currentUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,6 +412,37 @@ public class SampleActivity extends Activity {
         }
     }
 
+    private void launchPoyntPaymentWithAdditionalTags(Long amount) {
+        String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
+
+        Payment payment = new Payment();
+        String referenceId = UUID.randomUUID().toString();
+        payment.setReferenceId(referenceId);
+        payment.setAmount(amount);
+        payment.setCurrency(currencyCode);
+
+        String additionalTagsDataJson = "{\"version\":\"1\",\"channel\":\"ECR17\"," +
+                "\"request\":{\"tags\":[{\"index\":\"1\",\"value\":\"12345678\"}," +
+                "{\"index\":\"2\",\"value\":\"12345\"}]}}";
+
+        LinkedHashMap<String, String> processorOptions = new LinkedHashMap<>();
+        processorOptions.put("additionalTagsData", additionalTagsDataJson);
+        payment.setProcessorOptions(processorOptions);
+
+        // default to cash if the device has no card reader
+        if (!isPoyntTerminal()) {
+            payment.setCashOnly(true);
+        }
+
+        // start Payment activity for result
+        try {
+            Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+            collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+            startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+        } catch (ActivityNotFoundException ex) {
+            Log.e(TAG, "Poynt Payment Activity not found - did you install PoyntServices?", ex);
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
