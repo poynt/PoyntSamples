@@ -666,21 +666,32 @@ public class NonPaymentCardReaderActivity extends Activity {
 
     private void disconnectCardReader(ConnectionOptions connectionOptions) {
         try {
-            logReceivedMessage("disconnectFromCard : connectionOptions"+connectionOptions );
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cardRemovalProgress = new ProgressDialog(NonPaymentCardReaderActivity.this);
+                    cardRemovalProgress.setMessage("waiting for card removal");
+                    cardRemovalProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    cardRemovalProgress.setIndeterminate(true);
+                    cardRemovalProgress.show();
+                }
+            });
+
+            logReceivedMessage("disconnectFromCard : connectionOptions" + connectionOptions);
             cardReaderService.disconnectFromCard(connectionOptions, new IPoyntDisconnectFromCardListener.Stub() {
                 @Override
                 public void onDisconnect() throws RemoteException {
-                    logReceivedMessage("Disconnected"
-                    );
+                    logReceivedMessage("Disconnected");
+                    cardRemovalProgress.dismiss();
                 }
 
                 @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
                     logReceivedMessage("Disconnection failed " + poyntError.toString());
+                    cardRemovalProgress.dismiss();
                 }
             });
         } catch (RemoteException e) {
-
             e.printStackTrace();
         }
     }
