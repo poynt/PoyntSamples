@@ -14,4 +14,10 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+    <style name="DCAButton">
+        <item name="android:layout_height">18dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:maxWidth">148dp</item>
+    </style>
 </resources>
