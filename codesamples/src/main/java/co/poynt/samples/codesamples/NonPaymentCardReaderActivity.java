@@ -346,20 +346,20 @@ public class NonPaymentCardReaderActivity extends Activity {
         ctfFileNotFound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fileNotFoundTest();
+                clFileNotFoundTest();
             }
         });
         ctExchangeApduTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exchangeCTApduTest();
+                clExchangeCTApduTest();
             }
         });
 
         clSuccessfulTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                successTransactionCLTest();
+                clSuccessTransactionCLTest();
             }
         });
         clFileNotFoundTest.setOnClickListener(new View.OnClickListener() {
@@ -696,9 +696,9 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    // File Not found Test
+    // CL test cases
 
-    private void fileNotFoundTest() {
+    private void clFileNotFoundTest() {
         logReceivedMessage("===============================");
         logReceivedMessage("File Not Found Test");
 
@@ -768,7 +768,7 @@ public class NonPaymentCardReaderActivity extends Activity {
     }
 
 
-    private void exchangeCTApduTest() {
+    private void clExchangeCTApduTest() {
         logReceivedMessage("===============================");
         logReceivedMessage("Exchange CT APDU Test");
 
@@ -851,13 +851,12 @@ public class NonPaymentCardReaderActivity extends Activity {
 
 
     // CL Tests
-    private void successTransactionCLTest() {
+    private void clSuccessTransactionCLTest() {
         logReceivedMessage("===============================");
         logReceivedMessage("Successful non-payment transaction CL Test");
 
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
             connectionOptions.setTimeout(30);
             logReceivedMessage("connectToCard : connectionOptions"+connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
@@ -866,7 +865,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     logReceivedMessage("Connection success");
                     APDUData apduData = new APDUData();
                     apduData.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
-                    apduData.setContactInterface(APDUData.ContactInterfaceType.EMV);
                     apduData.setTimeout(30);
                     logReceivedMessage("exchangeAPDU : apuduData  "+apduData);
                     cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
@@ -909,7 +907,6 @@ public class NonPaymentCardReaderActivity extends Activity {
 
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
             connectionOptions.setTimeout(30);
             logReceivedMessage("connectToCard : connectionOptions : "+connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
@@ -918,7 +915,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     logReceivedMessage("Connection success");
                     APDUData apduData = new APDUData();
                     apduData.setCommandAPDU("0400A404000A4F53452E5641532E303100");
-                    apduData.setContactInterface(APDUData.ContactInterfaceType.EMV);
                     apduData.setTimeout(30);
                     logReceivedMessage("exchangeAPDU apduData "+apduData);
                     cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
@@ -960,7 +956,6 @@ public class NonPaymentCardReaderActivity extends Activity {
 
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
             connectionOptions.setTimeout(30);
             logReceivedMessage("connectToCard : connectionOptions "+connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
@@ -969,17 +964,14 @@ public class NonPaymentCardReaderActivity extends Activity {
                     logReceivedMessage("Connection success");
                     APDUData apduData1 = new APDUData();
                     apduData1.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
-                    apduData1.setContactInterface(APDUData.ContactInterfaceType.GSM);
                     apduData1.setTimeout(30);
 
                     APDUData apduData2 = new APDUData();
                     apduData2.setCommandAPDU("0400A404000A4F53452E5641532E303100");
-                    apduData2.setContactInterface(APDUData.ContactInterfaceType.GSM);
                     apduData2.setTimeout(30);
 
                     APDUData apduData3 = new APDUData();
                     apduData3.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
-                    apduData3.setContactInterface(APDUData.ContactInterfaceType.GSM);
                     apduData3.setTimeout(30);
 
                     logReceivedMessage("exchangeAPDUList : "+Arrays.asList(apduData1, apduData2, apduData3));
@@ -1147,7 +1139,6 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("CL Payment Card Rejection Test - Master Card");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
             connectionOptions.setTimeout(30);
             logReceivedMessage("connectToCard : connectionOptions "+connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
@@ -1156,7 +1147,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     logReceivedMessage("Connection success");
                     final APDUData apduData = new APDUData();
                     apduData.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
-                    apduData.setContactInterface(APDUData.ContactInterfaceType.EMV);
                     apduData.setTimeout(30);
                     logReceivedMessage("exchangeAPDU : apuduData "+apduData);
                     cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
@@ -1166,7 +1156,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                             if (s.endsWith("9000")) {
                                 APDUData apduData2 = new APDUData();
                                 apduData2.setCommandAPDU("0400A4040007A000000003101000");
-                                apduData2.setContactInterface(APDUData.ContactInterfaceType.EMV);
                                 apduData2.setTimeout(30);
                                 logReceivedMessage("exchangeAPDU : apduData "+apduData2);
                                 cardReaderService.exchangeAPDU(apduData2, new IPoyntExchangeAPDUListener.Stub() {
@@ -1211,7 +1200,6 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("CL Payment Card Rejection Test - Master Card");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
             connectionOptions.setTimeout(30);
             logReceivedMessage("connectToCard : connectionOptions "+connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
@@ -1220,7 +1208,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     logReceivedMessage("Connection success");
                     final APDUData apduData = new APDUData();
                     apduData.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
-                    apduData.setContactInterface(APDUData.ContactInterfaceType.EMV);
                     apduData.setTimeout(30);
                     logReceivedMessage("exchangeAPDU : apduData "+apduData);
                     cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
@@ -1230,7 +1217,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                             if (s.endsWith("9000")) {
                                 APDUData apduData2 = new APDUData();
                                 apduData2.setCommandAPDU("0400A4040007A000000004101000");
-                                apduData2.setContactInterface(APDUData.ContactInterfaceType.EMV);
                                 apduData2.setTimeout(30);
                                 logReceivedMessage("exchangeAPDU : apuduData "+apduData2);
                                 cardReaderService.exchangeAPDU(apduData2, new IPoyntExchangeAPDUListener.Stub() {
