@@ -283,9 +283,27 @@
                     android:id="@+id/iSOexchangeApduList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="0dp"
-                    android:text="Exchange ISO APDU List"
-                    android:textSize="16dp" />
+                    style="@style/DCAButton"
+                    android:text="Exchange ISO APDU List" />
+                <Button
+                    android:id="@+id/isoTrnDuringDCA"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pymt trn during DCA" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/isoCardRejectionMaster"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Card rjctn Master " />
             </LinearLayout>
 
         </LinearLayout>
