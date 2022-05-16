@@ -318,6 +318,88 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SLE Tests" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/sle401"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="401" />
+
+                <Button
+                    android:id="@+id/sle402"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="402" />
+                <Button
+                    android:id="@+id/sle403"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="403" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/sle404"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="404" />
+
+                <Button
+                    android:id="@+id/sle405"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="405" />
+                <Button
+                    android:id="@+id/sle406"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="406" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/sle407"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="407" />
+
+                <Button
+                    android:id="@+id/sle408"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="408" />
+                <Button
+                    android:id="@+id/sle409"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="409" />
+                <Button
+                    android:id="@+id/sle410"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="410" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
