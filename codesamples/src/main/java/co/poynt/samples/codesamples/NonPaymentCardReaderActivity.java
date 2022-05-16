@@ -1761,69 +1761,50 @@ public class NonPaymentCardReaderActivity extends Activity {
 
     // ================= SLE 4442 ========================
 
-    private void sle401(){
+    private void sle401() {
         logReceivedMessage("===============================");
         logReceivedMessage("401 Test for Read Memory");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A00100000400800008");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A00100000400800008");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("401 Test for Read Memory  Test Passed");
-                                    } else {
-                                        logReceivedMessage("401 Test for Read Memory Test Failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("401 Test for Read Memory  Test Passed");
+                            } else {
+                                logReceivedMessage("401 Test for Read Memory Test Failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
+
         } catch (Throwable e) {
             e.printStackTrace();
             logReceivedMessage(e.getMessage());
@@ -1831,67 +1812,47 @@ public class NonPaymentCardReaderActivity extends Activity {
     }
 
 
-    private void sle402(){
+    private void sle402() {
         logReceivedMessage("===============================");
         logReceivedMessage("402 Write Memory ");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A002000003003008");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A002000003003008");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("4402 Write Memory Test Passed");
-                                    } else {
-                                        logReceivedMessage("402 Write Memory Test Failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("4402 Write Memory Test Passed");
+                            } else {
+                                logReceivedMessage("402 Write Memory Test Failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
@@ -1901,69 +1862,50 @@ public class NonPaymentCardReaderActivity extends Activity {
     }
 
 
-    private void sle403(){
+    private void sle403() {
         logReceivedMessage("===============================");
         logReceivedMessage("403 Verify Programmable Security Code (PSC) SLE4428 ONLY");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A003000003112233");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A003000003112233");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("403 Verify Programmable Security Code (PSC) SLE4428 ONLY Test Passed");
-                                    } else {
-                                        logReceivedMessage("403 Verify Programmable Security Code (PSC) SLE4428 ONLY Test Failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("403 Verify Programmable Security Code (PSC) SLE4428 ONLY Test Passed");
+                            } else {
+                                logReceivedMessage("403 Verify Programmable Security Code (PSC) SLE4428 ONLY Test Failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
+
         } catch (Throwable e) {
             e.printStackTrace();
             logReceivedMessage(e.getMessage());
@@ -1971,67 +1913,47 @@ public class NonPaymentCardReaderActivity extends Activity {
     }
 
 
-    private void sle404(){
+    private void sle404() {
         logReceivedMessage("===============================");
         logReceivedMessage("404 Read with Protect Bit");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A00400000400100004");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A00400000400100004");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("404 Read with Protect Bit Test Passed");
-                                    } else {
-                                        logReceivedMessage("404 Read with Protect Bit Test Failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("404 Read with Protect Bit Test Passed");
+                            } else {
+                                logReceivedMessage("404 Read with Protect Bit Test Failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
@@ -2040,72 +1962,52 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    private void sle405(){
+    private void sle405() {
         logReceivedMessage("===============================");
         logReceivedMessage("405 Write with Protect Bit : TBD ");
     }
 
-    private void sle406(){
+    private void sle406() {
         logReceivedMessage("===============================");
         logReceivedMessage("406 Raw Mode ");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A080000003C1C2C3");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A080000003C1C2C3");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("406 Raw Mode Test Passed");
-                                    } else {
-                                        logReceivedMessage("406 Raw Mode Test Failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("406 Raw Mode Test Passed");
+                            } else {
+                                logReceivedMessage("406 Raw Mode Test Failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
@@ -2114,67 +2016,47 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    private void sle407(){
+    private void sle407() {
         logReceivedMessage("===============================");
         logReceivedMessage("407 Raw Mode with Response ");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A0810000053040000008");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A0810000053040000008");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("407 Raw Mode with Response Test passed");
-                                    } else {
-                                        logReceivedMessage("407 Raw Mode with Response Test failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("407 Raw Mode with Response Test passed");
+                            } else {
+                                logReceivedMessage("407 Raw Mode with Response Test failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
@@ -2183,89 +2065,69 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    private void sle408(){
+    private void sle408() {
         logReceivedMessage("===============================");
         logReceivedMessage("408 Multiple APDU’s ");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
 
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                    APDUData apduData1 = new APDUData();
+                    apduData1.setCommandAPDU("03A00100000400800008");
+                    apduData1.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData1.setTimeout(30);
+
+                    APDUData apduData2 = new APDUData();
+                    apduData2.setCommandAPDU("03A002000003003008");
+                    apduData2.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData2.setTimeout(30);
+
+                    APDUData apduData3 = new APDUData();
+                    apduData3.setCommandAPDU("03A00400000400100004");
+                    apduData3.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData3.setTimeout(30);
+
+                    APDUData apduData4 = new APDUData();
+                    apduData4.setCommandAPDU("03A080000003C1C2C3");
+                    apduData4.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData4.setTimeout(30);
+
+                    APDUData apduData5 = new APDUData();
+                    apduData5.setCommandAPDU("03A0810000053040000008");
+                    apduData5.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData5.setTimeout(30);
+
+                    logReceivedMessage("exchangeAPDUList : apduData " + Arrays.asList(apduData1, apduData2, apduData3, apduData4, apduData5));
+
+                    cardReaderService.exchangeAPDUList(Arrays.asList(apduData1, apduData2, apduData3, apduData4, apduData5), new IPoyntExchangeAPDUListListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-
-                            APDUData apduData1 = new APDUData();
-                            apduData1.setCommandAPDU("03A00100000400800008");
-                            apduData1.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData1.setTimeout(30);
-
-                            APDUData apduData2 = new APDUData();
-                            apduData2.setCommandAPDU("03A002000003003008");
-                            apduData2.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData2.setTimeout(30);
-
-                            APDUData apduData3 = new APDUData();
-                            apduData3.setCommandAPDU("03A00400000400100004");
-                            apduData3.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData3.setTimeout(30);
-
-                            APDUData apduData4 = new APDUData();
-                            apduData4.setCommandAPDU("03A080000003C1C2C3");
-                            apduData4.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData4.setTimeout(30);
-
-                            APDUData apduData5 = new APDUData();
-                            apduData5.setCommandAPDU("03A0810000053040000008");
-                            apduData5.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData5.setTimeout(30);
-
-                            logReceivedMessage("exchangeAPDUList : apduData " + Arrays.asList(apduData1, apduData2, apduData3, apduData4, apduData5));
-
-                            cardReaderService.exchangeAPDUList(Arrays.asList(apduData1, apduData2, apduData3, apduData4, apduData5), new IPoyntExchangeAPDUListListener.Stub() {
-                                @Override
-                                public void onResult(List<String> list, PoyntError poyntError) throws RemoteException {
-                                    if (poyntError != null) {
-                                        logReceivedMessage("Exchange APDU List failed " + poyntError);
-                                    } else {
-                                        logReceivedMessage("Exchange APDU result : " + list.toString());
-                                        if (list.size() >= 3) {
-                                            if (list.get(0).endsWith("9000") && list.get(1).endsWith("9000") &&
-                                                    list.get(2).endsWith("9000") && list.get(3).endsWith("9000") &&
-                                                    list.get(4).endsWith("9000")) {
-                                                logReceivedMessage("Exchange APDU list passed");
-                                            }
-                                        }
+                        public void onResult(List<String> list, PoyntError poyntError) throws RemoteException {
+                            if (poyntError != null) {
+                                logReceivedMessage("Exchange APDU List failed " + poyntError);
+                            } else {
+                                logReceivedMessage("Exchange APDU result : " + list.toString());
+                                if (list.size() >= 3) {
+                                    if (list.get(0).endsWith("9000") && list.get(1).endsWith("9000") &&
+                                            list.get(2).endsWith("9000") && list.get(3).endsWith("9000") &&
+                                            list.get(4).endsWith("9000")) {
+                                        logReceivedMessage("Exchange APDU list passed");
                                     }
-                                    disconnectCardReader(connectionOptions);
                                 }
-                            });
-                        }
-
-                        @Override
-                        public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
@@ -2274,67 +2136,47 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    private void sle409(){
+    private void sle409() {
         logReceivedMessage("===============================");
         logReceivedMessage("409 Payment Transaction during DCA (PoyntC Only) ");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A00100000400800008");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A00100000400800008");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("Perform a payment transaction");
-                                    } else {
-                                        logReceivedMessage("409 Payment Transaction during DCA Test failed");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("Perform a payment transaction");
+                            } else {
+                                logReceivedMessage("409 Payment Transaction during DCA Test failed");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
@@ -2343,67 +2185,47 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    private void sle410(){
+    private void sle410() {
         logReceivedMessage("===============================");
         logReceivedMessage("410 Test Use of the Abort command ");
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
             connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
             connectionOptions.setTimeout(30);
-            logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
-            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
-                public void onCardFound() throws RemoteException {
-
-                    logReceivedMessage("CardFound");
-                    logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                    cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("03A00100000400800008");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData : " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
                         @Override
-                        public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                            logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                            APDUData apduData = new APDUData();
-                            apduData.setCommandAPDU("03A00100000400800008");
-                            apduData.setContactInterface(APDUData.ContactInterfaceType.SLE);
-                            apduData.setTimeout(30);
-                            logReceivedMessage("exchangeAPDU : apduData : " + apduData);
-                            cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
-                                @Override
-                                public void onSuccess(String s) throws RemoteException {
-                                    logReceivedMessage("Exchange APDU result : " + s);
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
 
-                                    if (s.endsWith("9000")) {
-                                        logReceivedMessage("Send Abort Command");
-                                    } else {
-                                        logReceivedMessage("410 Test Use of the Abort command");
-                                    }
-                                    disconnectCardReader(connectionOptions);
-                                }
-
-                                @Override
-                                public void onError(PoyntError poyntError) throws RemoteException {
-                                    logReceivedMessage("APDU exchange failed " + poyntError);
-                                    disconnectCardReader(connectionOptions);
-                                }
-                            });
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("Send Abort Command");
+                            } else {
+                                logReceivedMessage("410 Test Use of the Abort command");
+                            }
+                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
                         public void onError(PoyntError poyntError) throws RemoteException {
-                            logReceivedMessage("Connection failed : " + poyntError.toString());
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
                         }
                     });
                 }
 
                 @Override
-                public void onCardNotFound() throws RemoteException {
-                    logReceivedMessage("Card Not Found");
-                    logReceivedMessage("Test Failed");
-                }
-
-                @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Error " + poyntError.toString());
-                    logReceivedMessage("Test Failed");
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
                 }
             });
         } catch (Throwable e) {
