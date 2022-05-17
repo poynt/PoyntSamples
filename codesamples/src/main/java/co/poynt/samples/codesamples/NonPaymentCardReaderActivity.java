@@ -49,7 +49,7 @@ public class NonPaymentCardReaderActivity extends Activity {
     private EditText apduDataInput;
 
     Button ctSuccessfulTransaction, ctfFileNotFound, ctExchangeApduTest,
-            ctCardRejectionMaster, ctCardRejectionVisa, pymtTrnDuringDCA,
+            ctCardRejectionMaster, ctCardRejectionVisa, ctPymtTrnDuringDCA,
             clSuccessfulTransaction, clFileNotFoundTest, clExchangeApdu, clCardRejectionMaster,
             clCardRejectionVisa, clPymtTrnDuringDCA, isoSuccessfulTransaction,
             isoFileNotFound, isoExchangeApdu, isoCardRejectionMaster, isoPymntTrnDuringDca,
@@ -332,7 +332,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         ctCardRejectionMaster = findViewById(R.id.ctCardRejectionMaster);
         ctCardRejectionVisa = findViewById(R.id.ctCardRejectionVisa);
 
-        pymtTrnDuringDCA = findViewById(R.id.pymtTransactionDuringDCA);
+        ctPymtTrnDuringDCA = findViewById(R.id.pymtTransactionDuringDCA);
 
 
         clSuccessfulTransaction = findViewById(R.id.successfulTransactionCLTest);
@@ -426,10 +426,10 @@ public class NonPaymentCardReaderActivity extends Activity {
                 clPymtTrnDuringDCA();
             }
         });
-        pymtTrnDuringDCA.setOnClickListener(new View.OnClickListener() {
+        ctPymtTrnDuringDCA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pymtTrnDuringDCA();
+                ctPymtTrnDuringDCA();
             }
         });
 
@@ -1421,9 +1421,9 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
-    private void pymtTrnDuringDCA() {
+    private void ctPymtTrnDuringDCA() {
         logReceivedMessage("===============================");
-        logReceivedMessage("Payment Transaction during DCA Test");
+        logReceivedMessage("104b Payment Transaction during DCA (PoyntC Only)");
 
         try {
             final ConnectionOptions connectionOptions = new ConnectionOptions();
@@ -1434,7 +1434,27 @@ public class NonPaymentCardReaderActivity extends Activity {
                 @Override
                 public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
                     logReceivedMessage("Connection success : connectionResult " + connectionResult);
-                    logReceivedMessage("Now open the Terminal app and perform a Payment transaction, Transaction should be success");
+
+                    final APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("0400A404000E315041592E5359532E444446303100");
+                    apduData.setContactInterface(APDUData.ContactInterfaceType.EMV);
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
+                        @Override
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("Now open the Terminal app and perform a Payment transaction, Transaction should be success");
+                            }
+                        }
+
+                        @Override
+                        public void onError(PoyntError poyntError) throws RemoteException {
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
+                        }
+                    });
                 }
 
                 @Override
