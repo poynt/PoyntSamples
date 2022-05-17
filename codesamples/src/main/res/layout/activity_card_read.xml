@@ -206,6 +206,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Exchange CL APDU List" />
+                <Button
+                    android:id="@+id/clPymtTransactionDuringDCA"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pymt trn during DCA" />
             </LinearLayout>
 
             <LinearLayout

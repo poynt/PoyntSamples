@@ -49,9 +49,9 @@ public class NonPaymentCardReaderActivity extends Activity {
     private EditText apduDataInput;
 
     Button ctSuccessfulTransaction, ctfFileNotFound, ctExchangeApduTest,
-            clSuccessfulTransaction, clFileNotFoundTest, clExchangeApdu,
-            ctCardRejectionMaster, ctCardRejectionVisa, clCardRejectionMaster,
-            clCardRejectionVisa, pymtTrnDuringDCA, isoSuccessfulTransaction,
+            ctCardRejectionMaster, ctCardRejectionVisa, pymtTrnDuringDCA,
+            clSuccessfulTransaction, clFileNotFoundTest, clExchangeApdu, clCardRejectionMaster,
+            clCardRejectionVisa, clPymtTrnDuringDCA, isoSuccessfulTransaction,
             isoFileNotFound, isoExchangeApdu, isoCardRejectionMaster, isoPymntTrnDuringDca,
             sle401, sle402, sle403, sle404, sle405, sle406, sle407, sle408, sle409;
 
@@ -340,6 +340,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         clExchangeApdu = findViewById(R.id.exchangeCLApduList);
         clCardRejectionMaster = findViewById(R.id.clCardRejectionMaster);
         clCardRejectionVisa = findViewById(R.id.clCardRejectionVisa);
+        clPymtTrnDuringDCA = findViewById(R.id.clPymtTransactionDuringDCA);
 
         isoSuccessfulTransaction = findViewById(R.id.iSOSuccessfulTransactionTest);
         isoFileNotFound = findViewById(R.id.iSOfileNotFoundTest);
@@ -417,6 +418,12 @@ public class NonPaymentCardReaderActivity extends Activity {
             @Override
             public void onClick(View v) {
                 clCardRejectionVisa();
+            }
+        });
+        clPymtTrnDuringDCA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clPymtTrnDuringDCA();
             }
         });
         pymtTrnDuringDCA.setOnClickListener(new View.OnClickListener() {
@@ -1345,6 +1352,52 @@ public class NonPaymentCardReaderActivity extends Activity {
                                         disconnectCardReader(connectionOptions);
                                     }
                                 });
+                            }
+                        }
+
+                        @Override
+                        public void onError(PoyntError poyntError) throws RemoteException {
+                            logReceivedMessage("APDU exchange failed " + poyntError);
+                            disconnectCardReader(connectionOptions);
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) throws RemoteException {
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
+                }
+            });
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+            logReceivedMessage(e.getMessage());
+        }
+    }
+
+    private void clPymtTrnDuringDCA() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("204b Payment Transaction during DCA (PoyntC Only)");
+
+        try {
+            final ConnectionOptions connectionOptions = new ConnectionOptions();
+            connectionOptions.setTimeout(30);
+            logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                @Override
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success : connectionResult " + connectionResult);
+
+                    final APDUData apduData = new APDUData();
+                    apduData.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
+                    apduData.setTimeout(30);
+                    logReceivedMessage("exchangeAPDU : apduData " + apduData);
+                    cardReaderService.exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
+                        @Override
+                        public void onSuccess(String s) throws RemoteException {
+                            logReceivedMessage("Exchange APDU result : " + s);
+                            if (s.endsWith("9000")) {
+                                logReceivedMessage("Now open the Terminal app and perform a Payment transaction, Transaction should be success");
                             }
                         }
 
