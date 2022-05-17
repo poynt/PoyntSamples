@@ -311,6 +311,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Card rjctn Master " />
+
+                <Button
+                    android:id="@+id/iso304b"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="304b Second" />
             </LinearLayout>
 
         </LinearLayout>
