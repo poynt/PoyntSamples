@@ -281,10 +281,11 @@
 
                 <Button
                     android:id="@+id/iSOexchangeApduList"
+                    style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/DCAButton"
                     android:text="Exchange ISO APDU List" />
+
                 <Button
                     android:id="@+id/isoTrnDuringDCA"
                     style="@style/DCAButton"
@@ -337,6 +338,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="402" />
+
                 <Button
                     android:id="@+id/sle403"
                     style="@style/DCAButton"
@@ -344,6 +346,7 @@
                     android:layout_height="wrap_content"
                     android:text="403" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -362,6 +365,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="405" />
+
                 <Button
                     android:id="@+id/sle406"
                     style="@style/DCAButton"
@@ -369,6 +373,7 @@
                     android:layout_height="wrap_content"
                     android:text="406" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -387,18 +392,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="408" />
+
                 <Button
                     android:id="@+id/sle409"
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="409" />
-                <Button
-                    android:id="@+id/sle410"
-                    style="@style/DCAButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="410" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
