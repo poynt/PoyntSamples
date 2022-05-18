@@ -2282,7 +2282,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                             } else {
                                 logReceivedMessage("408 Payment Transaction during DCA Test failed");
                             }
-                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
@@ -2331,7 +2330,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                             } else {
                                 logReceivedMessage("410 Test Use of the Abort command");
                             }
-                            disconnectCardReader(connectionOptions);
                         }
 
                         @Override
