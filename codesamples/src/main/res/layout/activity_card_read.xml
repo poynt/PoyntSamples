@@ -153,14 +153,14 @@
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Card rjctn Master" />
+                    android:text="Pymnt rjctn" />
 
                 <Button
-                    android:id="@+id/ctCardRejectionVisa"
+                    android:id="@+id/ctXAPDU"
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Card rjctn Visa" />
+                    android:text="X APDU" />
             </LinearLayout>
         </LinearLayout>
 
@@ -224,14 +224,14 @@
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Card rjctn Master " />
+                    android:text="Pymnt rjctn" />
 
                 <Button
-                    android:id="@+id/clCardRejectionVisa"
+                    android:id="@+id/clXAPDU"
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Card rjctn Visa" />
+                    android:text="X APDU" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -310,14 +310,14 @@
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Card rjctn Master " />
+                    android:text="Pymnt rjctn" />
 
                 <Button
-                    android:id="@+id/iso304b"
+                    android:id="@+id/isoXAPDU"
                     style="@style/DCAButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="304b Second" />
+                    android:text="X APDU" />
             </LinearLayout>
 
         </LinearLayout>
@@ -412,6 +412,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="409" />
+                <Button
+                    android:id="@+id/sleXAPDU"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="X APDU" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
