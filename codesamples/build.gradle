@@ -26,7 +26,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'co.poynt.api:android-api-model:1.2.140'
-    implementation 'co.poynt.android.sdk:poynt-sdk:1.2.42'
+    implementation 'co.poynt.android.sdk:poynt-sdk:development-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.2'
 
     // JWT dependencies - if you want to parse JWTs

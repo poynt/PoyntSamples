@@ -926,6 +926,7 @@ public class NonPaymentCardReaderActivity extends Activity {
 
                             APDUData apduData2 = new APDUData();
                             apduData2.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
+                            apduData2.setOkCondition("6A816A82");
                             apduData2.setContactInterface(APDUData.ContactInterfaceType.EMV);
                             apduData2.setTimeout(30);
 
@@ -1102,7 +1103,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                     APDUData apduData2 = new APDUData();
                     apduData2.setCommandAPDU("0400A404000A4F53452E5641532E303100");
                     apduData2.setTimeout(30);
-
+                    apduData2.setOkCondition("6A82");
                     APDUData apduData3 = new APDUData();
                     apduData3.setCommandAPDU("0400A404000E325041592E5359532E444446303100");
                     apduData3.setTimeout(30);
@@ -1580,16 +1581,19 @@ public class NonPaymentCardReaderActivity extends Activity {
                             logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
                             APDUData apduData1 = new APDUData();
                             apduData1.setCommandAPDU("0400A404000E315041592E5359532E444446303100");
+                            apduData1.setOkCondition("6A816A82");
                             apduData1.setContactInterface(APDUData.ContactInterfaceType.GSM);
                             apduData1.setTimeout(30);
 
                             APDUData apduData2 = new APDUData();
                             apduData2.setCommandAPDU("0400A404000A4F53452E5641532E303100");
+                            apduData2.setOkCondition("6A816A82");
                             apduData2.setContactInterface(APDUData.ContactInterfaceType.GSM);
                             apduData2.setTimeout(30);
 
                             APDUData apduData3 = new APDUData();
                             apduData3.setCommandAPDU("0400A404000E315041592E5359532E444446303100");
+                            apduData3.setOkCondition("6A816A82");
                             apduData3.setContactInterface(APDUData.ContactInterfaceType.GSM);
                             apduData3.setTimeout(30);
 
