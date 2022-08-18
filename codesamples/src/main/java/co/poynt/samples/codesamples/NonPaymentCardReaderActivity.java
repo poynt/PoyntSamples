@@ -2465,7 +2465,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                 .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
                         generateApduList(9,
                                 "Write Block 4 with 00’s",
-                                "03A0120000110400000000FFFFFFFF0000000004FB04FB"),
+                                "03A0120000110400000000000000000000000000000000"),
                         "Clear the block to prepare for value tests",
                         false))
                 .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
@@ -2476,10 +2476,10 @@ public class NonPaymentCardReaderActivity extends Activity {
                         false))
                 .takeWhile(list -> {
                     //Device returns data all zeroes
-                    if (list.size() > 0) {
+                    if (list != null && list.size() > 0) {
                         boolean isAllZeroes = true;
 
-                        for (char c : list.get(0).toCharArray()) {
+                        for (char c : list.get(0).substring(0, list.get(0).length() - 4).toCharArray()) {
                             if (c != '0') {
                                 isAllZeroes = false;
                                 break;
