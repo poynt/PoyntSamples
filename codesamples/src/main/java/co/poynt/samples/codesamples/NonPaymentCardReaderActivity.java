@@ -2603,7 +2603,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> exchangeAPDUListObservable(
                         generateApduList(24,
-                                "Authenticate Block 6 KeyA:", ("03A0110000020601" + key)),
+                                "Authenticate Block 6 KeyA:", ("03A0100000080601" + key)),
                         "Test ability to authenticate Sector 1",
                         false))
                 .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
