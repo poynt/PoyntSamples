@@ -2465,7 +2465,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                 .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
                         generateApduList(9,
                                 "Write Block 4 with 00’s",
-                                "03A0120000110400000000000000000000000000000000"),
+                                "03A0120000110400000000FFFFFFFF0000000004FB04FB"),
                         "Clear the block to prepare for value tests",
                         false))
                 .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
@@ -2476,25 +2476,11 @@ public class NonPaymentCardReaderActivity extends Activity {
                         false))
                 .takeWhile(list -> {
                     //Device returns data all zeroes
-                    if (list != null && list.size() > 0) {
-                        boolean isAllZeroes = true;
-
-                        for (char c : list.get(0).substring(0, list.get(0).length() - 4).toCharArray()) {
-                            if (c != '0') {
-                                isAllZeroes = false;
-                                break;
-                            }
-                        }
-
-                        if (isAllZeroes) {
-                            logReceivedMessage("Device returns data all zeroes, PASSED");
-                            return true;
-                        } else {
-                            logReceivedMessage("Device don't returns data all zeroes, FAILED");
-                            return false;
-                        }
+                    if (list != null && list.size() > 0 && list.get(0).contains("00000000FFFFFFFF00000000")) {
+                        logReceivedMessage("Device returns data 05000000: Passed");
+                        return true;
                     } else {
-                        logReceivedMessage("No data returned, FAILED");
+                        logReceivedMessage("Device returns data 05000000: Failed");
                         return false;
                     }
                 })
@@ -2512,7 +2498,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                         false))
                 .takeWhile(list -> {
                     //Device returns data 0A000000
-                    if (list.size() > 0 && list.get(0).equals("0A000000")) {
+                    if (list != null && list.size() > 0 && list.get(0).contains("0A000000F5FFFFFF0A000000")) {
                         logReceivedMessage("Device returns data 0A000000: Passed");
                         return true;
                     } else {
@@ -2534,7 +2520,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                         false))
                 .takeWhile(list -> {
                     //Device returns data 05000000
-                    if (list != null && list.size() > 0 && list.get(0).equals("05000000")) {
+                    if (list != null && list.size() > 0 && list.get(0).contains("05000000FAFFFFFF05000000")) {
                         logReceivedMessage("Device returns data 05000000: Passed");
                         return true;
                     } else {
@@ -2555,7 +2541,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                         false))
                 .takeWhile(list -> {
                     //Device returns data 05000000
-                    if (list.size() > 0 && list.get(0).equals("05000000")) {
+                    if (list != null && list.size() > 0 && list.get(0).contains("05000000FAFFFFFF05000000")) {
                         logReceivedMessage("Device returns data 05000000: Passed");
                         return true;
                     } else {
@@ -2569,7 +2555,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                                 generateApduList(17,
                                         "1K Card - Read Block 64", "03A0110000024001"),
                                 "If 1K card, test for out of range",
-                                false);
+                                true);
                     } else {
                         return exchangeAPDUListObservable(
                                 generateApduList(18,
@@ -2644,7 +2630,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     public void onError(@NonNull Throwable e) {
                         e.printStackTrace();
                         ConnectionOptions connectionOptions = new ConnectionOptions();
-                        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
                         connectionOptions.setTimeout(30);
                         disconnectCardReader(connectionOptions);
                     }
@@ -2652,7 +2637,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     @Override
                     public void onComplete() {
                         ConnectionOptions connectionOptions = new ConnectionOptions();
-                        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
                         connectionOptions.setTimeout(30);
                         disconnectCardReader(connectionOptions);
                     }
@@ -2701,7 +2685,6 @@ public class NonPaymentCardReaderActivity extends Activity {
                     @Override
                     public void onComplete() {
                         ConnectionOptions connectionOptions = new ConnectionOptions();
-                        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
                         connectionOptions.setTimeout(30);
                         disconnectCardReader(connectionOptions);
                     }
@@ -2791,9 +2774,13 @@ public class NonPaymentCardReaderActivity extends Activity {
                             } else if (rApdu.endsWith("6D00")) {
                                 errorMessage = "Command not allowed";
                             }
-
-                            logReceivedMessage(testDescription + ": " + errorMessage);
-                            emitter.onError(new Throwable(errorMessage));
+                            if (isCommandShouldFail) {
+                                logReceivedMessage(testDescription + " Failed with " + errorMessage+ ", Test Passed");
+                                emitter.onNext(list);
+                            }else {
+                                logReceivedMessage(testDescription + ": " + errorMessage);
+                                emitter.onError(new Throwable(errorMessage));
+                            }
                         }
                     } else {
                         logReceivedMessage(testDescription + ": Failed -> data is null");
