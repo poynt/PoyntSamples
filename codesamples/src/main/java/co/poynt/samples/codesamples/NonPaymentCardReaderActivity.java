@@ -1,5 +1,6 @@
 package co.poynt.samples.codesamples;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -22,8 +23,10 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import co.poynt.os.model.APDUData;
 import co.poynt.os.model.ConnectionOptions;
@@ -36,6 +39,15 @@ import co.poynt.os.services.v1.IPoyntConnectToCardListener;
 import co.poynt.os.services.v1.IPoyntDisconnectFromCardListener;
 import co.poynt.os.services.v1.IPoyntExchangeAPDUListListener;
 import co.poynt.os.services.v1.IPoyntExchangeAPDUListener;
+import co.poynt.os.util.ByteUtils;
+import co.poynt.samples.codesamples.utils.Util;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class NonPaymentCardReaderActivity extends Activity {
     private IPoyntCardReaderService cardReaderService;
@@ -53,7 +65,8 @@ public class NonPaymentCardReaderActivity extends Activity {
             clSuccessfulTransaction, clFileNotFoundTest, clExchangeApdu, clCardRejectionMaster,
             clXAPDU, clPymtTrnDuringDCA, isoSuccessfulTransaction,
             isoFileNotFound, isoExchangeApdu, isoCardRejectionMaster, isoPymntTrnDuringDca, isoXAPDU,
-            sle401, sle402, sle403, sle404, sle405, sle406, sle407, sle408, sle409, sleXAPDU;
+            sle401, sle402, sle403, sle404, sle405, sle406, sle407, sle408, sle409, sleXAPDU,
+            testMifare, testMifareAfterPowerCycle;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -359,6 +372,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         sle408 = findViewById(R.id.sle408);
         sle409 = findViewById(R.id.sle409);
         sleXAPDU = findViewById(R.id.sleXAPDU);
+        testMifare = findViewById(R.id.testMifare);
+        testMifareAfterPowerCycle = findViewById(R.id.testMifareAfterPowerCycle);
 
         ctSuccessfulTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -532,6 +547,20 @@ public class NonPaymentCardReaderActivity extends Activity {
             @Override
             public void onClick(View v) {
                 sleXAPDU();
+            }
+        });
+
+        testMifare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMifareTest();
+            }
+        });
+
+        testMifareAfterPowerCycle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMifareTestAfterPowerCycle();
             }
         });
     }
@@ -1230,7 +1259,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                     disconnectCardReader(connectionOptions);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             logReceivedMessage(e.getMessage());
         }
     }
@@ -2334,5 +2363,458 @@ public class NonPaymentCardReaderActivity extends Activity {
         }catch (Exception e){
             logReceivedMessage(e.getMessage());
         }
+    }
+
+    // =========== TEST DCA MIFARE ==================
+
+    @SuppressLint("CheckResult")
+    private void startMifareTest() {
+        logReceivedMessage("=========== TEST DCA MIFARE ==================");
+        logReceivedMessage("Start Mifare test");
+        logReceivedMessage("Please, tap the card");
+
+        String key = "FFFFFFFFFFFF";
+
+        final ConnectionResult.CardType[] cardType = {ConnectionResult.CardType.MIFARE_CLASSIC_1K};
+        final String[] test3ResponseInvertedData = new String[1];
+        final String[] test6ResponseInvertedData = new String[1];
+
+        connectToCardObservable()
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    cardType[0] = (connectionResult.getCardType());
+                    return exchangeAPDUListObservable(generateApduList(2,
+                            "Authenticate Block 6 KeyA:", ("03A0100000080601" + key)),
+                            "Test ability to authenticate Sector 1 in the Mifare Classic card",
+                            false);
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(3, "Read Block 6, 1 block: ",
+                                "03A0110000020601"),
+                        "Test the ability to read to an authenticated sector",
+                        false))
+                .takeWhile(list -> {
+                    if (list != null && list.size() > 0 && list.get(0).length() >= 16){
+                        logReceivedMessage("Device returns 16 bytes of data: Success");
+                        return true;
+                    } else {
+                        logReceivedMessage("Device returns less than 16 bytes of data: Failed");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> {
+                    byte[] responseData = ByteUtils.hexStringToByteArray(list.get(0));
+                    byte[] invertedResponseData = Util.invertBytes(responseData, 0, responseData.length);
+                    test3ResponseInvertedData[0] = ByteUtils.byteArrayToHexString(invertedResponseData);
+
+                    return exchangeAPDUListObservable(
+                            generateApduList(4,
+                                    "Write Block 6 previous data inverted",
+                                    ("03A01200001106" + test3ResponseInvertedData[0])),
+                            "Test the ability to write to an authenticated sector",
+                            false);
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(5,
+                                "Read Block 6, 1 block: ",
+                                "03A0110000020601"),
+                        "Test to validate previous write was successful",
+                        false))
+                .takeWhile(list -> {
+                    //Device returns data that matches the inverted data written in previous test
+                    if (list.get(0).equals(test3ResponseInvertedData[0])) {
+                        logReceivedMessage("The data matches the inverted data written in previous test, PASSED");
+                        return true;
+                    } else {
+                        logReceivedMessage("The data don't match the inverted data written in previous test, FAILED");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(6,
+                                "Read Block 14",
+                                "03A0110000020E01"),
+                        "Verify that automatic authentication occurs on a read to a block in a different sector",
+                        false))
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> {
+                    byte[] responseData = ByteUtils.hexStringToByteArray(list.get(0));
+                    byte[] invertedResponseData = Util.invertBytes(responseData, 0, responseData.length);
+                    test6ResponseInvertedData[0] = ByteUtils.byteArrayToHexString(invertedResponseData);
+                    return exchangeAPDUListObservable(
+                            generateApduList(7,
+                                    "Write Block 14 previous data inverted",
+                                    ("03A0120000110E" + test6ResponseInvertedData[0])),
+                            "Verify the ability to write to an automatically authenticated block",
+                            false);
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(8,
+                                "Read Block 14",
+                                "03A0110000020E01"),
+                        "Test to validate previous write was successful",
+                        false))
+                .takeWhile(list -> {
+                    //Device returns data that matches the inverted data written in previous test
+                    if (list.get(0).equals(test6ResponseInvertedData[0])) {
+                        logReceivedMessage("The data matches the inverted data written in previous test, PASSED");
+                        return true;
+                    } else {
+                        logReceivedMessage("The data don't match the inverted data written in previous test, FAILED");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(9,
+                                "Write Block 4 with 00’s",
+                                "03A0120000110400000000FFFFFFFF0000000004FB04FB"),
+                        "Clear the block to prepare for value tests",
+                        false))
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(10,
+                                "Read Block 4 ",
+                                "03A0110000020401"),
+                        "Test to validate previous write was successful",
+                        false))
+                .takeWhile(list -> {
+                    //Device returns data all zeroes
+                    if (list.size() > 0) {
+                        boolean isAllZeroes = true;
+
+                        for (char c : list.get(0).toCharArray()) {
+                            if (c != '0') {
+                                isAllZeroes = false;
+                                break;
+                            }
+                        }
+
+                        if (isAllZeroes) {
+                            logReceivedMessage("Device returns data all zeroes, PASSED");
+                            return true;
+                        } else {
+                            logReceivedMessage("Device don't returns data all zeroes, FAILED");
+                            return false;
+                        }
+                    } else {
+                        logReceivedMessage("No data returned, FAILED");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(11,
+                                "Increment Block 4 by 10 ",
+                                "03A01300000604040A000000"),
+                        "Verify block may be incremented",
+                        false))
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(12,
+                                "Read Block 4",
+                                "03A0110000020401"),
+                        "Test to validate previous increment was successful",
+                        false))
+                .takeWhile(list -> {
+                    //Device returns data 0A000000
+                    if (list.size() > 0 && list.get(0).equals("0A000000")) {
+                        logReceivedMessage("Device returns data 0A000000: Passed");
+                        return true;
+                    } else {
+                        logReceivedMessage("Device returns data 0A000000: Failed");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(13,
+                                "Decrement Block 4 by 5",
+                                "03A014000006040405000000"),
+                        "Verify block may be decremented",
+                        false))
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(14,
+                                "Read Block 4",
+                                "03A0110000020401"),
+                        "Test to validate previous decrement was successful",
+                        false))
+                .takeWhile(list -> {
+                    //Device returns data 05000000
+                    if (list != null && list.size() > 0 && list.get(0).equals("05000000")) {
+                        logReceivedMessage("Device returns data 05000000: Passed");
+                        return true;
+                    } else {
+                        logReceivedMessage("Device returns data 05000000: Failed");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(15,
+                                "Move Block 4 to Block 5",
+                                "03A0150000020405"),
+                        "Verify use of the Move command",
+                        false))
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(16, "Read Block 5",
+                                "03A0110000020501"),
+                        "Verify previous move was successful",
+                        false))
+                .takeWhile(list -> {
+                    //Device returns data 05000000
+                    if (list.size() > 0 && list.get(0).equals("05000000")) {
+                        logReceivedMessage("Device returns data 05000000: Passed");
+                        return true;
+                    } else {
+                        logReceivedMessage("Device returns data 05000000: Failed");
+                        return false;
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> {
+                    if (cardType[0] == ConnectionResult.CardType.MIFARE_CLASSIC_1K) {
+                        return exchangeAPDUListObservable(
+                                generateApduList(17,
+                                        "1K Card - Read Block 64", "03A0110000024001"),
+                                "If 1K card, test for out of range",
+                                false);
+                    } else {
+                        return exchangeAPDUListObservable(
+                                generateApduList(18,
+                                        "4K Card - Read Block 64 and 255",
+                                        "03A0110000024001", "03A011000002FF01"),
+                                "If 4K card test range over 1K",
+                                false);
+                    }
+                })
+                .flatMap((Function<List<String>, Observable<String>>) list -> {
+                    logReceivedMessage("Wait 10 sec for card disconnect");
+                    return disconnectFromCardObservable();
+                })
+                .delay(10, TimeUnit.SECONDS)
+                .flatMap((Function<String, Observable<ConnectionResult>>) disconnectResult -> connectToCardObservable())
+                .takeWhile(connectionResult -> {
+                    if (connectionResult.getCardType() == cardType[0]) {
+                        logReceivedMessage("Device returns correct Mifare Classic card: Success");
+                        return true;
+                    } else {
+                        logReceivedMessage("Device returns incorrect Mifare Classic card: Failed");
+                        return false;
+                    }
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> exchangeAPDUListObservable(
+                        generateApduList(21,
+                                "Read Block 6, 1 block: ",
+                                "03A0110000020601"),
+                        "Test that keys have been erased",
+                        true))
+                .flatMap((Function<List<String>, Observable<String>>) list -> {
+                    logReceivedMessage("Wait 10 sec for card disconnect");
+                    return disconnectFromCardObservable();
+                })
+                .delay(10, TimeUnit.SECONDS)
+                .flatMap((Function<String, Observable<ConnectionResult>>) disconnectResult -> connectToCardObservable())
+                .takeWhile(connectionResult -> {
+                    if (connectionResult.getCardType() == cardType[0]) {
+                        logReceivedMessage("Device returns correct Mifare Classic card: Success");
+                        return true;
+                    } else {
+                        logReceivedMessage("Device returns incorrect Mifare Classic card: Failed");
+                        return false;
+                    }
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> exchangeAPDUListObservable(
+                        generateApduList(24,
+                                "Authenticate Block 6 KeyA:", ("03A0110000020601" + key)),
+                        "Test ability to authenticate Sector 1",
+                        false))
+                .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                        generateApduList(25,
+                                "Read Block 6, 1 block: ",
+                                "03A0110000020601"),
+                        "Test the ability to read to an authenticated sector",
+                        false))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<String>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull List<String> list) {
+                        logReceivedMessage("Please, reboot the terminal. After reboot completed," +
+                                " start second test button (Test mifare (after power cycle))");
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        ConnectionOptions connectionOptions = new ConnectionOptions();
+                        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
+                        connectionOptions.setTimeout(30);
+                        disconnectCardReader(connectionOptions);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        ConnectionOptions connectionOptions = new ConnectionOptions();
+                        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
+                        connectionOptions.setTimeout(30);
+                        disconnectCardReader(connectionOptions);
+                    }
+                });
+    }
+
+    private void startMifareTestAfterPowerCycle() {
+        connectToCardObservable()
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> exchangeAPDUListObservable(
+                        generateApduList(27,
+                        "Read Block 6, 1 block: ",
+                                "03A0110000020601"),
+                        "Test ability to erase keys on power cycle",
+                        true))
+                .flatMap((Function<List<String>, Observable<String>>) list -> {
+                    logReceivedMessage("Wait 10 sec for card disconnect");
+                    return disconnectFromCardObservable();
+                })
+                .delay(10, TimeUnit.SECONDS)
+                .flatMap((Function<String, Observable<ConnectionResult>>) disconnectResult -> connectToCardObservable())
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> exchangeAPDUListObservable(
+                        generateApduList(31,
+                                "Authenticate Block 6 KeyA:",
+                                "03A0100000080601112233445566"),
+                        "Test for attempt to authenticate with an invalid key ",
+                        true))
+                .flatMap((Function<List<String>, Observable<String>>) list -> disconnectFromCardObservable())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull String s) {
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        ConnectionOptions connectionOptions = new ConnectionOptions();
+                        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
+                        connectionOptions.setTimeout(30);
+                        disconnectCardReader(connectionOptions);
+                    }
+                });
+    }
+
+    private Observable<ConnectionResult> connectToCardObservable() {
+        return Observable.create(emitter -> {
+            ConnectionOptions connectionOptions = new ConnectionOptions();
+            connectionOptions.setTimeout(10);
+
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                @Override
+                public void onSuccess(ConnectionResult connectionResult) {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    emitter.onNext(connectionResult);
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) {
+                    logReceivedMessage("Connection failure: " + poyntError.toString());
+                    emitter.onError(new Throwable(poyntError.toString()));
+                }
+            });
+        });
+    }
+
+    private Observable<String> disconnectFromCardObservable() {
+        return Observable.create(emitter -> {
+            final ConnectionOptions connectionOptions = new ConnectionOptions();
+            connectionOptions.setTimeout(10);
+
+            cardReaderService.disconnectFromCard(connectionOptions, new IPoyntDisconnectFromCardListener.Stub() {
+                @Override
+                public void onDisconnect() {
+                    logReceivedMessage("Disconnect from card: Success");
+                    emitter.onNext("Success");
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) {
+                    logReceivedMessage("Disconnect from card Failure: " + poyntError.toString());
+                    emitter.onError(new Throwable(poyntError.toString()));
+                }
+            });
+        });
+    }
+
+    private Observable<List<String>> exchangeAPDUListObservable(final List<APDUData> apduData,
+                                                                String testDescription,
+                                                                boolean isCommandShouldFail) {
+        return Observable.create(emitter -> cardReaderService.exchangeAPDUList(apduData, new IPoyntExchangeAPDUListListener.Stub() {
+            @Override
+            public void onResult(List<String> list, PoyntError poyntError) {
+                if (list != null) {
+                    logReceivedMessage("Exchange APDU result : " + list.toString());
+                }
+
+                if (poyntError != null) {
+                    if (isCommandShouldFail) {
+                        logReceivedMessage(testDescription + " Failed, Test Passed");
+                        emitter.onNext(list);
+                    } else {
+                        logReceivedMessage(testDescription + ": Failed -> " + poyntError.toString());
+                        emitter.onError(new Throwable(poyntError.toString()));
+                    }
+                } else {
+                    String rApdu = list.size() > 0 ? list.get(0) : null;
+
+                    if (rApdu != null) {
+                        if (rApdu.endsWith("9000")) {
+                            logReceivedMessage(testDescription + ": Success");
+                            list.set(0, list.get(0).substring(0, list.get(0).length() - 4));
+                            emitter.onNext(list);
+                        } else {
+                            String errorMessage = "Unknown error";
+                            if (rApdu.endsWith("6300")) {
+                                errorMessage = "Authentication Failed";
+                            } else if (rApdu.endsWith("6501")) {
+                                errorMessage = "Memory failure, unable to read/write";
+                            } else if (rApdu.endsWith("6502")) {
+                                errorMessage = "Not a valid value block";
+                            } else if (rApdu.endsWith("6600")) {
+                                errorMessage = "Incorrect address range error";
+                            } else if (rApdu.endsWith("6601")) {
+                                errorMessage = "Incorrect length error";
+                            } else if (rApdu.endsWith("6D00")) {
+                                errorMessage = "Command not allowed";
+                            }
+
+                            logReceivedMessage(testDescription + ": " + errorMessage);
+                            emitter.onError(new Throwable(errorMessage));
+                        }
+                    } else {
+                        logReceivedMessage(testDescription + ": Failed -> data is null");
+                    }
+                }
+            }
+        }));
+    }
+
+    private ArrayList<APDUData> generateApduList(int testNumber, String logMessage, String... apduCommands) {
+        ArrayList<APDUData> apduList = new ArrayList<>();
+
+        for (String commandApdu : apduCommands) {
+            APDUData apduData = new APDUData();
+            apduData.setCommandAPDU(commandApdu);
+            apduData.setTimeout(30);
+
+            apduList.add(apduData);
+            logReceivedMessage("Process Test" + testNumber + " - APDU Exchange - " + logMessage + " " + apduData);
+        }
+
+        return apduList;
     }
 }
