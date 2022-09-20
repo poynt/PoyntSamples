@@ -39,7 +39,9 @@
             android:id="@+id/apduData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:imeActionLabel="Close"
+            android:inputType="text"
+            android:lines="1"
+            android:imeOptions="actionDone"
             android:text="04A0A40000023F0000" />
 
         <Button
