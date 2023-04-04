@@ -322,6 +322,21 @@
                     android:text="X APDU" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/isoItalianHealthCards"
+                    style="@style/DCAButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="198dp"
+                    android:text="Test Italian Health Card" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -458,6 +473,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="5dp"
+            android:maxWidth="256dp"
             android:text="Test Mifare (after power cycle)" />
 
     </LinearLayout>

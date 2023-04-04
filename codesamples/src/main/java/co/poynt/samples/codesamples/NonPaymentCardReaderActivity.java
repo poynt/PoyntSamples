@@ -66,7 +66,7 @@ public class NonPaymentCardReaderActivity extends Activity {
             clXAPDU, clPymtTrnDuringDCA, isoSuccessfulTransaction,
             isoFileNotFound, isoExchangeApdu, isoCardRejectionMaster, isoPymntTrnDuringDca, isoXAPDU,
             sle401, sle402, sle403, sle404, sle405, sle406, sle407, sle408, sle409, sleXAPDU,
-            testMifare, testMifareAfterPowerCycle;
+            testMifare, testMifareAfterPowerCycle, isoItalianHealthCards;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -361,6 +361,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         isoPymntTrnDuringDca = findViewById(R.id.isoTrnDuringDCA);
         isoCardRejectionMaster = findViewById(R.id.isoCardRejectionMaster);
         isoXAPDU = findViewById(R.id.isoXAPDU);
+        isoItalianHealthCards = findViewById(R.id.isoItalianHealthCards);
 
         sle401 = findViewById(R.id.sle401);
         sle402 = findViewById(R.id.sle402);
@@ -486,6 +487,12 @@ public class NonPaymentCardReaderActivity extends Activity {
             @Override
             public void onClick(View v) {
                 isoXAPDU();
+            }
+        });
+        isoItalianHealthCards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isoItalianHealthCards();
             }
         });
 
@@ -1840,6 +1847,129 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
     }
 
+    private void isoItalianHealthCards() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("ISO Italian Health Card Test");
+
+        try {
+            final ConnectionOptions connectionOptions = new ConnectionOptions();
+            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
+            connectionOptions.setTimeout(30);
+            logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
+            cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
+                @Override
+                public void onCardFound() throws RemoteException {
+                    logReceivedMessage("Card Found");
+
+                    APDUData apduData1 = new APDUData();
+                    apduData1.setCommandAPDU("0400A40000023F0000");
+                    apduData1.setContactInterface(APDUData.ContactInterfaceType.GSM);
+                    apduData1.setTimeout(30);
+
+                    APDUData apduData2 = new APDUData();
+                    apduData2.setCommandAPDU("0400A4000002110000");
+                    apduData2.setContactInterface(APDUData.ContactInterfaceType.GSM);
+                    apduData2.setTimeout(30);
+
+                    APDUData apduData3 = new APDUData();
+                    apduData3.setCommandAPDU("0400A4000002110200");
+                    apduData3.setContactInterface(APDUData.ContactInterfaceType.GSM);
+                    apduData3.setTimeout(30);
+
+                    APDUData apduData4 = new APDUData();
+                    apduData4.setCommandAPDU("0300B0000000");
+                    apduData4.setContactInterface(APDUData.ContactInterfaceType.GSM);
+                    apduData4.setTimeout(30);
+
+                    logReceivedMessage("connectToCard : connectionOptions" + connectionOptions);
+
+                    isoConnectToCardObservable(connectionOptions).flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                        return exchangeAPDUListObservable(generateISOApduList(apduData1, "Select MF"), "Select MF", false);
+                    }).takeWhile(list -> {
+                        if (list.size() > 0) {
+                            logReceivedMessage("APDU exchange Success For :" + apduData1);
+                            return true;
+                        } else {
+                            logReceivedMessage("APDU exchange Failed For : " + apduData1);
+                            return false;
+                        }
+                    }).flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                            generateISOApduList(apduData2, "Select DF1"), "Select DF1", false))
+                            .takeWhile(list -> {
+                                if (list.size() > 0) {
+                                    logReceivedMessage("APDU exchange Success For : " + apduData2);
+                                    return true;
+                                } else {
+                                    logReceivedMessage("APDU exchange Failed For : " + apduData2);
+                                    return false;
+                                }
+                            })
+                            .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                                    generateISOApduList(apduData3, "Select EF"), "Select EF", false))
+                            .takeWhile(list -> {
+                                if (list.size() > 0) {
+                                    logReceivedMessage("APDU exchange Success For : " + apduData3);
+                                    return true;
+                                } else {
+                                    logReceivedMessage("APDU exchange Failed For : " + apduData3);
+                                    return false;
+                                }
+                            })
+                            .flatMap((Function<List<String>, Observable<List<String>>>) list -> exchangeAPDUListObservable(
+                                    generateISOApduList(apduData4, "Read EF"), "Read EF", false))
+                            .takeWhile(list -> {
+                                if (list.size() > 0) {
+                                    logReceivedMessage("APDU exchange Success For : " + apduData4);
+                                    return true;
+                                } else {
+                                    logReceivedMessage("APDU exchange Failed  For : " + apduData4);
+                                    return false;
+                                }
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Observer<List<String>>() {
+                                @Override
+                                public void onSubscribe(@NonNull Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(@NonNull List<String> list) {
+                                    logReceivedMessage("Done with the test");
+                                    disconnectCardReader(connectionOptions);
+                                }
+
+                                @Override
+                                public void onError(@NonNull Throwable e) {
+                                    disconnectCardReader(connectionOptions);
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    disconnectCardReader(connectionOptions);
+                                }
+                            });
+
+                }
+
+                @Override
+                public void onCardNotFound() throws RemoteException {
+                    logReceivedMessage("Card not found");
+                    logReceivedMessage("Test Failed");
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) throws RemoteException {
+                    logReceivedMessage("Error " + poyntError.toString());
+                    logReceivedMessage("Test Failed");
+                }
+            });
+        } catch (Throwable e) {
+            e.printStackTrace();
+            logReceivedMessage(e.getMessage());
+        }
+    }
     // ================= SLE 4442 ========================
 
     private void sle401() {
@@ -2803,5 +2933,30 @@ public class NonPaymentCardReaderActivity extends Activity {
         }
 
         return apduList;
+    }
+
+    private ArrayList<APDUData> generateISOApduList(APDUData apduData, String logMessage){
+        ArrayList<APDUData> apduList = new ArrayList<>();
+        logReceivedMessage(logMessage +  " - APDU Exchange - " + apduData);
+         apduList.add(apduData);
+         return apduList;
+    }
+
+    private Observable<ConnectionResult> isoConnectToCardObservable(ConnectionOptions connectionOptions) {
+        return Observable.create(emitter -> {
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                @Override
+                public void onSuccess(ConnectionResult connectionResult) {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    emitter.onNext(connectionResult);
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) {
+                    logReceivedMessage("Connection failure: " + poyntError.toString());
+                    emitter.onError(new Throwable(poyntError.toString()));
+                }
+            });
+        });
     }
 }
