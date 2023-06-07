@@ -19,7 +19,7 @@
     <uses-permission android:name="poynt.permission.ACCESSORY_MANAGER" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="poynt.permission.CARD_READER_SERVICE" />
-
+    <uses-permission android:name="poynt.permission.CONFIGURATION_SERVICE" />
     <uses-permission android:name="co.poynt.receipts.ACCESS_RECEIPT_SETTINGS" />
     <uses-permission android:name="poynt.permission.LAST_SYNC_TIME_INFO" />
 
@@ -94,6 +94,8 @@
         <activity android:name=".NonPaymentCardReaderActivity" />
 
         <activity android:name=".PrinterServiceActivity" />
+
+        <activity android:name=".ConfigurationServiceActivity" />
 
         <receiver
             android:name=".CustomerDetectedReceiver"

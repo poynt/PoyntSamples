@@ -164,5 +164,15 @@
             android:background="@color/gray"
             android:text="Printer Service Activity"
             android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/configurationServiceActivityBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@color/gray"
+            android:text="Configuration Service Activity"
+            android:textAlignment="center" />
+
     </LinearLayout>
 </ScrollView>

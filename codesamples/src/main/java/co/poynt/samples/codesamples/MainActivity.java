@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
     private Button cameraActivityBtn;
     private Button nonPaymentCardReaderActivityBtn;
     private Button printerServiceActivityBtn;
+    private Button configurationServiceActivityBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,6 +181,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PrinterServiceActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        configurationServiceActivityBtn = (Button) findViewById(R.id.configurationServiceActivityBtn);
+        configurationServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ConfigurationServiceActivity.class);
                 startActivity(intent);
             }
         });
