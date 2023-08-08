@@ -1,5 +1,6 @@
 package co.poynt.samples.codesamples;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,7 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import co.poynt.os.model.Intents;
+import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntConfigurationService;
+import co.poynt.os.services.v1.IPoyntReaderVersionListener;
 import co.poynt.os.services.v1.IPoyntSimCardInfoListener;
 
 public class ConfigurationServiceActivity extends Activity {
@@ -27,7 +30,8 @@ public class ConfigurationServiceActivity extends Activity {
         setContentView(R.layout.activity_configuration_service);
 
         Button getSimInfoButton = findViewById(R.id.getSimInfoButton);
-        TextView simInfoTextView = findViewById(R.id.infoTextView);
+        Button getFirmwareComponentVersBtn = findViewById(R.id.getFirmwareCompVersButton);
+        TextView infoTextView = findViewById(R.id.infoTextView);
 
         getSimInfoButton.setOnClickListener(view -> {
             try {
@@ -39,15 +43,41 @@ public class ConfigurationServiceActivity extends Activity {
                             for (String key : bundle.keySet()) {
                                 stringBuilder.append(key).append(" : ").append(bundle.get(key)).append("\n");
                             }
-                            simInfoTextView.setText(stringBuilder);
+                            infoTextView.setText(stringBuilder);
                         });
                     }
                 });
             } catch (Exception e) {
-                simInfoTextView.setText("Exception: " + e.getMessage());
+                infoTextView.setText("Exception: " + e.getMessage());
             }
         });
 
+        getFirmwareComponentVersBtn.setOnClickListener(v -> {
+            try {
+                configurationService.getFirmwareComponentVersion(new IPoyntReaderVersionListener.Stub() {
+                    @Override
+                    public void onSuccess(String fwVersion) throws RemoteException {
+                        runOnUiThread(() -> {
+                            Log.d("FW Component version",
+                                    fwVersion.replaceAll("(\\r|\\n)", ""));
+                            infoTextView.setText(fwVersion);
+                        });
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onFailure(PoyntError poyntError) throws RemoteException {
+                        if (poyntError != null) {
+                            runOnUiThread(() -> {
+                                infoTextView.setText("Error: " + poyntError.toString());
+                            });
+                        }
+                    }
+                });
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
