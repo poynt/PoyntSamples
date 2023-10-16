@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/getSimInfoButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="#777777"
+            android:gravity="center"
+            android:text="Get simcard data"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/getFirmwareCompVersButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="#777777"
+            android:gravity="center"
+            android:text="Get Firmware component version"
+            android:textSize="18sp" />
+
+        <!-- new buttons for another Configuration service methods will be here...-->
+
+        <TextView
+            android:id="@+id/infoTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:gravity="center_horizontal"
+            android:text="Info will be here..."
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</ScrollView>
