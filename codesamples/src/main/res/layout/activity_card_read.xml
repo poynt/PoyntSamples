@@ -430,6 +430,34 @@
         android:layout_height="1dip"
         android:background="#000000" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etBinRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnSendBinRange"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="12"
+            android:text="000000111111" />
+
+        <Button
+            android:id="@+id/btnSendBinRange"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send Bin Range" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
     <ScrollView
         android:id="@+id/demoScroller"
         android:layout_width="match_parent"
