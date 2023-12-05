@@ -16,13 +16,14 @@
 
     <LinearLayout
         android:id="@+id/chargeLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/readCardBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="ReadCard"
             android:visibility="visible" />
 
@@ -30,7 +31,15 @@
             android:id="@+id/set_bin_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Set Custom BIN Range" />
+
+        <Button
+            android:id="@+id/set_full_bin_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Set Full BIN Range" />
 
     </LinearLayout>
 

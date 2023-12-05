@@ -22,6 +22,6 @@
     <string name="title_activity_multi_tender_test">MultiTenderTestActivity</string>
     <string name="title_activity_in_app_billing">InAppBillingActivity</string>
     <string name="title_activity_content_provider_sample">ContentProviderSampleActivity</string>
-    <string name="title_activity_non_payment_card_reader">DCA 3.1</string>
+    <string name="title_activity_non_payment_card_reader">DCA 3.2</string>
 
 </resources>

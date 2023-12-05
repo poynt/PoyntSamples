@@ -99,6 +99,50 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Button setFullBinRange = (Button) findViewById(R.id.set_full_bin_range);
+        setFullBinRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // send setTerminalConfiguration
+                byte mode = (byte) 0x00;
+                // bin ranges only apply to MSR
+                byte cardInterface = (byte) 0x01;
+                // bin range
+                String binRange = "0706000000999999";
+                ByteArrayOutputStream ptOs = null;
+                try {
+                    ptOs = new ByteArrayOutputStream();
+                    ptOs.write(fromString("1F812F"));
+                    ptOs.write(fromString(binRange));
+                    poyntConfigurationService.setTerminalConfiguration(mode, cardInterface,
+                            ptOs.toByteArray(),
+                            new IPoyntConfigurationUpdateListener.Stub() {
+                                @Override
+                                public void onSuccess() throws RemoteException {
+                                    logReceivedMessage("Bin Range Successfully updated");
+                                }
+
+                                @Override
+                                public void onFailure() throws RemoteException {
+                                    logReceivedMessage("Bin Range updated failed!");
+                                }
+                            });
+                } catch (IOException e) {
+                    logReceivedMessage("Received IOException - please check your data");
+                } catch (RemoteException e) {
+                    logReceivedMessage("Failed to communicate with PoyntConfigurationService");
+                } finally {
+                    try {
+                        if (ptOs != null) {
+                            ptOs.close();
+                        }
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
+            }
+        });
     }
 
     @Override

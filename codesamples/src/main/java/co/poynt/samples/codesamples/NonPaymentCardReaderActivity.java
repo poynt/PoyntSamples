@@ -26,6 +26,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +40,8 @@ import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntCardInsertListener;
 import co.poynt.os.services.v1.IPoyntCardReaderService;
+import co.poynt.os.services.v1.IPoyntConfigurationService;
+import co.poynt.os.services.v1.IPoyntConfigurationUpdateListener;
 import co.poynt.os.services.v1.IPoyntConnectToCardListener;
 import co.poynt.os.services.v1.IPoyntDisconnectFromCardListener;
 import co.poynt.os.services.v1.IPoyntExchangeAPDUListListener;
@@ -55,6 +59,8 @@ import io.reactivex.schedulers.Schedulers;
 @SuppressLint("StaticFieldLeak")
 public class NonPaymentCardReaderActivity extends Activity {
     private IPoyntCardReaderService cardReaderService;
+    private IPoyntConfigurationService poyntConfigurationService;
+
     private static final String TAG = NonPaymentCardReaderActivity.class.getName();
     private ProgressDialog cardRemovalProgress;
 
@@ -62,7 +68,7 @@ public class NonPaymentCardReaderActivity extends Activity {
 
     private TextView mDumpTextView;
     private ScrollView mScrollView;
-    private EditText apduDataInput;
+    private EditText apduDataInput, etBingRange;
 
     Button ctSuccessfulTransaction, ctfFileNotFound, ctExchangeApduTest,
             ctCardRejectionMaster, ctXAPDU, ctPymtTrnDuringDCA,
@@ -70,7 +76,7 @@ public class NonPaymentCardReaderActivity extends Activity {
             clXAPDU, clPymtTrnDuringDCA, isoSuccessfulTransaction,
             isoFileNotFound, isoExchangeApdu, isoCardRejectionMaster, isoPymntTrnDuringDca, isoXAPDU,
             sle401, sle402, sle403, sle404, sle405, sle406, sle407, sle408, sle409, sleXAPDU,
-            testMifare, testMifareAfterPowerCycle, isoItalianHealthCards;
+            testMifare, testMifareAfterPowerCycle, isoItalianHealthCards, btnSendBinRange;
 
 
     private LinearLayout connectionInterfaces;
@@ -87,6 +93,27 @@ public class NonPaymentCardReaderActivity extends Activity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.d(TAG, "onServiceDisconnected ");
+        }
+    };
+
+    /**
+     * Class for interacting with the Configuration Service
+     */
+    private ServiceConnection poyntConfigurationServiceConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.e("ConfigurationTest", "IPoyntConfigurationService is now connected");
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            poyntConfigurationService = IPoyntConfigurationService.Stub.asInterface(service);
+            logReceivedMessage("Connected to Poynt Configuration Service.");
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.e("ConfigurationTest", "IPoyntConfigurationService has unexpectedly disconnected");
+            logReceivedMessage("Disconnected from Poynt Configuration Service.");
+            poyntConfigurationService = null;
         }
     };
 
@@ -406,6 +433,9 @@ public class NonPaymentCardReaderActivity extends Activity {
         testMifare = findViewById(R.id.testMifare);
         testMifareAfterPowerCycle = findViewById(R.id.testMifareAfterPowerCycle);
 
+        etBingRange = findViewById(R.id.etBinRange);
+        btnSendBinRange = findViewById(R.id.btnSendBinRange);
+
         ctSuccessfulTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -600,6 +630,8 @@ public class NonPaymentCardReaderActivity extends Activity {
                 startMifareTestAfterPowerCycle();
             }
         });
+
+        btnSendBinRange.setOnClickListener(view -> setBinRange());
     }
 
 
@@ -618,6 +650,9 @@ public class NonPaymentCardReaderActivity extends Activity {
 
         bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_CARD_READER_SERVICE),
                 serviceConnection, BIND_AUTO_CREATE);
+
+        bindService(Intents.getComponentIntent(Intents.COMPONENT_POYNT_CONFIGURATION_SERVICE),
+                poyntConfigurationServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     protected void onPause() {
@@ -626,6 +661,7 @@ public class NonPaymentCardReaderActivity extends Activity {
 
         unregisterReceiver(uiEventReceiver);
         unbindService(serviceConnection);
+        unbindService(poyntConfigurationServiceConnection);
     }
 
     @Override
@@ -3142,5 +3178,34 @@ public class NonPaymentCardReaderActivity extends Activity {
 
         apduData.setEnabledInterfaces(enabledInterfaces);
         apduData.setContactInterface(contactInterfaceType);
+    }
+
+    private void setBinRange() {
+        // send setTerminalConfiguration
+        byte mode = (byte) 0x00;
+        // bin ranges only apply to MSR
+        byte cardInterface = (byte) 0x01;
+        // bin range
+        String binRangeTag = "1F812F" + "0706" + etBingRange.getText().toString();
+        ByteArrayOutputStream ptOs = null;
+        try {
+            ptOs = new ByteArrayOutputStream();
+            ptOs.write(ByteUtils.hexStringToByteArray(binRangeTag));
+            poyntConfigurationService.setTerminalConfiguration(mode, cardInterface,
+                    ptOs.toByteArray(),
+                    new IPoyntConfigurationUpdateListener.Stub() {
+                        @Override
+                        public void onSuccess() throws RemoteException {
+                            logReceivedMessage("Bin Range Successfully updated");
+                        }
+
+                        @Override
+                        public void onFailure() throws RemoteException {
+                            logReceivedMessage("Bin Range updated failed!");
+                        }
+                    });
+        } catch (Exception e) {
+            logReceivedMessage("Failed to setTerminalConfiguration");
+        }
     }
 }
