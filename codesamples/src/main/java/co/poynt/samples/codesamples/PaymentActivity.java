@@ -49,6 +49,7 @@ import co.poynt.os.services.v1.IPoyntOrderService;
 import co.poynt.os.services.v1.IPoyntOrderServiceListener;
 import co.poynt.os.services.v1.IPoyntTransactionService;
 import co.poynt.os.services.v1.IPoyntTransactionServiceListener;
+import co.poynt.samples.codesamples.utils.CentralOrderUtils;
 import co.poynt.samples.codesamples.utils.Util;
 
 public class PaymentActivity extends Activity {
@@ -65,6 +66,7 @@ public class PaymentActivity extends Activity {
 
     Button chargeBtn;
     Button payOrderBtn;
+    Button payCentralOrderBtn;
     Button payWithRefsBtn;
     Button zeroDollarAuthBtn;
     Button launchAndCancelBtn;
@@ -150,7 +152,13 @@ public class PaymentActivity extends Activity {
                 launchPoyntPayment(order.getAmounts().getNetTotal(), false, order);
             }
         });
-
+        payCentralOrderBtn = (Button) findViewById(R.id.payCentralOrderBtn);
+        payCentralOrderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchPaymentWithCentralOrder(CentralOrderUtils.getCentralOrder());
+            }
+        });
         Button launchTxnList = (Button) findViewById(R.id.launchTxnList);
         launchTxnList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -525,6 +533,31 @@ public class PaymentActivity extends Activity {
             Log.d(TAG, "Transaction service disconnected");
         }
     };
+
+    private void launchPaymentWithCentralOrder(com.godaddy.commerce.models.order.Order order) {
+        String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
+
+        Payment payment = new Payment();
+        lastReferenceId = "6e73a14b-ef56-4a3f-981f-971111111111";
+        payment.setCentralOrderId(lastReferenceId);
+        payment.setCurrency(currencyCode);
+
+        if (order != null) {
+            payment.setCentralOrder(order);
+
+            payment.setAmount(order.getTotals().getTotal().getValue());
+        }
+        payment.setCallerPackageName("co.poynt.sample");
+
+        // start Payment activity for result
+        try {
+            Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
+            collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
+            startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REQUEST);
+        } catch (ActivityNotFoundException ex) {
+            Log.e(TAG, "Poynt Payment Activity not found - did you install PoyntServices?", ex);
+        }
+    }
 
     private void launchPoyntPayment(long amount, boolean collectTip, Order order) {
         String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
