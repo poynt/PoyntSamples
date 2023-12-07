@@ -27,7 +27,7 @@ dependencies {
 
 
     implementation 'co.poynt.api:android-api-model:1.2.125'
-    implementation 'co.poynt.android.sdk:poynt-sdk:1.2.34'
+    implementation 'co.poynt.android.sdk:poynt-sdk:development-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.2'
 
     // JWT dependencies - if you want to parse JWTs

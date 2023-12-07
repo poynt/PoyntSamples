@@ -45,6 +45,7 @@ import co.poynt.os.services.v2.IPoyntScanCodeListener;
 import co.poynt.os.services.v2.IPoyntSecondScreenService;
 import co.poynt.os.services.v2.IPoyntSignatureListener;
 import co.poynt.os.services.v2.IPoyntTipListener;
+import co.poynt.samples.codesamples.utils.CentralOrderUtils;
 
 public class SecondScreenServiceV2Activity extends Activity {
 
@@ -53,6 +54,8 @@ public class SecondScreenServiceV2Activity extends Activity {
     Button captureTip;
     @BindView(R.id.showCartConfirmation)
     Button showCartConfirmation;
+    @BindView(R.id.showCartConfirmationV2)
+    Button showCartConfirmationV2;
     @BindView(R.id.captureReceiptChoice)
     Button captureReceiptChoice;
     @BindView(R.id.captureSignature)
@@ -68,6 +71,8 @@ public class SecondScreenServiceV2Activity extends Activity {
     TextView tipStatus;
     @BindView(R.id.showCartStatus)
     TextView showCartStatus;
+    @BindView(R.id.showCartStatusV2)
+    TextView showCartStatusV2;
     @BindView(R.id.receiptChoiceStatus)
     TextView receiptChoiceStatus;
     @BindView(R.id.captureSignatureStatus)
@@ -311,6 +316,46 @@ public class SecondScreenServiceV2Activity extends Activity {
             e.printStackTrace();
         }
 
+    }
+
+    @OnClick(R.id.showCartConfirmationV2)
+    public void showCartConfirmationV2() {
+        try {
+            if (secondScreenService != null) {
+                TransactionAmounts transactionAmounts = new TransactionAmounts();
+                transactionAmounts.setOrderAmount(CentralOrderUtils.getCentralOrder().getTotals().getSubTotal().getValue());
+                transactionAmounts.setCurrency("USD");
+                transactionAmounts.setTipAmount(0l);
+
+                // options
+                Bundle options = new Bundle();
+                /**
+                 * TITLE, LEFT_BUTTON_TITLE, RIGHT_BUTTON_TITLE
+                 */
+                options.putParcelable(Intents.EXTRA_CENTRAL_ORDER, CentralOrderUtils.getCentralOrder());
+                options.putParcelable(Intents.EXTRA_TRANSACTION_AMOUNTS, transactionAmounts);
+                options.putString(Intents.EXTRA_LEFT_BUTTON_TITLE, "Cancel");
+                options.putBoolean(Intents.EXTRA_ENABLE_ACTION_BUTTONS, false);
+                options.putString(Intents.EXTRA_RIGHT_BUTTON_TITLE, "OK");
+                secondScreenService.showCartConfirmationV2(
+                        options,
+                        new IPoyntActionButtonListener.Stub() {
+                            @Override
+                            public void onLeftButtonClicked() throws RemoteException {
+                                showConfirmation("Cancel");
+                                setStatus(showCartStatusV2, "LEFT BUTTON TAPPED");
+                            }
+
+                            @Override
+                            public void onRightButtonClicked() throws RemoteException {
+                                showConfirmation("OK");
+                                setStatus(showCartStatusV2, "RIGHT BUTTON TAPPED");
+                            }
+                        });
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.captureSignature)
