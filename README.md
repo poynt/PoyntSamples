@@ -18,3 +18,15 @@ project in Android Studio and run it directly from there.
 
     ./gradlew assembleDebug
 
+The codesample app has been run with the following:
+Android API model - co.poynt.api:android-api-model:1.2.288
+Java SDK model - co.poynt.android.sdk:poynt-sdk:1.3.21
+Android Studio - Hedgehog (2023.1.1 Patch 2) 
+Java - openjdk-11.0.22
+Gradle - 6.9.1
+Gradle Plugin/Build Tools - 4.2.2
+
+
+
+    
+
