@@ -1,0 +1,59 @@
+buildscript {
+    ext.kotlin_version = '1.8.21'
+
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            url 'https://nexus.poynt.com/content/repositories/releases'
+
+        }
+        maven {
+            url 'https://nexus.poynt.com/content/repositories/snapshots'
+
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' version "1.8.21"
+}
+
+android {
+    namespace 'com.commerce.services.sample'
+    compileSdkVersion 34
+
+    defaultConfig {
+        minSdkVersion 21
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    def commerce_services = "2.4.16-DEV"
+    implementation "com.godaddy.commerce:sdk-common-ktx:$commerce_services"
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

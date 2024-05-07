@@ -1,1 +1,2 @@
 include ':app',':samplegiftcardprocessor',':codesamples','sampleloyaltyapp', ':samplepaymenthooks', ':samplemit'
+include ':commerce-services-sample'
