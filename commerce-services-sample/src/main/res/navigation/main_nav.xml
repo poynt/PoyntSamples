@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/commerceFragment">
+
+    <fragment
+        android:id="@+id/commerceFragment"
+        android:name="com.godaddy.commerce.services.sample.CommerceFragment"
+        android:label="CommerceFragment" />
+
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.godaddy.commerce.services.sample.orders.OrderFragment"
+        android:label="OrdersFragment" />
+    <fragment
+        android:id="@+id/orderCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.orders.create.OrderCreateFragment"
+        android:label="OrderCreateFragment" />
+    <fragment
+        android:id="@+id/orderReturnsFragment"
+        android:name="com.godaddy.commerce.services.sample.orders.returns.OrderReturnFragment"
+        android:label="OrderReturnsFragment" />
+    <fragment
+        android:id="@+id/orderUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.orders.update.OrderUpdateFragment"
+        android:label="OrderUpdateFragment" />
+
+</navigation>

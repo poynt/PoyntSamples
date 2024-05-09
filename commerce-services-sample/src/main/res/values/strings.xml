@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CS Sample</string>
+    <string name="refresh_orders">Refresh Orders</string>
+    <string name="create_order">Create Order</string>
+    <string name="search">Search</string>
+    <string name="search_title">Search</string>
+    <string name="update">Update</string>
+    <string name="returns">Returns</string>
+    <string name="refresh_order_returns">Refresh Order Returns</string>
+    <string name="select_fulfillment_status">Fulfillment Status</string>
+    <string name="create">Create</string>
+    <string name="customer_full_name">Customer Full Name</string>
+    <string name="select_status">Order Status</string>
+    <string name="line_item_name">Line Item Name</string>
+    <string name="select_fulfillment_mode">Line Item Fulfillment Mode</string>
+    <string name="payment_status">Payment Status</string>
+    <string name="amount">Amount</string>
+    <string name="return_order">Return</string>
+    <string name="order_number">Order Number</string>
+
+</resources>
