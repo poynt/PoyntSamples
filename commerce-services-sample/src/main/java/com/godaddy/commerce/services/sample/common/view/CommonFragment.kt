@@ -6,6 +6,7 @@ import androidx.annotation.CallSuper
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.godaddy.commerce.services.sample.BR
 
 abstract class CommonFragment<Binding : ViewDataBinding>(contentLayoutId: Int) :
     Fragment(contentLayoutId) {
@@ -17,5 +18,6 @@ abstract class CommonFragment<Binding : ViewDataBinding>(contentLayoutId: Int) :
         super.onViewCreated(view, savedInstanceState)
         dataBinding = DataBindingUtil.bind<Binding>(view) as Binding
         dataBinding.lifecycleOwner = viewLifecycleOwner
+        dataBinding.setVariable(BR.fragment, this)
     }
 }

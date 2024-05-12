@@ -16,6 +16,7 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider
+import com.godaddy.commerce.services.sample.inventory.InventoryRecyclerItem
 import com.godaddy.commerce.services.sample.orders.OrderViewModel.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -19,5 +19,9 @@
     <string name="amount">Amount</string>
     <string name="return_order">Return</string>
     <string name="order_number">Order Number</string>
+    <string name="refresh_inventory">Refresh Inventory</string>
+    <string name="create_inventory">Create Inventory</string>
+    <string name="low_inventory_threshold">Low Inventory Threshold</string>
+    <string name="quantity">Quantity</string>
 
 </resources>

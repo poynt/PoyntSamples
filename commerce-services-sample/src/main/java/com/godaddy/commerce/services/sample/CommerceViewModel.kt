@@ -13,8 +13,10 @@ class CommerceViewModel : CommonViewModel<CommerceState>(CommerceState()) {
             copy(
                 items = listOf(
                     NavigationButtonComponent(title = "ORDERS", navigateToId = R.id.ordersFragment),
-                    // will be implemented in next PR
-                    NavigationButtonComponent(title = "INVENTORY", navigateToId = 0),
+                    NavigationButtonComponent(
+                        title = "INVENTORY",
+                        navigateToId = R.id.inventoryFragment
+                    ),
                 )
             )
         }
