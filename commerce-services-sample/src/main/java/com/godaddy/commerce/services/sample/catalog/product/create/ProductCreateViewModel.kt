@@ -94,7 +94,9 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
                 // use currency code from business settings.
                 price = SimpleMoney("USD", amount),
                 categoryIds = listOfNotNull(selectedCategory?.categoryId).nullIfEmpty(),
-                inventory = quantity?.let { ProductInventory(tracking = true) }
+                inventory = quantity?.let {
+                    ProductInventory(tracking = true, externalService = true)
+                }
             )
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
@@ -120,7 +122,7 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
 
     data class State(
         override val commonState: CommonState = CommonState(),
-        override val toolbarState: ToolbarState = ToolbarState(title = "Inventory"),
+        override val toolbarState: ToolbarState = ToolbarState(title = "Create Product"),
         val productTypes: List<String> = ProductConstants.Type.values.toList(),
         val selectedProductType: String? = null,
         val productName: String? = null,

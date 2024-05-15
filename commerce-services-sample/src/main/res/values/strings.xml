@@ -30,5 +30,9 @@
     <string name="add_category">Add Category</string>
     <string name="product_type">Product Type</string>
     <string name="category">Category</string>
+    <string name="category_product_added">Product Added</string>
+    <string name="category_name">Category Name</string>
+    <string name="add_product">Add Product</string>
+    <string name="refresh_categories">Refresh Categories</string>
 
 </resources>

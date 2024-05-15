@@ -50,6 +50,18 @@
         android:id="@+id/productUpdateFragment"
         android:name="com.godaddy.commerce.services.sample.catalog.product.update.ProductUpdateFragment"
         android:label="ProductUpdateFragment" />
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.category.CategoryFragment"
+        android:label="CategoryFragment" />
+    <fragment
+        android:id="@+id/categoryCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.category.create.CategoryCreateFragment"
+        android:label="CategoryCreateFragment" />
+    <fragment
+        android:id="@+id/categoryUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.category.update.CategoryUpdateFragment"
+        android:label="CategoryUpdateFragment" />
 
 
 </navigation>

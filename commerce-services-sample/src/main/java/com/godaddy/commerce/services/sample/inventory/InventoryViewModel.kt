@@ -29,7 +29,7 @@ class InventoryViewModel : CommonViewModel<State>(State()) {
         execute {
             val service = inventoryServiceClient.getService().getOrThrow()
             val bundle = Bundle().apply {
-                // data source defines data provider: local db, remote or remote only if there are no date in local db.
+                // data source defines data provider: local db, remote or remote only if there are no data in local db.
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
                 putParcelable(InventoryParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
                 // Optional: include summary if need

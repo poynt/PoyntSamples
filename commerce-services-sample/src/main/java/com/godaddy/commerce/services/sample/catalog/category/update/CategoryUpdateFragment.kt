@@ -1,4 +1,4 @@
-package com.godaddy.commerce.services.sample.catalog.product.update
+package com.godaddy.commerce.services.sample.catalog.category.update
 
 import android.os.Bundle
 import android.view.View
@@ -10,28 +10,28 @@ import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
-import com.godaddy.commerce.services.sample.databinding.ProductUpdateFragmentBinding
+import com.godaddy.commerce.services.sample.databinding.CategoryUpdateFragmentBinding
 
-class ProductUpdateFragment :
-    CommonFragment<ProductUpdateFragmentBinding>(R.layout.product_update_fragment) {
+class CategoryUpdateFragment :
+    CommonFragment<CategoryUpdateFragmentBinding>(R.layout.category_update_fragment) {
 
 
-    private val viewModel: ProductUpdateViewModel by viewModels()
+    private val viewModel: CategoryUpdateViewModel by viewModels()
 
     val item by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = ProductUpdateViewModel.State::item
+        map = CategoryUpdateViewModel.State::item
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindOnCommonViewModelUpdates(viewModel)
         launch {
-            viewModel.stateFlow.bindTo(ProductUpdateViewModel.State::updatedId) {
+            viewModel.stateFlow.bindTo(CategoryUpdateViewModel.State::updatedId) {
                 it ?: return@bindTo
                 Toast.makeText(
                     requireContext(),
-                    "Product with id [$it] was updated",
+                    "Category with id [$it] was updated",
                     Toast.LENGTH_SHORT
                 ).show()
             }

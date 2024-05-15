@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -8,11 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateViewModel" />
+            type="com.godaddy.commerce.services.sample.catalog.category.create.CategoryCreateViewModel" />
 
         <variable
             name="fragment"
-            type="com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateFragment" />
+            type="com.godaddy.commerce.services.sample.catalog.category.create.CategoryCreateFragment" />
 
     </data>
 
@@ -39,30 +38,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@string/product_name" />
+                android:text="@string/category_name" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductNameChanged(s.toString())}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameChanged(s.toString())}" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@string/product_amount" />
+                android:text="Category Description" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
-                android:digits="0123456789"
-                android:inputType="numberDecimal"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onDescriptionChanged(s.toString())}" />
 
 
             <TextView
@@ -70,42 +67,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@string/product_type" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="4dp"
-                app:autoCompleteData="@{fragment.types}"
-                app:onItemSelected="@{(position) -> viewModel.onTypeSelected(position)}" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="8dp"
-                android:text="@string/quantity" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="4dp"
-                android:digits="0123456789"
-                android:inputType="numberDecimal"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onQuantityChanged(s.toString())}" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="8dp"
-                android:textSize="16sp"
-                android:textColor="?android:textColorPrimary"
-                android:text="@{@string/category + ` ` + fragment.selectedCategory.name}"
-                android:visibility="@{fragment.selectedCategory != null}" />
+                android:text="@{@string/category_product_added + ` ` + fragment.selectedProduct.name}"
+                android:visibility="@{fragment.selectedProduct != null}" />
 
 
             <LinearLayout
@@ -119,8 +82,8 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.showCategoryDialog()}"
-                    android:text="@string/add_category" />
+                    android:onClick="@{() -> viewModel.showProductDialog()}"
+                    android:text="@string/add_product" />
 
                 <Button
                     android:layout_width="wrap_content"
