@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.godaddy.commerce.catalog.models.Product" />
+
+        <variable
+            name="viewModel"
+            type="com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateFragment" />
+
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <include layout="@layout/loading_layout" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/product_name" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductNameChanged(s.toString())}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/product_amount" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:digits="0123456789"
+                android:inputType="numberDecimal"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/product_type" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                app:autoCompleteData="@{fragment.types}"
+                app:onItemSelected="@{(position) -> viewModel.onTypeSelected(position)}" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/quantity" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:digits="0123456789"
+                android:inputType="numberDecimal"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onQuantityChanged(s.toString())}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/category + ` ` + fragment.selectedCategory}"
+                android:visibility="@{fragment.selectedCategory != null}" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.showCategoryDialog()}"
+                    android:text="@string/add_category" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.create()}"
+                    android:text="@string/create" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include layout="@layout/error_layout" />
+
+    </LinearLayout>
+</layout>

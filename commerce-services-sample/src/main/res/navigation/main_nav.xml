@@ -38,6 +38,18 @@
         android:id="@+id/inventoryCreateFragment"
         android:name="com.godaddy.commerce.services.sample.inventory.create.InventoryCreateFragment"
         android:label="InventoryCreateFragment" />
+    <fragment
+        android:id="@+id/productCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateFragment"
+        android:label="ProductCreateFragment" />
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.product.ProductFragment"
+        android:label="ProductFragment" />
+    <fragment
+        android:id="@+id/productUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.product.update.ProductUpdateFragment"
+        android:label="ProductUpdateFragment" />
 
 
 </navigation>

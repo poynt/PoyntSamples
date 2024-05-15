@@ -23,5 +23,12 @@
     <string name="create_inventory">Create Inventory</string>
     <string name="low_inventory_threshold">Low Inventory Threshold</string>
     <string name="quantity">Quantity</string>
+    <string name="refresh_product">Refresh Product</string>
+    <string name="create_product">Create Product</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_amount">Product Amount</string>
+    <string name="add_category">Add Category</string>
+    <string name="product_type">Product Type</string>
+    <string name="category">Category</string>
 
 </resources>
