@@ -9,9 +9,9 @@ import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.models.Product
 import com.godaddy.commerce.catalog.models.UpdateProduct
 import com.godaddy.commerce.common.DataSource
-import com.godaddy.commerce.common.models.SimpleMoney
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onError
+import com.godaddy.commerce.services.sample.common.extensions.toSimpleMoney
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
@@ -64,10 +64,7 @@ class ProductUpdateViewModel(
             val service = catalogServiceClient.getService().getOrThrow()
             val request = UpdateProduct(
                 name = state.updatedName,
-                price = state.updatedAmount?.let {
-                    // use currency code from business settings.
-                    SimpleMoney("USD", it)
-                }
+                price = state.updatedAmount?.toSimpleMoney()
             )
 
             val response = suspendCancellableCoroutine<Product?> {

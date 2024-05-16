@@ -21,8 +21,7 @@ internal fun Context.subscribeOnUpdates(action: String): Flow<Bundle> {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null && intent.action == action) {
-                    // can be used later
-                    val result = Bundle.EMPTY
+                    val result = intent.extras ?: Bundle.EMPTY
                     trySendBlocking(result)
                         .onFailure { logError(throwable = it) { "Failed to send event for action: $action" } }
                         .onSuccess { logInfo { "Event was sent for action: $action" } }

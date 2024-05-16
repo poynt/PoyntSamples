@@ -79,7 +79,7 @@ class CategoryCreateViewModel : CommonViewModel<CategoryCreateViewModel.State>(S
             )
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
-            // create product
+            // create category
             val response = suspendCancellableCoroutine<Category?> {
                 catalogService.postCategory(request, Bundle.EMPTY, it.onSuccess(), it.onError())
             }

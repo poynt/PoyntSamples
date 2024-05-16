@@ -25,6 +25,10 @@ class CommerceViewModel : CommonViewModel<CommerceState>(CommerceState()) {
                         title = "CATALOG - Categories",
                         navigateToId = R.id.categoryFragment
                     ),
+                    NavigationButtonComponent(
+                        title = "CATALOG - Taxes",
+                        navigateToId = R.id.taxFragment
+                    ),
                 )
             )
         }

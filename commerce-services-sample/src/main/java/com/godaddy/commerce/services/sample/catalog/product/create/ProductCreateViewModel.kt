@@ -9,11 +9,11 @@ import com.godaddy.commerce.catalog.ProductConstants
 import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.models.*
 import com.godaddy.commerce.common.DataSource
-import com.godaddy.commerce.common.models.SimpleMoney
 import com.godaddy.commerce.inventory.models.*
 import com.godaddy.commerce.sdk.util.nullIfEmpty
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onError
+import com.godaddy.commerce.services.sample.common.extensions.toSimpleMoney
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
@@ -91,8 +91,7 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
                 name = state.productName,
                 type = type,
                 description = "Poynt Sample Test",
-                // use currency code from business settings.
-                price = SimpleMoney("USD", amount),
+                price = amount.toSimpleMoney(),
                 categoryIds = listOfNotNull(selectedCategory?.categoryId).nullIfEmpty(),
                 inventory = quantity?.let {
                     ProductInventory(tracking = true, externalService = true)

@@ -1,4 +1,4 @@
-package com.godaddy.commerce.services.sample.catalog.category.create
+package com.godaddy.commerce.services.sample.catalog.tax.create
 
 import android.os.Bundle
 import android.view.View
@@ -12,17 +12,21 @@ import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
-import com.godaddy.commerce.services.sample.databinding.CategoryCreateFragmentBinding
+import com.godaddy.commerce.services.sample.databinding.TaxCreateFragmentBinding
 
-class CategoryCreateFragment :
-    CommonFragment<CategoryCreateFragmentBinding>(R.layout.category_create_fragment) {
+class TaxCreateFragment :
+    CommonFragment<TaxCreateFragmentBinding>(R.layout.tax_create_fragment) {
 
+    private val viewModel: TaxCreateViewModel by viewModels()
 
-    private val viewModel: CategoryCreateViewModel by viewModels()
-
-    val selectedProduct by observableField(
+    val showTaxOverride by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = CategoryCreateViewModel.State::selectedProduct
+        map = TaxCreateViewModel.State::createTaxOverride
+    )
+
+    val types by observableField(
+        stateFlow = { viewModel.stateFlow },
+        map = TaxCreateViewModel.State::amountTypes
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,16 +39,17 @@ class CategoryCreateFragment :
             )
         }
         launch {
-            viewModel.stateFlow.bindTo(CategoryCreateViewModel.State::createdId) { id ->
+            viewModel.stateFlow.bindTo(TaxCreateViewModel.State::createdId) { id ->
                 id ?: return@bindTo
                 Toast.makeText(
                     requireContext(),
-                    "Category with id [$id] was created",
+                    "Tax with id [$id] was created",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
     }
+
 
     private fun showProductsDialog(pair: Pair<List<Product>, Boolean>) {
         if (pair.second.not()) return

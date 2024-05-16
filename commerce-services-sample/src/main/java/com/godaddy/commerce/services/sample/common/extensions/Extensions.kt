@@ -12,10 +12,7 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.NumberFormat
@@ -33,6 +30,11 @@ internal fun Fragment.launch(run: suspend CoroutineScope.() -> Unit) {
     }) {
         repeatOnLifecycle(Lifecycle.State.STARTED, run)
     }
+}
+
+fun Long?.toSimpleMoney(): SimpleMoney? = this?.let {
+    // Use currency code from business store.
+    SimpleMoney(currencyCode = "USD", value = it)
 }
 
 fun SimpleMoney?.format(): String {
@@ -61,9 +63,14 @@ fun <T> Context.dialogBuilder(
 
 suspend fun <T : CommonViewModel.ViewModelState, K> StateFlow<T>.bindTo(
     map: T.() -> K,
-    update: (K) -> Unit
+    keySelector: ((T) -> Any?)? = null,
+    update: (K) -> Unit,
 ) {
-    this.map(map).distinctUntilChanged().collectLatest { update(it) }
+    if (keySelector == null) {
+        map(map).distinctUntilChanged()
+    } else {
+        distinctUntilChangedBy(keySelector).map(map)
+    }.collectLatest { update(it) }
 }
 
 /**
@@ -71,14 +78,15 @@ suspend fun <T : CommonViewModel.ViewModelState, K> StateFlow<T>.bindTo(
  */
 context(Fragment) internal fun <T : CommonViewModel.ViewModelState, K> observableField(
     stateFlow: () -> StateFlow<T>,
-    map: T.() -> K
+    map: T.() -> K,
+    keySelector: ((T) -> Any?)? = null,
 ): Lazy<ObservableField<K>> {
     return lazy(LazyThreadSafetyMode.NONE) {
         val observableField = ObservableField<K>()
         launch {
-            stateFlow().bindTo(map) {
+            stateFlow().bindTo(map = map, keySelector = keySelector, update = {
                 observableField.set(it)
-            }
+            })
         }
         observableField
     }

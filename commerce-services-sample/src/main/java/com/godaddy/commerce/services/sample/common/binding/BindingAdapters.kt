@@ -31,8 +31,8 @@ fun setVisibility(view: View, value: Boolean?) {
     view.visibility = if (value == true) View.VISIBLE else View.GONE
 }
 
-@BindingAdapter("app:autoCompleteData")
-fun setAutoCompleteData(spinner: Spinner, data: List<String>?) {
+@BindingAdapter(value = ["app:autoCompleteData", "app:selectedPosition"], requireAll = false)
+fun setAutoCompleteData(spinner: Spinner, data: List<String>?, selectedPosition: Int? = null) {
     data?.let { items ->
         val adapter = ArrayAdapter(
             spinner.context,
@@ -41,6 +41,7 @@ fun setAutoCompleteData(spinner: Spinner, data: List<String>?) {
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
+        selectedPosition?.let { spinner.setSelection(it) }
     }
 }
 

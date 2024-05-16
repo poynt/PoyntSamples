@@ -1,29 +1,32 @@
-package com.godaddy.commerce.services.sample.catalog.category.create
+package com.godaddy.commerce.services.sample.catalog.tax.update.association
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.godaddy.commerce.catalog.models.Product
 import com.godaddy.commerce.services.sample.R
+import com.godaddy.commerce.services.sample.catalog.tax.mapToUiItems
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.dialogBuilder
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
-import com.godaddy.commerce.services.sample.databinding.CategoryCreateFragmentBinding
+import com.godaddy.commerce.services.sample.databinding.TaxAssociationFragmentBinding
 
-class CategoryCreateFragment :
-    CommonFragment<CategoryCreateFragmentBinding>(R.layout.category_create_fragment) {
+class TaxAssociationFragment :
+    CommonFragment<TaxAssociationFragmentBinding>(R.layout.tax_association_fragment) {
 
 
-    private val viewModel: CategoryCreateViewModel by viewModels()
+    private val viewModel: TaxAssociationViewModel by viewModels()
 
-    val selectedProduct by observableField(
+    val associationItems by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = CategoryCreateViewModel.State::selectedProduct
-    )
+        map = {
+            association?.items.orEmpty()
+                .map { it.mapToUiItems { viewModel.removeProductFromTax(it) } }
+        },
+        keySelector = { it.association?.items })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,28 +34,18 @@ class CategoryCreateFragment :
         launch {
             viewModel.stateFlow.bindTo(
                 map = { products to showProductDialog },
-                update = ::showProductsDialog
+                update = ::showTaxAssociationProductDialog
             )
-        }
-        launch {
-            viewModel.stateFlow.bindTo(CategoryCreateViewModel.State::createdId) { id ->
-                id ?: return@bindTo
-                Toast.makeText(
-                    requireContext(),
-                    "Category with id [$id] was created",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         }
     }
 
-    private fun showProductsDialog(pair: Pair<List<Product>, Boolean>) {
+    private fun showTaxAssociationProductDialog(pair: Pair<List<Product>, Boolean>) {
         if (pair.second.not()) return
         requireContext().dialogBuilder(
-            "Select Product",
+            "Add Product to Tax",
             items = pair.first,
             map = { it.name },
-            onSelected = viewModel::selectProduct
+            onSelected = viewModel::addProductToTax
         ).setOnDismissListener { viewModel.hideProductsDialog() }.create().show()
     }
 }

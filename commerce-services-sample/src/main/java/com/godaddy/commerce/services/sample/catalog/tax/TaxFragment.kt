@@ -1,4 +1,4 @@
-package com.godaddy.commerce.services.sample.catalog.product
+package com.godaddy.commerce.services.sample.catalog.tax
 
 import android.os.Bundle
 import android.view.View
@@ -8,19 +8,17 @@ import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
-import com.godaddy.commerce.services.sample.common.view.doOnToolbarSearchQueryChanged
-import com.godaddy.commerce.services.sample.databinding.ProductFragmentBinding
+import com.godaddy.commerce.services.sample.databinding.TaxFragmentBinding
 import timber.log.Timber
 
-class ProductFragment : CommonFragment<ProductFragmentBinding>(R.layout.product_fragment) {
+class TaxFragment : CommonFragment<TaxFragmentBinding>(R.layout.tax_fragment) {
 
 
-    private val viewModel: ProductViewModel by viewModels()
+    private val viewModel: TaxViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindOnCommonViewModelUpdates(viewModel)
-        doOnToolbarSearchQueryChanged { viewModel.searchProduct(it) }
         launch {
             viewModel.stateFlow.bindTo({
                 Timber.d("Items : $items")

@@ -8,6 +8,7 @@ import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
+import com.godaddy.commerce.services.sample.common.view.doOnToolbarSearchQueryChanged
 import com.godaddy.commerce.services.sample.databinding.CategoryFragmentBinding
 import timber.log.Timber
 
@@ -19,6 +20,7 @@ class CategoryFragment : CommonFragment<CategoryFragmentBinding>(R.layout.catego
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindOnCommonViewModelUpdates(viewModel)
+        doOnToolbarSearchQueryChanged { viewModel.searchCategory(it) }
         launch {
             viewModel.stateFlow.bindTo({
                 Timber.d("Items : $items")
