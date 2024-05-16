@@ -58,5 +58,10 @@
     <string name="dismiss">Dismiss</string>
     <string name="open_tax_override_associations">Open Tax Override Associations</string>
     <string name="open_tax_associations">Open Tax Associations</string>
+    <string name="refresh_price_adjustments">Refresh Price Adjustments</string>
+    <string name="name">Name</string>
+    <string name="type">Type</string>
+    <string name="price_adjustment_association_items">Price Adjustment Association Items</string>
+    <string name="add_product_to_price_adjustment_association_items">Add Product to Price Adjustment Association Items</string>
 
 </resources>

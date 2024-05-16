@@ -65,6 +65,9 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
                 putString(CategoryParams.SORT_BY, CatalogContract.Category.Columns.UPDATED_AT)
 
                 putString(CategoryParams.SEARCH_QUERY, query)
+
+                // optional. Use only if need to get products list in category model.
+                putBoolean(CategoryParams.INCLUDE_PRODUCT_IDS, true)
             }
             val response = suspendCancellableCoroutine<Categories?> {
                 service.getCategories(bundle, it.onSuccess(), it.onError())

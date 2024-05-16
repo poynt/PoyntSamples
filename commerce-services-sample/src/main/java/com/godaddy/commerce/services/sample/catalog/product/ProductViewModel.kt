@@ -65,6 +65,9 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
 
                 // add search query if not null
                 putString(ProductParams.SEARCH_TERM, query)
+
+                // optional. Use only if need to get category list in product model.
+                putBoolean(ProductParams.INCLUDE_CATEGORY_IDS, true)
             }
             val response = suspendCancellableCoroutine<Products?> {
                 service.getProducts(bundle, it.onSuccess(), it.onError())

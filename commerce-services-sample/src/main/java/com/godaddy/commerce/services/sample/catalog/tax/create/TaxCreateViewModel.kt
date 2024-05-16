@@ -193,7 +193,8 @@ class TaxCreateViewModel : CommonViewModel<TaxCreateViewModel.State>(State()) {
         return TaxRate(
             amount = amount.toSimpleMoney(),
             ratePercentage = ratePercentage.toString(),
-            amountType = amountTypeSelected
+            amountType = amountTypeSelected,
+            name = state.name
         )
     }
 
@@ -202,7 +203,7 @@ class TaxCreateViewModel : CommonViewModel<TaxCreateViewModel.State>(State()) {
         return TaxOverrideAssociationOverrideValue(
             amountType = amountTypeSelected,
             ratePercentage = ratePercentage?.toString(),
-            amount = amount.toSimpleMoney()
+            amount = amount.toSimpleMoney(),
         )
     }
 

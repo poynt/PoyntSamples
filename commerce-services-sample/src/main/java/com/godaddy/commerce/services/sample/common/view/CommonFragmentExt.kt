@@ -16,7 +16,6 @@ import com.godaddy.commerce.services.sample.databinding.LoadingLayoutBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 
 private typealias CommonFragmentTyped = CommonFragment<*>
 
@@ -34,7 +33,7 @@ fun CommonFragmentTyped.bindCommonViewModel(viewModel: CommonViewModel<*>) {
 
 fun CommonFragmentTyped.bindCommonViewModelEffects(viewModel: CommonViewModel<*>) {
     launch {
-        viewModel.effectFlow.onEach {
+        viewModel.effectFlow.collectLatest {
             when (it) {
                 CommonViewModel.Effect.PopScreen -> findNavController().popBackStack()
                 is CommonViewModel.Effect.ShowToast -> Toast.makeText(

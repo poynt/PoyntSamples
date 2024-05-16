@@ -12,7 +12,10 @@ class CommerceViewModel : CommonViewModel<CommerceState>(CommerceState()) {
         update {
             copy(
                 items = listOf(
-                    NavigationButtonComponent(title = "ORDERS", navigateToId = R.id.ordersFragment),
+                    NavigationButtonComponent(
+                        title = "ORDERS",
+                        navigateToId = R.id.ordersFragment
+                    ),
                     NavigationButtonComponent(
                         title = "INVENTORY",
                         navigateToId = R.id.inventoryFragment
@@ -29,6 +32,10 @@ class CommerceViewModel : CommonViewModel<CommerceState>(CommerceState()) {
                         title = "CATALOG - Taxes",
                         navigateToId = R.id.taxFragment
                     ),
+                    NavigationButtonComponent(
+                        title = "CATALOG - Price Adjustments",
+                        navigateToId = R.id.priceAdjustmentFragment
+                    )
                 )
             )
         }

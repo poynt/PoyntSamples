@@ -82,6 +82,18 @@
         android:id="@+id/taxOverrideAssociationFragment"
         android:name="com.godaddy.commerce.services.sample.catalog.tax.update.override.TaxOverrideAssociationFragment"
         android:label="TaxOverrideAssociationFragment" />
+    <fragment
+        android:id="@+id/priceAdjustmentFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentFragment"
+        android:label="PriceAdjustmentFragment" />
+    <fragment
+        android:id="@+id/priceAdjustmentCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.priceAdjustment.create.PriceAdjustmentCreateFragment"
+        android:label="PriceAdjustmentCreateFragment" />
+    <fragment
+        android:id="@+id/priceAdjustmentUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.priceAdjustment.update.PriceAdjustmentUpdateFragment"
+        android:label="PriceAdjustmentUpdateFragment" />
 
 
 </navigation>
