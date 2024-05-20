@@ -43,7 +43,7 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
 
 
     private fun subscribeOnSearch() {
-        searchQueryFlow.debounce(300)
+        searchQueryFlow.debounce(SEARCH_DEBOUNCE_DELAY)
             .onEach { loadCategories(query = it) }
             .launchIn(viewModelScope)
     }
@@ -59,7 +59,7 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
 
                 // Add pagination to improve UX and avoid TooLargeTransactionException
                 putInt(CategoryParams.PAGE_OFFSET, 0)
-                putInt(CategoryParams.PAGE_SIZE, 100)
+                putInt(CategoryParams.PAGE_SIZE, CATEGORY_DEFAULT_PAGE_SIZE)
 
                 // sorting is optional. List can be sorted by any column in database.
                 putString(CategoryParams.SORT_BY, CatalogContract.Category.Columns.UPDATED_AT)
@@ -82,7 +82,15 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
 
     data class State(
         override val commonState: CommonState = CommonState(),
-        override val toolbarState: ToolbarState = ToolbarState(title = "Categories", showSearchButton = true),
+        override val toolbarState: ToolbarState = ToolbarState(
+            title = "Categories",
+            showSearchButton = true
+        ),
         val items: List<CategoryRecyclerItem> = emptyList()
     ) : ViewModelState
+
+    private companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 300L
+        private const val CATEGORY_DEFAULT_PAGE_SIZE = 100
+    }
 }

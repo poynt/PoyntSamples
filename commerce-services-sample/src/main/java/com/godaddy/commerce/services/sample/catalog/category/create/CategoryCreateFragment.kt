@@ -28,12 +28,11 @@ class CategoryCreateFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindOnCommonViewModelUpdates(viewModel)
-        launch {
-            viewModel.stateFlow.bindTo(
-                map = { products to showProductDialog },
-                update = ::showProductsDialog
-            )
-        }
+        bindToProductsDialogEvents()
+        bindToCategoryCreatedEvents()
+    }
+
+    private fun bindToCategoryCreatedEvents() {
         launch {
             viewModel.stateFlow.bindTo(CategoryCreateViewModel.State::createdId) { id ->
                 id ?: return@bindTo
@@ -43,6 +42,15 @@ class CategoryCreateFragment :
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+    }
+
+    private fun bindToProductsDialogEvents() {
+        launch {
+            viewModel.stateFlow.bindTo(
+                map = { products to showProductDialog },
+                update = ::showProductsDialog
+            )
         }
     }
 

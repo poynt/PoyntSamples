@@ -3,7 +3,7 @@ package com.godaddy.commerce.services.sample.catalog.priceAdjustment
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
-import com.godaddy.commerce.catalog.DiscountParams
+import com.godaddy.commerce.catalog.PriceAdjustmentParams
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.priceadjustments.models.PriceAdjustment
 import com.godaddy.commerce.priceadjustments.models.PriceAdjustments
@@ -44,15 +44,15 @@ class PriceAdjustmentViewModel : CommonViewModel<PriceAdjustmentViewModel.State>
             val bundle = Bundle().apply {
                 // data source defines data provider: local db, remote or remote only if there are no data in local db.
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
-                putParcelable(DiscountParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
+                putParcelable(PriceAdjustmentParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
 
                 // Add pagination to improve UX and avoid TooLargeTransactionException
-                putInt(DiscountParams.PAGE_OFFSET, 0)
-                putInt(DiscountParams.PAGE_SIZE, 100)
+                putInt(PriceAdjustmentParams.PAGE_OFFSET, 0)
+                putInt(PriceAdjustmentParams.PAGE_SIZE, 100)
 
                 // sorting is optional. List can be sorted by any column in database.
                 putString(
-                    DiscountParams.SORT_BY,
+                    PriceAdjustmentParams.SORT_BY,
                     CatalogContract.PriceAdjustment.Columns.UPDATED_AT
                 )
             }

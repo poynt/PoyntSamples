@@ -45,7 +45,7 @@ class PriceAdjustmentUpdateViewModel(
             // refresh only when current item is updated
             merge(
                 subscribeOnUpdates(CatalogIntents.ACTION_DISCOUNTS_CHANGED)
-                    .filter { it.getString(DiscountParams.DISCOUNT_ID) == id },
+                    .filter { it.getString(PriceAdjustmentParams.ITEM_ID) == id },
                 subscribeOnUpdates(CatalogIntents.ACTION_FEES_CHANGED)
                     .filter { it.getString(FeeParams.FEE_ID) == id }
             )
@@ -64,13 +64,8 @@ class PriceAdjustmentUpdateViewModel(
             } ?: return@launch
 
             val association = suspendCancellableCoroutine<PriceAdjustmentAssociations?> {
-                val idParam = when (type) {
-                    PriceAdjustmentsConstants.Type.FEE -> FeeParams.FEE_ID
-                    PriceAdjustmentsConstants.Type.DISCOUNT -> DiscountParams.DISCOUNT_ID
-                    else -> throw IllegalStateException("Type is unknown: $type")
-                }
                 service.getPriceAdjustmentAssociations(
-                    bundleOf(idParam to response.id?.toString()),
+                    bundleOf(PriceAdjustmentParams.ITEM_ID to response.id?.toString()),
                     it.onSuccess(),
                     it.onError()
                 )

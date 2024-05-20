@@ -18,7 +18,8 @@ class PriceAdjustmentFragment :
     val items by observableField(
         stateFlow = { viewModel.stateFlow },
         map = { items.map { it.mapToUiItems() } },
-        keySelector = { it.items })
+        keySelector = { it.items }
+    )
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
