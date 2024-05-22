@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.godaddy.commerce.services.sample.catalog.tax.update.association.TaxAssociationViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.godaddy.commerce.services.sample.catalog.tax.update.association.TaxAssociationFragment" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <include layout="@layout/loading_layout" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="@dimen/item_spacing"
+            app:adapterLayout="@{@layout/tax_association_item}"
+            app:adapterSubmitList="@{fragment.associationItems}"
+            app:dividerItemDecoration="@{1}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:spaceItemDecoration="@{8}"
+            tools:listitem="@layout/tax_association_item" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/item_spacing"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.showProductDialog()}"
+                android:text="@string/add_product_to_tax_association" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.update()}"
+                android:text="@string/update" />
+        </LinearLayout>
+
+        <include layout="@layout/error_layout" />
+
+    </LinearLayout>
+</layout>

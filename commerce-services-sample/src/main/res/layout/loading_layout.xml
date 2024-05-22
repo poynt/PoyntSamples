@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="commonState"
+            type="com.godaddy.commerce.services.sample.common.viewmodel.CommonState" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/loading_fl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#33FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/item_spacing"
+        android:visibility="@{commonState.loading}">
+
+        <ProgressBar
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
+    </FrameLayout>
+</layout>

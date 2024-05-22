@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+
+        <import type="com.godaddy.commerce.catalog.models.Category" />
+
+        <variable
+            name="item"
+            type="Category" />
+
+        <variable
+            name="viewModel"
+            type="com.godaddy.commerce.services.sample.catalog.category.update.CategoryUpdateViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.godaddy.commerce.services.sample.catalog.category.update.CategoryUpdateFragment" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <include layout="@layout/loading_layout" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/category_name" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameUpdated(s.toString())}"
+                android:text="@{fragment.item.name}" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:onClick="@{() -> viewModel.updateProduct()}"
+                android:text="@string/update" />
+
+        </LinearLayout>
+
+        <include layout="@layout/error_layout" />
+
+    </LinearLayout>
+</layout>

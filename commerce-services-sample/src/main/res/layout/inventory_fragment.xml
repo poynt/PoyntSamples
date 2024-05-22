@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="java.util.List" />
+
+        <import type="com.godaddy.commerce.services.sample.inventory.InventoryRecyclerItem" />
+
+        <variable
+            name="items"
+            type="List&lt;InventoryRecyclerItem>" />
+
+        <variable
+            name="viewModel"
+            type="com.godaddy.commerce.services.sample.inventory.InventoryViewModel" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.loadInventory()}"
+                android:text="@string/refresh_inventory" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_inventory"
+                app:onClickNavigateTo="@{@id/inventoryCreateFragment}" />
+
+        </LinearLayout>
+
+        <include layout="@layout/loading_layout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/item_spacing"
+            android:paddingHorizontal="@dimen/item_spacing"
+            android:layout_weight="1"
+            app:adapterLayout="@{@layout/inventory_item}"
+            app:adapterSubmitList="@{items}"
+            app:dividerItemDecoration="@{1}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:spaceItemDecoration="@{@dimen/item_spacing}"
+            tools:listitem="@layout/inventory_item" />
+
+        <include layout="@layout/error_layout" />
+
+    </LinearLayout>
+</layout>

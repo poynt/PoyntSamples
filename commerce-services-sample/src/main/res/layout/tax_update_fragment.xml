@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.godaddy.commerce.services.sample.catalog.tax.update.TaxUpdateViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.godaddy.commerce.services.sample.catalog.tax.update.TaxUpdateFragment" />
+
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <include layout="@layout/loading_layout" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/tax_name" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameChanged(s.toString())}"
+                    android:text="@{fragment.name}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/rate_name" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRateNameChanged(s.toString())}"
+                    android:text="@{fragment.rateName}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/fixed_amount" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}"
+                    android:text="@{fragment.amount}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/rate_percentage" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRatePercentageChanged(s.toString())}"
+                    android:text="@{fragment.rate}" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/amount_type" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    app:autoCompleteData="@{fragment.types}"
+                    app:onItemSelected="@{(position) -> viewModel.onAmountTypeChanged(position)}"
+                    app:selectedPosition="@{fragment.selectedTypePos}" />
+
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/open_tax_associations"
+                    app:onClickNavigateTo="@{@id/taxAssociationFragment}" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/open_tax_override_associations"
+                    app:onClickNavigateTo="@{@id/taxOverrideAssociationFragment}" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="@dimen/item_spacing"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:onClick="@{() -> viewModel.delete()}"
+                        android:text="@string/delete" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:onClick="@{() -> viewModel.update()}"
+                        android:text="@string/update" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <include layout="@layout/error_layout" />
+
+    </LinearLayout>
+</layout>
