@@ -1,9 +1,9 @@
 package com.godaddy.commerce.services.sample.orders
 
-import com.godaddy.commerce.common.models.SimpleMoney
 import com.godaddy.commerce.order.*
 import com.godaddy.commerce.orders.models.*
 import com.godaddy.commerce.services.sample.common.extensions.resumeIfActive
+import com.godaddy.commerce.services.sample.common.extensions.toSimpleMoney
 import kotlinx.coroutines.CancellableContinuation
 import kotlin.math.roundToLong
 
@@ -120,10 +120,7 @@ fun LineItem.retrieveAdjustmentsList(): List<ReturnAdjustment> {
 
     val purchaseAdjustment = run {
         ReturnAdjustment(
-            amount = SimpleMoney(
-                value = unitAmount?.value?.times(quantity?.roundToLong() ?: 0) ?: 0,
-                currencyCode = "USD",
-            ),
+            amount = (unitAmount?.value?.times(quantity?.roundToLong() ?: 0) ?: 0).toSimpleMoney(),
             type = ReturnConstants.AdjustmentType.PURCHASE,
         )
     }.let { listOf(it) }

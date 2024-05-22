@@ -13,10 +13,6 @@
         <variable
             name="viewModel"
             type="com.godaddy.commerce.services.sample.inventory.create.InventoryCreateViewModel" />
-
-        <variable
-            name="fragment"
-            type="com.godaddy.commerce.services.sample.inventory.create.InventoryCreateFragment" />
     </data>
 
 

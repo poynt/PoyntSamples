@@ -38,6 +38,62 @@
         android:id="@+id/inventoryCreateFragment"
         android:name="com.godaddy.commerce.services.sample.inventory.create.InventoryCreateFragment"
         android:label="InventoryCreateFragment" />
+    <fragment
+        android:id="@+id/productCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateFragment"
+        android:label="ProductCreateFragment" />
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.product.ProductFragment"
+        android:label="ProductFragment" />
+    <fragment
+        android:id="@+id/productUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.product.update.ProductUpdateFragment"
+        android:label="ProductUpdateFragment" />
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.category.CategoryFragment"
+        android:label="CategoryFragment" />
+    <fragment
+        android:id="@+id/categoryCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.category.create.CategoryCreateFragment"
+        android:label="CategoryCreateFragment" />
+    <fragment
+        android:id="@+id/categoryUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.category.update.CategoryUpdateFragment"
+        android:label="CategoryUpdateFragment" />
+    <fragment
+        android:id="@+id/taxFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.tax.TaxFragment"
+        android:label="TaxFragment" />
+    <fragment
+        android:id="@+id/taxCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.tax.create.TaxCreateFragment"
+        android:label="TaxCreateFragment" />
+    <fragment
+        android:id="@+id/taxUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.tax.update.TaxUpdateFragment"
+        android:label="TaxUpdateFragment" />
+    <fragment
+        android:id="@+id/taxAssociationFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.tax.update.association.TaxAssociationFragment"
+        android:label="TaxAssociationFragment" />
+    <fragment
+        android:id="@+id/taxOverrideAssociationFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.tax.update.override.TaxOverrideAssociationFragment"
+        android:label="TaxOverrideAssociationFragment" />
+    <fragment
+        android:id="@+id/priceAdjustmentFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentFragment"
+        android:label="PriceAdjustmentFragment" />
+    <fragment
+        android:id="@+id/priceAdjustmentCreateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.priceAdjustment.create.PriceAdjustmentCreateFragment"
+        android:label="PriceAdjustmentCreateFragment" />
+    <fragment
+        android:id="@+id/priceAdjustmentUpdateFragment"
+        android:name="com.godaddy.commerce.services.sample.catalog.priceAdjustment.update.PriceAdjustmentUpdateFragment"
+        android:label="PriceAdjustmentUpdateFragment" />
 
 
 </navigation>

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class CommerceFragment : CommonFragment<CommerceFragmentBinding>(R.layout.commerce_fragment) {
 
-    private val viewModel: com.godaddy.commerce.services.sample.CommerceViewModel by viewModels()
+    private val viewModel: CommerceViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
