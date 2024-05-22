@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel.ViewModelState
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import kotlin.reflect.full.instanceParameter
@@ -21,8 +19,15 @@ abstract class CommonViewModel<T : ViewModelState>(state: T) : ViewModel() {
     val stateFlow = _mutableStateFlow.asStateFlow()
     protected val state get() = _mutableStateFlow.value
 
+    private val _effectFlow = MutableSharedFlow<Effect>()
+    val effectFlow = _effectFlow.asSharedFlow()
+
     protected fun update(run: T.() -> T) {
         _mutableStateFlow.update(run)
+    }
+
+    protected fun sendEffect(effect: Effect) {
+        viewModelScope.launch { _effectFlow.emit(effect) }
     }
 
     protected fun execute(execute: suspend () -> Unit) {
@@ -48,6 +53,11 @@ abstract class CommonViewModel<T : ViewModelState>(state: T) : ViewModel() {
         return copy.callBy(mapOf(instanceParam to this, commonStateParam to commonState)) as T
     }
 
+
+    sealed interface Effect {
+        data class ShowToast(val message: String) : Effect
+        object PopScreen : Effect
+    }
 
     interface ViewModelState {
         val commonState: CommonState

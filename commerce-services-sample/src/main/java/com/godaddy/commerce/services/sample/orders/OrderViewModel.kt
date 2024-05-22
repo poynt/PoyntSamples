@@ -47,7 +47,7 @@ class OrderViewModel : CommonViewModel<State>(State()) {
         execute {
             val service = ordersServiceClient.getService().getOrThrow()
             val bundle = Bundle().apply {
-                // data source defines data provider: local db, remote or remote only if there are no date in local db.
+                // data source defines data provider: local db, remote or remote only if there are no data in local db.
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
                 putParcelable(OrderParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
                 // Always need to add pagination otherwise response can throw TooLargeTransaction exception.
