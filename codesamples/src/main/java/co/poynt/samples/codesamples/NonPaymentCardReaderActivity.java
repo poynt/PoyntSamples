@@ -3120,6 +3120,7 @@ public class NonPaymentCardReaderActivity extends Activity {
     private void updateConnectionOptionsInterface(ConnectionOptions connectionOptions) {
         if (!newConnectionOptionLogic.isChecked()) {
             //nothing to do here. new logic is not enabled
+            connectionOptions.setEnabledInterfaces(ConnectionOptions.INTERFACE_NONE);
             return;
         }
 
