@@ -26,10 +26,10 @@ class CategoryUpdateViewModel(
     private val id get() = savedStateHandle.get<String>("id")
 
     init {
-        loadProduct()
+        loadCategory()
     }
 
-    private fun loadProduct() {
+    private fun loadCategory() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
             val bundle = Bundle().apply {
@@ -53,7 +53,7 @@ class CategoryUpdateViewModel(
         update { copy(updatedName = value) }
     }
 
-    fun updateProduct() {
+    fun updateCategory() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
             val request = Category(
