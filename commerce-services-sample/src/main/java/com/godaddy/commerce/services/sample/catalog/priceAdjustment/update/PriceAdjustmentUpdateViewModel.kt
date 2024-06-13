@@ -5,7 +5,12 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import co.poynt.api.model.Business
-import com.godaddy.commerce.catalog.*
+import com.godaddy.commerce.catalog.CatalogIntents
+import com.godaddy.commerce.catalog.DiscountParams
+import com.godaddy.commerce.catalog.FeeParams
+import com.godaddy.commerce.catalog.PriceAdjustmentParams
+import com.godaddy.commerce.catalog.PriceAdjustmentsConstants
+import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.models.Product
 import com.godaddy.commerce.catalog.models.Products
 import com.godaddy.commerce.common.DataSource
@@ -158,7 +163,8 @@ class PriceAdjustmentUpdateViewModel(
 
             // Step 1: update price adjustment
             val response = suspendCancellableCoroutine<PriceAdjustment?> {
-                catalogService.postPriceAdjustment(
+                catalogService.patchPriceAdjustment(
+                    state.priceAdjustmentId,
                     state.priceAdjustment,
                     Bundle.EMPTY,
                     it.onSuccess(),

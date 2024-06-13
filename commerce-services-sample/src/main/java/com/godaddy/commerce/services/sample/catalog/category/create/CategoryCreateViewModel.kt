@@ -6,9 +6,10 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.ProductParams
-import com.godaddy.commerce.catalog.models.*
+import com.godaddy.commerce.catalog.models.Category
+import com.godaddy.commerce.catalog.models.Product
+import com.godaddy.commerce.catalog.models.Products
 import com.godaddy.commerce.common.DataSource
-import com.godaddy.commerce.inventory.models.*
 import com.godaddy.commerce.sdk.util.nullIfEmpty
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onError
@@ -16,14 +17,12 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
-import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getInventoryService
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 class CategoryCreateViewModel : CommonViewModel<CategoryCreateViewModel.State>(State()) {
 
     private val catalogServiceClient = getCatalogService(viewModelScope)
-    private val inventoryServiceClient = getInventoryService(viewModelScope)
 
     fun onNameChanged(value: String) {
         update { copy(name = value) }
