@@ -68,7 +68,7 @@ public class NonPaymentCardReaderActivity extends Activity {
 
     private TextView mDumpTextView;
     private ScrollView mScrollView;
-    private EditText apduDataInput, etBingRange;
+    private EditText apduDataInput, etBingRange, etApduList;
 
     Button ctSuccessfulTransaction, ctfFileNotFound, ctExchangeApduTest,
             ctCardRejectionMaster, ctXAPDU, ctPymtTrnDuringDCA,
@@ -76,7 +76,7 @@ public class NonPaymentCardReaderActivity extends Activity {
             clXAPDU, clPymtTrnDuringDCA, isoSuccessfulTransaction,
             isoFileNotFound, isoExchangeApdu, isoCardRejectionMaster, isoPymntTrnDuringDca, isoXAPDU,
             sle401, sle402, sle403, sle404, sle405, sle406, sle407, sle408, sle409, sleXAPDU,
-            testMifare, testMifareAfterPowerCycle, isoItalianHealthCards, btnSendBinRange;
+            testMifare, testMifareAfterPowerCycle, isoItalianHealthCards, btnSendBinRange, btnSendApduList;
 
 
     private LinearLayout connectionInterfaces;
@@ -436,6 +436,9 @@ public class NonPaymentCardReaderActivity extends Activity {
         etBingRange = findViewById(R.id.etBinRange);
         btnSendBinRange = findViewById(R.id.btnSendBinRange);
 
+        etApduList = findViewById(R.id.etApduList);
+        btnSendApduList = findViewById(R.id.btnSendApduList);
+
         ctSuccessfulTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -632,6 +635,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         });
 
         btnSendBinRange.setOnClickListener(view -> setBinRange());
+
+        btnSendApduList.setOnClickListener(v -> sendApduList());
     }
 
 
@@ -3206,6 +3211,42 @@ public class NonPaymentCardReaderActivity extends Activity {
                     });
         } catch (Exception e) {
             logReceivedMessage("Failed to setTerminalConfiguration");
+        }
+    }
+
+    private void sendApduList() {
+        List<APDUData> apduDataList = new ArrayList<>();
+        // Split the line by ';'
+        String[] parts = etApduList.getText().toString().split(";");
+        for (String part : parts) {
+            // Split each part by ',' if available
+            String[] subParts = part.split(",");
+
+            APDUData apduData = new APDUData();
+            apduData.setContactInterface(APDUData.ContactInterfaceType.GSM);
+            apduData.setTimeout(60);
+            apduData.setCommandAPDU(subParts[0]);
+            if (subParts.length == 2) {
+                apduData.setOkCondition(subParts[1]);
+            }
+            updateAPDUDataInterface(apduData);
+            apduDataList.add(apduData);
+        }
+
+        try {
+            cardReaderService.exchangeAPDUList(apduDataList,
+                    new IPoyntExchangeAPDUListListener.Stub() {
+                        @Override
+                        public void onResult(List<String> responseAPDUData, PoyntError poyntError) throws RemoteException {
+                            if (poyntError != null) {
+                                logReceivedMessage("Exchange APDU List failed " + poyntError);
+                            } else {
+                                logReceivedMessage("Exchange APDU result : " + responseAPDUData.toString());
+                            }
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

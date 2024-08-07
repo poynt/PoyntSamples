@@ -1,3 +1,8 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
@@ -453,6 +458,29 @@
 
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etApduList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnSendApduList"
+            android:hint="AAAA,9000;BBBB;CCCC,9000"
+            android:text="AAAA,9000;BBBB;CCCC,9000"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/btnSendApduList"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send APDU list" />
+
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
@@ -473,3 +501,4 @@
     </ScrollView>
 
 </LinearLayout>
+</ScrollView>
