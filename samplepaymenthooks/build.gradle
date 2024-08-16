@@ -13,8 +13,9 @@ repositories {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    namespace 'com.poynt.samples.paymenthooks'
+
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.poynt.samples.paymenthooks"

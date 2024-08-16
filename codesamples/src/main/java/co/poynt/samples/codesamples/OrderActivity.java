@@ -26,9 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import co.poynt.api.model.Business;
 import co.poynt.api.model.ClientContext;
 import co.poynt.api.model.Fee;
@@ -62,26 +59,16 @@ public class OrderActivity extends Activity {
 
     Business b;
 
-    @BindView(R.id.pullOpenOrders)
-    Button pullOpenOrders;
-    @BindView(R.id.completeOrder)
-    Button completeOrderBtn;
-    @BindView(R.id.updateOrder)
-    Button updateOrderBtn;
-    @BindView(R.id.getOrder)
-    Button getOrderBtn;
-    @BindView(R.id.cancelOrder)
-    Button cancelOrderBtn;
-    @BindView(R.id.resultText)
-    TextView resultTextView;
-    @BindView(R.id.orderStatus)
-    TextView orderStatusText;
-    @BindView(R.id.currentOrderId)
-    TextView currentOrderTextView;
-    @BindView(R.id.saveOrder)
-    Button saveOrderBtn;
-    @BindView(R.id.captureOrder)
-    Button captureOrder;
+    private Button pullOpenOrders;
+    private Button completeOrderBtn;
+    private Button updateOrderBtn;
+    private Button getOrderBtn;
+    private Button cancelOrderBtn;
+    private TextView resultTextView;
+    private TextView orderStatusText;
+    private TextView currentOrderTextView;
+    private Button saveOrderBtn;
+    private Button captureOrder;
 
 
     private ServiceConnection orderServiceConnection = new ServiceConnection() {
@@ -257,23 +244,41 @@ public class OrderActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        createOrderBtn = (Button) findViewById(R.id.createOrder);
-        createOrderBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                try {
-                    currentOrder = generateOrder();
-                    currentOrderId = currentOrder.getId().toString();
-                    currentOrderTextView.setText(currentOrderId);
-                    enableButtons();
-                    try{
-                    orderService.createOrder(currentOrder, UUID.randomUUID().toString(), createOrderServiceListener);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+        bindViews();
+    }
+
+    private void bindViews() {
+        pullOpenOrders = findViewById(R.id.pullOpenOrders);
+        completeOrderBtn = findViewById(R.id.completeOrder);
+        updateOrderBtn = findViewById(R.id.updateOrder);
+        getOrderBtn = findViewById(R.id.getOrder);
+        cancelOrderBtn = findViewById(R.id.cancelOrder);
+        resultTextView = findViewById(R.id.resultText);
+        orderStatusText = findViewById(R.id.orderStatus);
+        currentOrderTextView = findViewById(R.id.currentOrderId);
+        saveOrderBtn = findViewById(R.id.saveOrder);
+        captureOrder = findViewById(R.id.captureOrder);
+
+        pullOpenOrders.setOnClickListener(this::pullOpenOrdersClicked);
+        completeOrderBtn.setOnClickListener(this::completeOrdersClicked);
+        updateOrderBtn.setOnClickListener(this::updateOrder);
+        getOrderBtn.setOnClickListener(this::getOrder);
+        cancelOrderBtn.setOnClickListener(this::cancelOrder);
+        saveOrderBtn.setOnClickListener(this::saveOrder);
+        captureOrder.setOnClickListener(this::captureOrderClicked);
+
+        createOrderBtn = findViewById(R.id.createOrder);
+        createOrderBtn.setOnClickListener(v -> {
+            currentOrder = generateOrder();
+            currentOrderId = currentOrder.getId().toString();
+            currentOrderTextView.setText(currentOrderId);
+            enableButtons();
+            try{
+                orderService.createOrder(currentOrder, UUID.randomUUID().toString(), createOrderServiceListener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         });
-
-        ButterKnife.bind(this);
     }
 
     protected void onResume() {
@@ -409,7 +414,6 @@ public class OrderActivity extends Activity {
      * @param view this method will use the local content provider to query for open orders
      *             and will pull the last order using OrderService
      */
-    @OnClick(R.id.pullOpenOrders)
     public void pullOpenOrdersClicked(View view) {
 
         String lastOrderId = null;
@@ -501,7 +505,6 @@ public class OrderActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.completeOrder)
     public void completeOrdersClicked(View view) {
         String currencyCode = NumberFormat.getCurrencyInstance().getCurrency().getCurrencyCode();
 
@@ -547,7 +550,6 @@ public class OrderActivity extends Activity {
      * the payments are captured completely.
      * */
 
-    @OnClick(R.id.captureOrder)
     public void captureOrderClicked(View view){
         try {
             orderService.captureOrder(currentOrderId, currentOrder, UUID.randomUUID().toString(), captureOrderListener);
@@ -556,7 +558,6 @@ public class OrderActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.cancelOrder)
     public void cancelOrder(View view){
         try {
             orderService.cancelOrder(currentOrderId, UUID.randomUUID().toString(), cancelOrderListener);
@@ -565,7 +566,6 @@ public class OrderActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.getOrder)
     public void getOrder(View view){
         try {
             orderService.getOrder(currentOrderId, UUID.randomUUID().toString(), getOrderListener);
@@ -574,7 +574,6 @@ public class OrderActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.saveOrder)
     public void saveOrder(View view){
         try{
             orderService.saveOrder(fullFillOrder(currentOrder), UUID.randomUUID().toString(), saveOrderServiceListener);
@@ -584,7 +583,6 @@ public class OrderActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.updateOrder)
     public void updateOrder(View view){
         List<OrderItem> items = new ArrayList<>();
         items = currentOrder.getItems();

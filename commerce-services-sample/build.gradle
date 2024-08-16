@@ -18,6 +18,8 @@ plugins {
 }
 
 android {
+    namespace 'com.godaddy.commerce.services.sample'
+
     compileSdkVersion 34
 
     defaultConfig {
