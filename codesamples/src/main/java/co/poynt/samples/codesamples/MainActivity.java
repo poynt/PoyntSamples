@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private Button transactionListBtn;
@@ -171,8 +172,7 @@ public class MainActivity extends Activity {
         nonPaymentCardReaderActivityBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NonPaymentCardReaderActivity.class);
-                startActivity(intent);
+                Toast.makeText(MainActivity.this, "Deprecated. Please use DCATestApp", Toast.LENGTH_SHORT).show();
             }
         });
 

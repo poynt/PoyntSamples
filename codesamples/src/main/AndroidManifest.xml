@@ -91,9 +91,6 @@
             android:label="@string/title_activity_in_app_billing" />
         <activity android:name=".AccessoriesActivity" />
 
-        <activity android:name=".NonPaymentCardReaderActivity"
-            android:label="@string/title_activity_non_payment_card_reader"/>
-
         <activity android:name=".PrinterServiceActivity" />
 
         <activity android:name=".ConfigurationServiceActivity" />
