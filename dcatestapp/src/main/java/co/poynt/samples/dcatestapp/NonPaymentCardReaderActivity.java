@@ -49,6 +49,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -66,6 +67,8 @@ public class NonPaymentCardReaderActivity extends Activity {
     private UIEventReceiver uiEventReceiver;
 
     private ActivityNonPaymentCardReaderBinding binding;
+
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -109,6 +112,12 @@ public class NonPaymentCardReaderActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         setupViews();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear(); // Disposes of all added disposables
     }
 
     @Override
@@ -2652,7 +2661,14 @@ public class NonPaymentCardReaderActivity extends Activity {
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
                 public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
+                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Connected with supported card: " + (success ? "Success" : "Failed"));
+
+                    if (!success) {
+                        disconnectCardReader(connectionOptions);
+                        return;
+                    }
 
                     List<APDUData> apduDataList = new ArrayList<>();
                     apduDataList.add(createAPDUData("039060000000"));
@@ -2691,10 +2707,10 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("603: ISO Select File");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
                     boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2708,26 +2724,25 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
-                    boolean testPassed = list.size() == 1 && list.get(0).endsWith("9000");
-                    logReceivedMessage("603: ISO Select File: " + (testPassed ? "Passed" : "Failed"));
-                    return testPassed;
-                })
-                .onErrorResumeNext(Observable.empty())
+                .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                .subscribe(list -> {
+                    boolean testPassed = list.size() == 1 && list.get(0).endsWith("9000");
+                    logReceivedMessage("603: ISO Select File: " + (testPassed ? "Passed" : "Failed"));
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
 
     private void desfire604() {
         logReceivedMessage("===============================");
         logReceivedMessage("604: Get File ID’s");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
                     boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2741,28 +2756,27 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("0F1F030001049100");
                     logReceivedMessage("604: Get File ID’s: " + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
 
     private void desfire605() {
         logReceivedMessage("===============================");
         logReceivedMessage("605: Get File Settings");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
                     boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2776,28 +2790,27 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("000030EF2000009100");
                     logReceivedMessage("605: Get File Settings: " + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
 
     private void desfire606() {
         logReceivedMessage("===============================");
         logReceivedMessage("606: Read Data");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
                     boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2811,28 +2824,27 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
-                    boolean success = list != null
-                            && !list.isEmpty()
-                            && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
-                    logReceivedMessage("606: Read Data:" + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
+                .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                .subscribe(list -> {
+                    boolean success = list != null
+                            && !list.isEmpty()
+                            && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
+                    logReceivedMessage("606: Read Data: " + (success ? "Passed" : "Failed"));
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
 
     private void desfire607() {
         logReceivedMessage("===============================");
         logReceivedMessage("607: Read Credit Value");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
                     boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2846,18 +2858,17 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
                     logReceivedMessage("607: Read Credit Value: " + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
 
     private void desfire610() {
@@ -2884,10 +2895,10 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("615: Test Multiple APDUs, No OK List");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
                     boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2903,20 +2914,19 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
                     boolean success = list != null
                             && list.size() == 3
                             && list.get(0).endsWith("9000")
                             && list.get(1).endsWith("9000")
                             && list.get(2).endsWith("9000");
                     logReceivedMessage("615: Test Multiple APDUs, No OK List: " + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
 
     }
 
@@ -2924,10 +2934,11 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("616: Test Multiple APDUs with an OK List");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
+                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Connected with supported card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2943,30 +2954,30 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
                     boolean success = list != null
                             && list.size() == 3
                             && list.get(0).equals("0408013000130591AF")
                             && list.get(1).equals("0408010002130591AF")
                             && list.get(2).equals("04A378EA1A6880CF0856652041199100");
                     logReceivedMessage("616: Test Multiple APDUs with an OK List: " + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
 
     private void desfire617() {
         logReceivedMessage("===============================");
         logReceivedMessage("617: Test Multiple APDUs with failure on OK List");
 
-        connectToCardObservable()
+        Disposable disposable = connectToCardObservable()
                 .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
+                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Connected with supported card: " + (success ? "Success" : "Failed"));
                     return success;
                 })
                 .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
@@ -2982,19 +2993,18 @@ public class NonPaymentCardReaderActivity extends Activity {
                             false,
                             true);
                 })
-                .takeWhile(list -> {
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
                     boolean success = list != null
                             && list.size() == 2
                             && list.get(0).equals("0408013000130591AF")
                             && list.get(1).equals("0408010002130591AF");
                     logReceivedMessage("617: Test Multiple APDUs with failure on OK List: " + (success ? "Passed" : "Failed"));
-                    return success;
-                })
-                .onErrorResumeNext(Observable.empty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
-                .subscribe();
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable);
     }
     //---------------------------------------------------------------------------------------
     //endregion

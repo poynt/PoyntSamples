@@ -27,6 +27,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        setProperty("archivesBaseName", "DCA-v" + versionName)
     }
 
     buildTypes {
