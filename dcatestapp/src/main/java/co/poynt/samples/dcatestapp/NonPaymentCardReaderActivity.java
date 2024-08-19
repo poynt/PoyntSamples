@@ -43,13 +43,16 @@ import co.poynt.os.services.v1.IPoyntExchangeAPDUListener;
 import co.poynt.os.util.ByteUtils;
 import co.poynt.samples.dcatestapp.databinding.ActivityNonPaymentCardReaderBinding;
 import co.poynt.samples.dcatestapp.utils.Utils;
+import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.operators.single.SingleDoOnError;
 import io.reactivex.schedulers.Schedulers;
 
 @SuppressLint("StaticFieldLeak")
@@ -197,67 +200,22 @@ public class NonPaymentCardReaderActivity extends Activity {
         binding.testMifareAfterPowerCycle.setOnClickListener(v -> startMifareTestAfterPowerCycle());
 
         //Mifare Desfire tests
-        binding.test603.setOnClickListener(v -> {
-            logReceivedMessage("===============================");
-            logReceivedMessage("602: L4 Get Version");
-            try {
-                final ConnectionOptions connectionOptions = new ConnectionOptions();
-                connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-                connectionOptions.setTimeout(10);
-                updateConnectionOptionsInterface(connectionOptions);
-                logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-                cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
-                    @Override
-                    public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                        logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-
-                        List<APDUData> apduDataList = new ArrayList<>();
-                        apduDataList.add(
-                                createAPDUData(
-                                        "039060000000",
-                                        APDUData.ContactInterfaceType.SLE));
-                        apduDataList.add(
-                                createAPDUData(
-                                        "0390AF000000",
-                                        APDUData.ContactInterfaceType.SLE));
-                        apduDataList.add(
-                                createAPDUData(
-                                        "0390AF000000",
-                                        APDUData.ContactInterfaceType.SLE));
-
-                        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
-
-                        cardReaderService.exchangeAPDUList(apduDataList, new IPoyntExchangeAPDUListListener.Stub() {
-                            @Override
-                            public void onResult(List<String> list, PoyntError poyntError) throws RemoteException {
-                                if (poyntError != null) {
-                                    logReceivedMessage("Exchange APDU List failed " + poyntError);
-                                } else {
-                                    logReceivedMessage("Exchange APDU result : " + list.toString());
-                                    if (list.size() >= 3) {
-                                        if (list.get(0).endsWith("9000") && list.get(1).endsWith("9000") &&
-                                                list.get(2).endsWith("9000")) {
-                                            logReceivedMessage("404 Change Memory test passed");
-                                        }
-                                    }
-                                }
-                                disconnectCardReader(connectionOptions);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(PoyntError poyntError) throws RemoteException {
-                        logReceivedMessage("Connection failed : " + poyntError.toString());
-                    }
-                });
-            } catch (Throwable e) {
-                e.printStackTrace();
-                logReceivedMessage(e.getMessage());
-            }
-        });
+        binding.desfire601.setOnClickListener(v -> desfire601());
+        binding.desfire602.setOnClickListener(v -> desfire602());
+        binding.desfire603.setOnClickListener(v -> desfire603());
+        binding.desfire604.setOnClickListener(v -> desfire604());
+        binding.desfire605.setOnClickListener(v -> desfire605());
+        binding.desfire606.setOnClickListener(v -> desfire606());
+        binding.desfire607.setOnClickListener(v -> desfire607());
+        binding.desfire610.setOnClickListener(v -> desfire610());
+        binding.desfire611.setOnClickListener(v -> desfire611());
+        binding.desfire612.setOnClickListener(v -> desfire612());
+        binding.desfire613.setOnClickListener(v -> desfire613());
+        binding.desfire614.setOnClickListener(v -> desfire614());
+        binding.desfire615.setOnClickListener(v -> desfire615());
+        binding.desfire616.setOnClickListener(v -> desfire616());
+        binding.desfire617.setOnClickListener(v -> desfire617());
     }
-
 
     protected void onResume() {
         super.onResume();
@@ -333,7 +291,7 @@ public class NonPaymentCardReaderActivity extends Activity {
             @Override
             public void run() {
                 binding.consoleText.append(message + "\n\n");
-                binding.demoScroller.fullScroll(ScrollView.FOCUS_UP);
+                binding.demoScroller.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
     }
@@ -453,10 +411,9 @@ public class NonPaymentCardReaderActivity extends Activity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                ConnectionOptions connectionOptions = new ConnectionOptions();
-                connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-                connectionOptions.setTimeout(60);
-                updateConnectionOptionsInterface(connectionOptions);
+                ConnectionOptions connectionOptions = createConnectionOptions(
+                        ConnectionOptions.ContactInterfaceType.EMV,
+                        60);
                 logReceivedMessage("connectToCard : connectionOptions" + connectionOptions);
                 try {
                     cardReaderService.connectToCard(connectionOptions,
@@ -481,10 +438,9 @@ public class NonPaymentCardReaderActivity extends Activity {
 
 
     private void disconnectFromCard() {
-        ConnectionOptions connectionOptions = new ConnectionOptions();
-        connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-        connectionOptions.setTimeout(60);
-        updateConnectionOptionsInterface(connectionOptions);
+        ConnectionOptions connectionOptions = createConnectionOptions(
+                ConnectionOptions.ContactInterfaceType.EMV,
+                60);
         disconnectCardReader(connectionOptions);
     }
 
@@ -492,10 +448,9 @@ public class NonPaymentCardReaderActivity extends Activity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                ConnectionOptions connectionOptions = new ConnectionOptions();
-                connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-                connectionOptions.setTimeout(60);
-                updateConnectionOptionsInterface(connectionOptions);
+                ConnectionOptions connectionOptions = createConnectionOptions(
+                        ConnectionOptions.ContactInterfaceType.GSM,
+                        60);
                 try {
                     cardReaderService.checkIfCardInserted(connectionOptions,
                             new IPoyntCardInsertListener.Stub() {
@@ -702,10 +657,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("Successful non-payment transaction Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.EMV);
             logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -772,10 +725,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("File Not Found Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.EMV);
             logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -840,10 +791,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("CT Payment Card Rejection Test - Master Card");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.EMV);
             logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -904,10 +853,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("Exchange CT APDU Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.EMV);
             logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -988,10 +935,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("104b Payment Transaction during DCA (PoyntC Only)");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.EMV);
             logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1050,10 +995,8 @@ public class NonPaymentCardReaderActivity extends Activity {
                 public void onError(PoyntError poyntError) throws RemoteException {
                     logReceivedMessage("APDU exchange failed " + poyntError);
                     logReceivedMessage("Test passed");
-                    final ConnectionOptions connectionOptions = new ConnectionOptions();
-                    connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.EMV);
-                    connectionOptions.setTimeout(30);
-                    updateConnectionOptionsInterface(connectionOptions);
+                    final ConnectionOptions connectionOptions = createConnectionOptions(
+                            ConnectionOptions.ContactInterfaceType.EMV);
                     logReceivedMessage("disconnectCardReader : ConnectionOptions : " + connectionOptions);
                     disconnectCardReader(connectionOptions);
                 }
@@ -1073,9 +1016,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("Successful non-payment transaction CL Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(null);
             logReceivedMessage("connectToCard : connectionOptions" + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1123,9 +1064,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("File Not Found CL Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(null);
             logReceivedMessage("connectToCard : connectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1170,9 +1109,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("CL Payment Card Rejection Test - Master Card");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(null);
             logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1231,9 +1168,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("Exchange CL APDU Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(null);
             logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1284,9 +1219,7 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("204b Payment Transaction during DCA (PoyntC Only)");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(null);
             logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1343,9 +1276,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                 public void onError(PoyntError poyntError) throws RemoteException {
                     logReceivedMessage("APDU exchange failed " + poyntError);
                     logReceivedMessage("Test passed");
-                    final ConnectionOptions connectionOptions = new ConnectionOptions();
-                    connectionOptions.setTimeout(30);
-                    updateConnectionOptionsInterface(connectionOptions);
+                    final ConnectionOptions connectionOptions = createConnectionOptions(null);
                     logReceivedMessage("disconnectCardReader : ConnectionOptions : " + connectionOptions);
                     disconnectCardReader(connectionOptions);
                 }
@@ -1364,10 +1295,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("Successful non-payment transaction Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.GSM);
             logReceivedMessage("checkIfCardInserted : ConnectionOptions : " + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -1434,10 +1363,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("File Not Found Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.GSM);
             logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -1502,10 +1429,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("ISO Payment Card Rejection Test - Master Card");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(30);
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.GSM);
             logReceivedMessage("connectToCard : connectionOptions " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1566,10 +1491,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("Exchange ISO APDU Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.GSM);
             logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -1652,10 +1575,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("ISO Payment transaction during DCA Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.GSM);
             logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -1735,10 +1656,8 @@ public class NonPaymentCardReaderActivity extends Activity {
                 public void onError(PoyntError poyntError) throws RemoteException {
                     logReceivedMessage("APDU exchange failed " + poyntError);
                     logReceivedMessage("Test passed");
-                    final ConnectionOptions connectionOptions = new ConnectionOptions();
-                    connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-                    connectionOptions.setTimeout(30);
-                    updateConnectionOptionsInterface(connectionOptions);
+                    final ConnectionOptions connectionOptions = createConnectionOptions(
+                            ConnectionOptions.ContactInterfaceType.GSM);
                     logReceivedMessage("disconnectCardReader : ConnectionOptions : " + connectionOptions);
                     disconnectCardReader(connectionOptions);
                 }
@@ -1753,10 +1672,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("ISO Italian Health Card Test");
 
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.GSM);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.GSM);
             logReceivedMessage("checkIfCardInserted : connectionOptions" + connectionOptions);
             cardReaderService.checkIfCardInserted(connectionOptions, new IPoyntCardInsertListener.Stub() {
                 @Override
@@ -1877,10 +1794,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("401 Test for Read Memory");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1928,10 +1843,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("402 Read with Protect Bit");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -1978,10 +1891,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("403 Verify Programmable Security Code (PSC)");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2029,10 +1940,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("404 Change Memory");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2104,10 +2013,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("405 Change Memory w/ Protect Bit");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2170,10 +2077,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("406 Raw Mode ");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2219,10 +2124,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("407 Raw Mode with Response ");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2268,10 +2171,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("408 Payment Transaction during DCA (PoyntC Only)");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2316,10 +2217,8 @@ public class NonPaymentCardReaderActivity extends Activity {
         logReceivedMessage("===============================");
         logReceivedMessage("409 Test Use of the Abort command ");
         try {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-            connectionOptions.setTimeout(30);
-            updateConnectionOptionsInterface(connectionOptions);
+            final ConnectionOptions connectionOptions = createConnectionOptions(
+                    ConnectionOptions.ContactInterfaceType.SLE);
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
@@ -2379,10 +2278,8 @@ public class NonPaymentCardReaderActivity extends Activity {
                 public void onError(PoyntError poyntError) throws RemoteException {
                     logReceivedMessage("APDU exchange failed " + poyntError);
                     logReceivedMessage("Test passed");
-                    final ConnectionOptions connectionOptions = new ConnectionOptions();
-                    connectionOptions.setContactInterface(ConnectionOptions.ContactInterfaceType.SLE);
-                    connectionOptions.setTimeout(30);
-                    updateConnectionOptionsInterface(connectionOptions);
+                    final ConnectionOptions connectionOptions = createConnectionOptions(
+                            ConnectionOptions.ContactInterfaceType.SLE);
                     logReceivedMessage("disconnectCardReader : ConnectionOptions : " + connectionOptions);
                     disconnectCardReader(connectionOptions);
                 }
@@ -2658,18 +2555,12 @@ public class NonPaymentCardReaderActivity extends Activity {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         e.printStackTrace();
-                        ConnectionOptions connectionOptions = new ConnectionOptions();
-                        connectionOptions.setTimeout(30);
-                        updateConnectionOptionsInterface(connectionOptions);
-                        disconnectCardReader(connectionOptions);
+                        disconnectCardReader(createConnectionOptions());
                     }
 
                     @Override
                     public void onComplete() {
-                        ConnectionOptions connectionOptions = new ConnectionOptions();
-                        connectionOptions.setTimeout(30);
-                        updateConnectionOptionsInterface(connectionOptions);
-                        disconnectCardReader(connectionOptions);
+                        disconnectCardReader(createConnectionOptions());
                     }
                 });
     }
@@ -2715,23 +2606,402 @@ public class NonPaymentCardReaderActivity extends Activity {
 
                     @Override
                     public void onComplete() {
-                        ConnectionOptions connectionOptions = new ConnectionOptions();
-                        connectionOptions.setTimeout(30);
-                        updateConnectionOptionsInterface(connectionOptions);
-                        disconnectCardReader(connectionOptions);
+                        disconnectCardReader(createConnectionOptions());
                     }
                 });
     }
     //---------------------------------------------------------------------------------------
     //endregion
 
+    //region Mifare Desfire tests
+    //---------------------------------------------------------------------------------------
+    private void desfire601() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("601 DESFire Card Detected");
+        try {
+            final ConnectionOptions connectionOptions = createConnectionOptions();
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                @Override
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+                    boolean testPassed = (connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
+                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT)
+                            && connectionResult.getAtsData() != null && connectionResult.getSakData() != null;
+                    logReceivedMessage("601 DESFire Card Detected: " + (testPassed ? "Passed" : "Failed"));
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) throws RemoteException {
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
+                }
+            });
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+            logReceivedMessage(e.getMessage());
+        }
+    }
+
+    private void desfire602() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("602: L4 Get Version");
+        try {
+            final ConnectionOptions connectionOptions = createConnectionOptions();
+            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
+            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
+                @Override
+                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
+                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
+
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("039060000000"));
+                    apduDataList.add(createAPDUData("0390AF000000"));
+                    apduDataList.add(createAPDUData("0390AF000000"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    cardReaderService.exchangeAPDUList(apduDataList, new IPoyntExchangeAPDUListListener.Stub() {
+                        @Override
+                        public void onResult(List<String> list, PoyntError poyntError) throws RemoteException {
+                            if (poyntError != null) {
+                                logReceivedMessage("Exchange APDU List failed " + poyntError);
+                            } else {
+                                logReceivedMessage("Exchange APDU result : " + list.toString());
+                                boolean testPassed = list.size() == 3 && list.get(0).endsWith("91AF") &&
+                                        list.get(1).endsWith("91AF") && list.get(2).endsWith("9100");
+                                logReceivedMessage("602: L4 Get Version: " + (testPassed ? "Passed" : "Failed"));
+                            }
+                            disconnectCardReader(connectionOptions);
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(PoyntError poyntError) throws RemoteException {
+                    logReceivedMessage("Connection failed : " + poyntError.toString());
+                }
+            });
+        } catch (Throwable e) {
+            e.printStackTrace();
+            logReceivedMessage(e.getMessage());
+        }
+    }
+
+    private void desfire603() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("603: ISO Select File");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "603: ISO Select File",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean testPassed = list.size() == 1 && list.get(0).endsWith("9000");
+                    logReceivedMessage("603: ISO Select File: " + (testPassed ? "Passed" : "Failed"));
+                    return testPassed;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+
+    private void desfire604() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("604: Get File ID’s");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("03906F000000"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "604: Get File ID’s",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && !list.isEmpty()
+                            && list.get(0).contains("0F1F030001049100");
+                    logReceivedMessage("604: Get File ID’s: " + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+
+    private void desfire605() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("605: Get File Settings");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("0390F50000011F00"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "605: Get File Settings",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && !list.isEmpty()
+                            && list.get(0).contains("000030EF2000009100");
+                    logReceivedMessage("605: Get File Settings: " + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+
+    private void desfire606() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("606: Read Data");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("0390AD0000071F00000020000000"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "606: Read Data",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && !list.isEmpty()
+                            && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
+                    logReceivedMessage("606: Read Data:" + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+
+    private void desfire607() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("607: Read Credit Value");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("0390AD0000071F00000020000000"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "607: Read Credit Value",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && !list.isEmpty()
+                            && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
+                    logReceivedMessage("607: Read Credit Value: " + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+
+    private void desfire610() {
+        logReceivedMessage("not implemented");
+    }
+
+    private void desfire611() {
+        logReceivedMessage("not implemented");
+    }
+
+    private void desfire612() {
+        logReceivedMessage("not implemented");
+    }
+
+    private void desfire613() {
+        logReceivedMessage("not implemented");
+    }
+
+    private void desfire614() {
+        logReceivedMessage("not implemented");
+    }
+
+    private void desfire615() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("615: Test Multiple APDUs, No OK List");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "615: Test Multiple APDUs, No OK List",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && list.size() == 3
+                            && list.get(0).endsWith("9000")
+                            && list.get(1).endsWith("9000")
+                            && list.get(2).endsWith("9000");
+                    logReceivedMessage("615: Test Multiple APDUs, No OK List: " + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+
+    }
+
+    private void desfire616() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("616: Test Multiple APDUs with an OK List");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("039060000000", "91AF9100"));
+                    apduDataList.add(createAPDUData("0390AF000000", "91AF9100"));
+                    apduDataList.add(createAPDUData("0390AF000000", "91009000"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "616: Test Multiple APDUs with an OK List",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && list.size() == 3
+                            && list.get(0).equals("0408013000130591AF")
+                            && list.get(1).equals("0408010002130591AF")
+                            && list.get(2).equals("04A378EA1A6880CF0856652041199100");
+                    logReceivedMessage("616: Test Multiple APDUs with an OK List: " + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+
+    private void desfire617() {
+        logReceivedMessage("===============================");
+        logReceivedMessage("617: Test Multiple APDUs with failure on OK List");
+
+        connectToCardObservable()
+                .takeWhile(connectionResult -> {
+                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
+                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card:" + (success ? "Success" : "Failed"));
+                    return success;
+                })
+                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
+                    List<APDUData> apduDataList = new ArrayList<>();
+                    apduDataList.add(createAPDUData("03906000000", "91AF9100"));
+                    apduDataList.add(createAPDUData("0390AF000000", "9100"));
+                    apduDataList.add(createAPDUData("0390AF000000", "9100"));
+                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+                    return exchangeAPDUListObservable(
+                            apduDataList,
+                            "617: Test Multiple APDUs with failure on OK List",
+                            false,
+                            true);
+                })
+                .takeWhile(list -> {
+                    boolean success = list != null
+                            && list.size() == 2
+                            && list.get(0).equals("0408013000130591AF")
+                            && list.get(1).equals("0408010002130591AF");
+                    logReceivedMessage("617: Test Multiple APDUs with failure on OK List: " + (success ? "Passed" : "Failed"));
+                    return success;
+                })
+                .onErrorResumeNext(Observable.empty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe();
+    }
+    //---------------------------------------------------------------------------------------
+    //endregion
 
     private Observable<ConnectionResult> connectToCardObservable() {
         return Observable.create(emitter -> {
-            ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(10);
-            updateConnectionOptionsInterface(connectionOptions);
-
+            ConnectionOptions connectionOptions = createConnectionOptions();
             cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
                 @Override
                 public void onSuccess(ConnectionResult connectionResult) {
@@ -2750,10 +3020,7 @@ public class NonPaymentCardReaderActivity extends Activity {
 
     private Observable<String> disconnectFromCardObservable() {
         return Observable.create(emitter -> {
-            final ConnectionOptions connectionOptions = new ConnectionOptions();
-            connectionOptions.setTimeout(10);
-            updateConnectionOptionsInterface(connectionOptions);
-
+            ConnectionOptions connectionOptions = createConnectionOptions();
             cardReaderService.disconnectFromCard(connectionOptions, new IPoyntDisconnectFromCardListener.Stub() {
                 @Override
                 public void onDisconnect() {
@@ -2773,6 +3040,13 @@ public class NonPaymentCardReaderActivity extends Activity {
     private Observable<List<String>> exchangeAPDUListObservable(final List<APDUData> apduData,
                                                                 String testDescription,
                                                                 boolean isCommandShouldFail) {
+        return exchangeAPDUListObservable(apduData, testDescription, isCommandShouldFail, false);
+    }
+
+    private Observable<List<String>> exchangeAPDUListObservable(final List<APDUData> apduData,
+                                                                String testDescription,
+                                                                boolean isCommandShouldFail,
+                                                                boolean returnFullResponse) {
         return Observable.create(emitter -> cardReaderService.exchangeAPDUList(apduData, new IPoyntExchangeAPDUListListener.Stub() {
             @Override
             public void onResult(List<String> list, PoyntError poyntError) {
@@ -2789,6 +3063,11 @@ public class NonPaymentCardReaderActivity extends Activity {
                         emitter.onError(new Throwable(poyntError.toString()));
                     }
                 } else {
+                    if (returnFullResponse) {
+                        emitter.onNext(list);
+                        return;
+                    }
+
                     String rApdu = list.size() > 0 ? list.get(0) : null;
 
                     if (rApdu != null) {
@@ -2958,5 +3237,24 @@ public class NonPaymentCardReaderActivity extends Activity {
         apduData.setTimeout(timeout);
         updateAPDUDataInterface(apduData);
         return apduData;
+    }
+
+    private ConnectionOptions createConnectionOptions() {
+        return createConnectionOptions(null, 30);
+    }
+
+    private ConnectionOptions createConnectionOptions(
+            ConnectionOptions.ContactInterfaceType contactInterfaceType) {
+        return createConnectionOptions(contactInterfaceType, 30);
+    }
+
+    private ConnectionOptions createConnectionOptions(
+            ConnectionOptions.ContactInterfaceType contactInterfaceType,
+            int timeout) {
+        ConnectionOptions connectionOptions = new ConnectionOptions();
+        connectionOptions.setContactInterface(contactInterfaceType);
+        connectionOptions.setTimeout(timeout);
+        updateConnectionOptionsInterface(connectionOptions);
+        return connectionOptions;
     }
 }

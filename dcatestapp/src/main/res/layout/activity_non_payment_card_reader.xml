@@ -498,9 +498,80 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/test603"
+                android:id="@+id/desfire601"
+                style="@style/DCAButton"
+                android:text="601"/>
+
+            <Button
+                android:id="@+id/desfire602"
+                style="@style/DCAButton"
+                android:text="602" />
+
+            <Button
+                android:id="@+id/desfire603"
                 style="@style/DCAButton"
                 android:text="603" />
+
+            <Button
+                android:id="@+id/desfire604"
+                style="@style/DCAButton"
+                android:text="604" />
+
+            <Button
+                android:id="@+id/desfire605"
+                style="@style/DCAButton"
+                android:text="605" />
+
+            <Button
+                android:id="@+id/desfire606"
+                style="@style/DCAButton"
+                android:text="606" />
+
+            <Button
+                android:id="@+id/desfire607"
+                style="@style/DCAButton"
+                android:text="607" />
+
+            <Button
+                android:id="@+id/desfire610"
+                style="@style/DCAButton"
+                android:text="610" />
+
+            <Button
+                android:id="@+id/desfire611"
+                style="@style/DCAButton"
+                android:text="611" />
+
+            <Button
+                android:id="@+id/desfire612"
+                style="@style/DCAButton"
+                android:text="612" />
+
+            <Button
+                android:id="@+id/desfire613"
+                style="@style/DCAButton"
+                android:text="613" />
+
+            <Button
+                android:id="@+id/desfire614"
+                style="@style/DCAButton"
+                android:text="614" />
+
+            <Button
+                android:id="@+id/desfire615"
+                style="@style/DCAButton"
+                android:text="615" />
+
+            <Button
+                android:id="@+id/desfire616"
+                style="@style/DCAButton"
+                android:text="616" />
+
+            <Button
+                android:id="@+id/desfire617"
+                style="@style/DCAButton"
+                android:text="617" />
+
         </LinearLayout>
     </HorizontalScrollView>
 
