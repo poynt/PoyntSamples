@@ -1,8 +1,3 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
@@ -77,6 +72,11 @@
         android:layout_height="1dip"
         android:background="#000000" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Misc Tests" />
+
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -112,30 +112,6 @@
                     android:text="Abort (Cancel)" />
 
                 <Button
-                    android:id="@+id/clearLog"
-                    style="@style/DCAButton"
-                    android:text="Clear" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/apduData"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:lines="1"
-                    android:text="04A0A40000023F0000" />
-
-                <Button
-                    android:id="@+id/exchangeAPDU"
-                    style="@style/DCAButton"
-                    android:text="Exchange APDU" />
-
-                <Button
                     android:id="@+id/readIMSI"
                     style="@style/DCAButton"
                     android:text="Read IMSI" />
@@ -143,6 +119,78 @@
             </LinearLayout>
         </LinearLayout>
     </HorizontalScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/apduDataInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/exchangeAPDU"
+            android:inputType="text"
+            android:lines="1"
+            android:text="04A0A40000023F0000" />
+
+        <Button
+            android:id="@+id/exchangeAPDU"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send APDU" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/apduListDataInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/exchangeAPDUList"
+            android:hint="AAAA,9000;BBBB;CCCC,9000"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/exchangeAPDUList"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send APDU list" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etBinRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnSendBinRange"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="12"
+            android:text="000000111111" />
+
+        <Button
+            android:id="@+id/btnSendBinRange"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send Bin Range" />
+
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
@@ -169,12 +217,12 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/successfulTransactionTest"
+                    android:id="@+id/ctSuccessfulTransaction"
                     style="@style/DCAButton"
                     android:text="Successful" />
 
                 <Button
-                    android:id="@+id/fileNotFoundTest"
+                    android:id="@+id/ctFileNotFound"
                     style="@style/DCAButton"
                     android:text="File Not Found" />
 
@@ -184,12 +232,12 @@
                     android:text="Reject" />
 
                 <Button
-                    android:id="@+id/exchangeCTApduList"
+                    android:id="@+id/ctExchangeApduList"
                     style="@style/DCAButton"
                     android:text="Exchange CT APDU List" />
 
                 <Button
-                    android:id="@+id/pymtTransactionDuringDCA"
+                    android:id="@+id/ctPymtTransactionDuringDCA"
                     style="@style/DCAButton"
                     android:text="Pymt trn during DCA PoyntC" />
 
@@ -222,12 +270,12 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/successfulTransactionCLTest"
+                android:id="@+id/clSuccessfulTransaction"
                 style="@style/DCAButton"
                 android:text="Successful" />
 
             <Button
-                android:id="@+id/fileNotFoundCLTest"
+                android:id="@+id/clFileNotFound"
                 style="@style/DCAButton"
                 android:text="File Not Found" />
 
@@ -238,7 +286,7 @@
 
 
             <Button
-                android:id="@+id/exchangeCLApduList"
+                android:id="@+id/clExchangeApduList"
                 style="@style/DCAButton"
                 android:text="Exchange CL APDU List" />
 
@@ -279,12 +327,12 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/iSOSuccessfulTransactionTest"
+                    android:id="@+id/isoSuccessfulTransaction"
                     style="@style/DCAButton"
                     android:text="Successful" />
 
                 <Button
-                    android:id="@+id/iSOfileNotFoundTest"
+                    android:id="@+id/isoFileNotFound"
                     style="@style/DCAButton"
                     android:text="File Not Found" />
 
@@ -295,7 +343,7 @@
 
 
                 <Button
-                    android:id="@+id/iSOexchangeApduList"
+                    android:id="@+id/isoExchangeApduList"
                     style="@style/DCAButton"
                     android:text="Exchange ISO APDU List" />
 
@@ -435,58 +483,26 @@
         android:layout_height="1dip"
         android:background="#000000" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/etBinRange"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btnSendBinRange"
-            android:inputType="text"
-            android:lines="1"
-            android:maxLength="12"
-            android:text="000000111111" />
-
-        <Button
-            android:id="@+id/btnSendBinRange"
-            style="@style/DCAButton"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="Send Bin Range" />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/etApduList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btnSendApduList"
-            android:hint="AAAA,9000;BBBB;CCCC,9000"
-            android:text="AAAA,9000;BBBB;CCCC,9000"
-            android:inputType="textMultiLine" />
-
-        <Button
-            android:id="@+id/btnSendApduList"
-            style="@style/DCAButton"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="Send APDU list" />
-
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/test603"
-        style="@style/DCAButton"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:text="test603" />
+        android:text="Mifare Desfire Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/test603"
+                style="@style/DCAButton"
+                android:text="603" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <View
         android:layout_width="match_parent"
@@ -508,4 +524,3 @@
     </ScrollView>
 
 </LinearLayout>
-</ScrollView>
