@@ -14,6 +14,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +47,7 @@ import co.poynt.samples.dcatestapp.databinding.ActivityNonPaymentCardReaderBindi
 import co.poynt.samples.dcatestapp.utils.Utils;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -140,7 +143,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                     }
                     clearLog();
                     return true;
-                }).setIcon(android.R.drawable.ic_menu_close_clear_cancel)
+                }).setIcon(android.R.drawable.ic_menu_delete)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
@@ -2625,8 +2628,9 @@ public class NonPaymentCardReaderActivity extends Activity {
     //region Mifare Desfire tests
     //---------------------------------------------------------------------------------------
     private void desfire601() {
+        String testName = "601 DESFire Card Detected ";
         logReceivedMessage("===============================");
-        logReceivedMessage("601 DESFire Card Detected");
+        logReceivedMessage(testName);
         try {
             final ConnectionOptions connectionOptions = createConnectionOptions();
             logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
@@ -2637,7 +2641,7 @@ public class NonPaymentCardReaderActivity extends Activity {
                     boolean testPassed = (connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
                             || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT)
                             && connectionResult.getAtsData() != null && connectionResult.getSakData() != null;
-                    logReceivedMessage("601 DESFire Card Detected: " + (testPassed ? "Passed" : "Failed"));
+                    logReceivedMessage(testName + (testPassed ? "Passed" : "Failed"));
                 }
 
                 @Override
@@ -2653,221 +2657,179 @@ public class NonPaymentCardReaderActivity extends Activity {
     }
 
     private void desfire602() {
+        String testName = "602: L4 Get Version ";
         logReceivedMessage("===============================");
-        logReceivedMessage("602: L4 Get Version");
-        try {
-            final ConnectionOptions connectionOptions = createConnectionOptions();
-            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-            cardReaderService.connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
-                @Override
-                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
-                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Connected with supported card: " + (success ? "Success" : "Failed"));
+        logReceivedMessage(testName);
 
-                    if (!success) {
-                        disconnectCardReader(connectionOptions);
-                        return;
-                    }
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("039060000000", "91AF"));
+        apduDataList.add(createAPDUData("0390AF000000", "91AF"));
+        apduDataList.add(createAPDUData("0390AF000000", "9100"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("039060000000"));
-                    apduDataList.add(createAPDUData("0390AF000000"));
-                    apduDataList.add(createAPDUData("0390AF000000"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
-
-                    cardReaderService.exchangeAPDUList(apduDataList, new IPoyntExchangeAPDUListListener.Stub() {
-                        @Override
-                        public void onResult(List<String> list, PoyntError poyntError) throws RemoteException {
-                            if (poyntError != null) {
-                                logReceivedMessage("Exchange APDU List failed " + poyntError);
-                            } else {
-                                logReceivedMessage("Exchange APDU result : " + list.toString());
-                                boolean testPassed = list.size() == 3 && list.get(0).endsWith("91AF") &&
-                                        list.get(1).endsWith("91AF") && list.get(2).endsWith("9100");
-                                logReceivedMessage("602: L4 Get Version: " + (testPassed ? "Passed" : "Failed"));
-                            }
-                            disconnectCardReader(connectionOptions);
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Connection failed : " + poyntError.toString());
-                }
-            });
-        } catch (Throwable e) {
-            e.printStackTrace();
-            logReceivedMessage(e.getMessage());
-        }
-    }
-
-    private void desfire603() {
-        logReceivedMessage("===============================");
-        logReceivedMessage("603: ISO Select File");
-
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
-
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "603: ISO Select File",
-                            false,
-                            true);
-                })
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
+                .subscribe(list -> {
+                    boolean testPassed = list.size() == 3 && list.get(0).endsWith("91AF") &&
+                            list.get(1).endsWith("91AF") && list.get(2).endsWith("9100");
+                    logReceivedMessage(testName + " " + (testPassed ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
+        compositeDisposable.add(disposable);
+    }
+
+    private void desfire603() {
+        String testName = "603: ISO Select File ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(list -> {
                     boolean testPassed = list.size() == 1 && list.get(0).endsWith("9000");
-                    logReceivedMessage("603: ISO Select File: " + (testPassed ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                    logReceivedMessage(testName + (testPassed ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
     }
 
     private void desfire604() {
+        String testName = "604: Get File ID’s ";
         logReceivedMessage("===============================");
-        logReceivedMessage("604: Get File ID’s");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("03906F000000"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
-
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "604: Get File ID’s",
-                            false,
-                            true);
-                })
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("03906F000000"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
                 .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("0F1F030001049100");
-                    logReceivedMessage("604: Get File ID’s: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
     }
 
     private void desfire605() {
+        String testName = "605: Get File Settings ";
         logReceivedMessage("===============================");
-        logReceivedMessage("605: Get File Settings");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("0390F50000011F00"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("0390F50000011F00"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "605: Get File Settings",
-                            false,
-                            true);
-                })
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
                 .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("000030EF2000009100");
-                    logReceivedMessage("605: Get File Settings: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
     }
 
     private void desfire606() {
+        String testName = "606: Read Data ";
         logReceivedMessage("===============================");
-        logReceivedMessage("606: Read Data");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("0390AD0000071F00000020000000"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("0390AD0000071F00000020000000"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "606: Read Data",
-                            false,
-                            true);
-                })
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
                 .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
-                    logReceivedMessage("606: Read Data: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
     }
 
     private void desfire607() {
+        String testName = "607: Read Credit Value ";
         logReceivedMessage("===============================");
-        logReceivedMessage("607: Read Credit Value");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("0390AD0000071F00000020000000"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
-
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "607: Read Credit Value",
-                            false,
-                            true);
-                })
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("0390AD0000071F00000020000000"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
                 .subscribe(list -> {
                     boolean success = list != null
                             && !list.isEmpty()
                             && list.get(0).contains("00000000000000000000000000000000000000000000000000000000000000009100");
-                    logReceivedMessage("607: Read Credit Value: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
     }
 
@@ -2892,107 +2854,93 @@ public class NonPaymentCardReaderActivity extends Activity {
     }
 
     private void desfire615() {
+        String testName = "615: Test Multiple APDUs, No OK List ";
         logReceivedMessage("===============================");
-        logReceivedMessage("615: Test Multiple APDUs, No OK List");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Device returns correct MIFARE_DESFIRE_LIGHT card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
-                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
-                    apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+        apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+        apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "615: Test Multiple APDUs, No OK List",
-                            false,
-                            true);
-                })
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
                 .subscribe(list -> {
                     boolean success = list != null
                             && list.size() == 3
                             && list.get(0).endsWith("9000")
                             && list.get(1).endsWith("9000")
                             && list.get(2).endsWith("9000");
-                    logReceivedMessage("615: Test Multiple APDUs, No OK List: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
 
     }
 
     private void desfire616() {
+        String testName = "616: Test Multiple APDUs with an OK List ";
         logReceivedMessage("===============================");
-        logReceivedMessage("616: Test Multiple APDUs with an OK List");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
-                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Connected with supported card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("039060000000", "91AF9100"));
-                    apduDataList.add(createAPDUData("0390AF000000", "91AF9100"));
-                    apduDataList.add(createAPDUData("0390AF000000", "91009000"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("039060000000", "91AF9100"));
+        apduDataList.add(createAPDUData("0390AF000000", "91AF9100"));
+        apduDataList.add(createAPDUData("0390AF000000", "91009000"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "616: Test Multiple APDUs with an OK List",
-                            false,
-                            true);
-                })
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doFinally(() -> disconnectCardReader(createConnectionOptions()))
                 .subscribe(list -> {
                     boolean success = list != null
                             && list.size() == 3
-                            && list.get(0).equals("0408013000130591AF")
-                            && list.get(1).equals("0408010002130591AF")
-                            && list.get(2).equals("04A378EA1A6880CF0856652041199100");
-                    logReceivedMessage("616: Test Multiple APDUs with an OK List: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+//                            && list.get(0).equals("0408013000130591AF")
+//                            && list.get(1).equals("0408010002130591AF")
+//                            && list.get(2).equals("04A378EA1A6880CF0856652041199100");
+                            && list.get(0).endsWith("91AF")
+                            && list.get(1).endsWith("91AF")
+                            && list.get(2).endsWith("9100");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                    disconnectCardReader(createConnectionOptions());
+                });
         compositeDisposable.add(disposable);
     }
 
     private void desfire617() {
+        String testName = "617: Test Multiple APDUs with failure on OK List ";
         logReceivedMessage("===============================");
-        logReceivedMessage("617: Test Multiple APDUs with failure on OK List");
+        logReceivedMessage(testName);
 
-        Disposable disposable = connectToCardObservable()
-                .takeWhile(connectionResult -> {
-                    boolean success = connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
-                            || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT;
-                    logReceivedMessage("Connected with supported card: " + (success ? "Success" : "Failed"));
-                    return success;
-                })
-                .flatMap((Function<ConnectionResult, Observable<List<String>>>) connectionResult -> {
-                    List<APDUData> apduDataList = new ArrayList<>();
-                    apduDataList.add(createAPDUData("03906000000", "91AF9100"));
-                    apduDataList.add(createAPDUData("0390AF000000", "9100"));
-                    apduDataList.add(createAPDUData("0390AF000000", "9100"));
-                    logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("03906000000", "91AF9100"));
+        apduDataList.add(createAPDUData("0390AF000000", "9100"));
+        apduDataList.add(createAPDUData("0390AF000000", "9100"));
+        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
-                    return exchangeAPDUListObservable(
-                            apduDataList,
-                            "617: Test Multiple APDUs with failure on OK List",
-                            false,
-                            true);
-                })
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -3000,10 +2948,13 @@ public class NonPaymentCardReaderActivity extends Activity {
                 .subscribe(list -> {
                     boolean success = list != null
                             && list.size() == 2
-                            && list.get(0).equals("0408013000130591AF")
-                            && list.get(1).equals("0408010002130591AF");
-                    logReceivedMessage("617: Test Multiple APDUs with failure on OK List: " + (success ? "Passed" : "Failed"));
-                }, Throwable::printStackTrace);
+                            && list.get(0).equals("91AF")
+                            && list.get(1).equals("91AF");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> {
+                    logReceivedMessage(testName + "Failed");
+                    throwable.printStackTrace();
+                });
         compositeDisposable.add(disposable);
     }
     //---------------------------------------------------------------------------------------
