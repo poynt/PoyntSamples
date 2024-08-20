@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Misc Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/connectToCard"
+                    style="@style/DCAButton"
+                    android:text="Connect" />
+
+                <Button
+                    android:id="@+id/disconnectFromCard"
+                    style="@style/DCAButton"
+                    android:text="Disconnect (&#38; Remove)" />
+
+                <Button
+                    android:id="@+id/checkIfCardInserted"
+                    style="@style/DCAButton"
+                    android:text="Check Card Presence" />
+
+                <Button
+                    android:id="@+id/abort"
+                    style="@style/DCAButton"
+                    android:text="Abort (Cancel)" />
+
+                <Button
+                    android:id="@+id/readIMSI"
+                    style="@style/DCAButton"
+                    android:text="Read IMSI" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/apduDataInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/exchangeAPDU"
+            android:inputType="text"
+            android:lines="1"
+            android:text="04A0A40000023F0000" />
+
+        <Button
+            android:id="@+id/exchangeAPDU"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send APDU" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/apduListDataInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/exchangeAPDUList"
+            android:hint="AAAA,9000;BBBB;CCCC,9000"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/exchangeAPDUList"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send APDU list" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etBinRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnSendBinRange"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="12"
+            android:text="000000111111" />
+
+        <Button
+            android:id="@+id/btnSendBinRange"
+            style="@style/DCAButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Send Bin Range" />
+
+    </RelativeLayout>
+
+</LinearLayout>
