@@ -1,5 +1,6 @@
 package co.poynt.samples.dcatestapp.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.os.RemoteException;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,8 @@ import co.poynt.os.services.v1.IPoyntConfigurationService;
 import co.poynt.os.services.v1.IPoyntConnectToCardListener;
 import co.poynt.os.services.v1.IPoyntDisconnectFromCardListener;
 import co.poynt.os.services.v1.IPoyntExchangeAPDUListListener;
+import co.poynt.os.services.v1.IPoyntExchangeAPDUListener;
+import co.poynt.os.util.StringUtil;
 import co.poynt.samples.dcatestapp.utils.IHelper;
 import io.reactivex.Observable;
 import io.reactivex.annotations.Nullable;
@@ -80,19 +83,29 @@ public class BaseFragment extends Fragment {
 
     protected void disconnectFromCard(ConnectionOptions connectionOptions) {
         logReceivedMessage("disconnectFromCard : connectionOptions" + connectionOptions);
+
+        final ProgressDialog cardRemovalProgress = new ProgressDialog(getContext());
+        cardRemovalProgress.setMessage("waiting for card removal");
+        cardRemovalProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        cardRemovalProgress.setIndeterminate(true);
+        cardRemovalProgress.show();
+
         try {
             getCardReaderService().disconnectFromCard(connectionOptions, new IPoyntDisconnectFromCardListener.Stub() {
                 @Override
                 public void onDisconnect() throws RemoteException {
                     logReceivedMessage("Disconnected");
+                    cardRemovalProgress.dismiss();
                 }
 
                 @Override
                 public void onError(PoyntError poyntError) throws RemoteException {
                     logReceivedMessage("Disconnection failed " + poyntError.toString());
+                    cardRemovalProgress.dismiss();
                 }
             });
         } catch (RemoteException e) {
+            cardRemovalProgress.dismiss();
             throw new RuntimeException(e);
         }
     }
@@ -133,6 +146,36 @@ public class BaseFragment extends Fragment {
                 }
             });
         });
+    }
+
+    protected Observable<String> exchangeAPDUObservable(final APDUData apduData) {
+        return Observable.create(emitter -> getCardReaderService().exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
+            @Override
+            public void onSuccess(String responseAPDUData) throws RemoteException {
+                logReceivedMessage("Exchange APDU result : " + responseAPDUData);
+
+                if (responseAPDUData == null || responseAPDUData.length() < 4) {
+                    logReceivedMessage("Exchange APDU Failed -> incorrect response length");
+                    emitter.onError(new Throwable("incorrect response length"));
+                    return;
+                }
+
+                String sw1sw2 = responseAPDUData.substring(responseAPDUData.length() - 4);
+                if (!StringUtil.isEmpty(apduData.getOkCondition()) && !apduData.getOkCondition().contains(sw1sw2)) {
+                    logReceivedMessage("Exchange APDU Failed -> sw1sw2 incorrect");
+                    emitter.onError(new Throwable("sw1sw2 incorrect"));
+                    return;
+                }
+
+                emitter.onNext(responseAPDUData);
+            }
+
+            @Override
+            public void onError(PoyntError poyntError) throws RemoteException {
+                logReceivedMessage("Exchange APDU Failed -> " + poyntError);
+                emitter.onError(new Throwable(poyntError.toString()));
+            }
+        }));
     }
 
     protected Observable<List<String>> exchangeAPDUListObservable(final List<APDUData> apduData,

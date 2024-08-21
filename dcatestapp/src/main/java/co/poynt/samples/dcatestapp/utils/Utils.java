@@ -7,6 +7,12 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import co.poynt.os.util.ByteUtils;
+
 public class Utils {
 
     public static byte[] invertBytes(byte[] data, int offset, int length) {
@@ -14,6 +20,63 @@ public class Utils {
             data[i] ^= 0xFF;
         }
         return data;
+    }
+
+
+    public static String decryptData(String data, String defaultKey) throws Exception {
+        // Convert the defaultKey and response to byte arrays
+        byte[] keyBytes = ByteUtils.hexStringToByteArray(defaultKey);
+        byte[] dataBytes = ByteUtils.hexStringToByteArray(data);
+
+        // Initialize the AES cipher in CBC mode without padding
+        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+
+        // Create an IV (initialization vector) - for simplicity, using a zero IV here
+        byte[] iv = new byte[16]; // 16 bytes for AES
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+
+        // Initialize the cipher for decryption
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+        // Decrypt the response
+        byte[] decryptedBytes = cipher.doFinal(dataBytes);
+
+        // Convert decrypted bytes to string
+        return ByteUtils.byteArrayToHexString(decryptedBytes);
+    }
+
+    public static String encryptData(String data, String defaultKey) throws Exception {
+        // Convert the defaultKey and data to byte arrays
+        byte[] keyBytes = ByteUtils.hexStringToByteArray(defaultKey);
+        byte[] dataBytes = ByteUtils.hexStringToByteArray(data);
+
+        // Initialize the AES cipher in CBC mode without padding
+        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+
+        // Create an IV (initialization vector) - for simplicity, using a zero IV here
+        byte[] iv = new byte[16]; // 16 bytes for AES
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+
+        // Initialize the cipher for encryption
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+        // Encrypt the data
+        byte[] encryptedBytes = cipher.doFinal(dataBytes);
+
+        // Convert encrypted bytes to hex string
+        return ByteUtils.byteArrayToHexString(encryptedBytes);
+    }
+
+    public static String rotateStringByOneByte(String input) {
+        byte[] byteArray = ByteUtils.hexStringToByteArray(input);
+        if (byteArray.length > 1) {
+            byte firstByte = byteArray[0];
+            System.arraycopy(byteArray, 1, byteArray, 0, byteArray.length - 1);
+            byteArray[byteArray.length - 1] = firstByte;
+        }
+        return ByteUtils.byteArrayToHexString(byteArray);
     }
 
     public static SpannableString getColoredString(String text) {

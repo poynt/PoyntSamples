@@ -13,6 +13,8 @@ repositories {
     }
 }
 
+def appVersion = "DCA-v3.6.1"
+
 android {
     namespace 'co.poynt.samples.dcatestapp'
     compileSdk 34
@@ -22,13 +24,14 @@ android {
         minSdk 21
         targetSdk 34
         versionCode 1
-        versionName "3.6"
+        versionName = appVersion
 
         vectorDrawables {
             useSupportLibrary true
         }
 
-        setProperty("archivesBaseName", "DCA-v" + versionName)
+        setProperty("archivesBaseName", appVersion)
+        manifestPlaceholders = [appName: appVersion]
     }
 
     buildTypes {
@@ -37,6 +40,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
