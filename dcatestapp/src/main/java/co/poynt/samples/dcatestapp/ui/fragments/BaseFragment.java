@@ -1,7 +1,11 @@
 package co.poynt.samples.dcatestapp.ui.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.RemoteException;
+import android.text.InputType;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -50,6 +54,33 @@ public class BaseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         compositeDisposable.clear(); // Disposes of all added disposables
+    }
+
+    protected void showInputDialog(String testName, ITextInputCallback callback) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Enter Text for: \n" + testName);
+
+        // Set up the input
+        final EditText input = new EditText(getActivity());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String userInput = input.getText().toString();
+            if (userInput.isEmpty()) {
+                Toast.makeText(getActivity(), "Input cannot be empty", Toast.LENGTH_SHORT).show();
+            } else {
+                callback.onTextEntered(userInput);
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            callback.onCancel();
+            dialog.cancel();
+        });
+
+        builder.show();
     }
 
     //region common methods
@@ -149,6 +180,8 @@ public class BaseFragment extends Fragment {
     }
 
     protected Observable<String> exchangeAPDUObservable(final APDUData apduData) {
+        logReceivedMessage("exchangeAPDU : apduData " + apduData);
+
         return Observable.create(emitter -> getCardReaderService().exchangeAPDU(apduData, new IPoyntExchangeAPDUListener.Stub() {
             @Override
             public void onSuccess(String responseAPDUData) throws RemoteException {
@@ -188,6 +221,7 @@ public class BaseFragment extends Fragment {
                                                                 String testDescription,
                                                                 boolean isCommandShouldFail,
                                                                 boolean returnFullResponse) {
+        logReceivedMessage("exchangeAPDUList : apduData " + apduData);
         return Observable.create(emitter -> getCardReaderService().exchangeAPDUList(apduData, new IPoyntExchangeAPDUListListener.Stub() {
             @Override
             public void onResult(List<String> list, PoyntError poyntError) {
@@ -320,4 +354,9 @@ public class BaseFragment extends Fragment {
     }
     // ---------------------------------------------------------------------------------------
     //endregion
+
+    protected interface ITextInputCallback {
+        void onTextEntered(String text);
+        void onCancel();
+    }
 }
