@@ -13,7 +13,7 @@ repositories {
     }
 }
 
-def appVersion = "DCA-v3.6.1"
+def appVersion = "DCA-v3.7.2"
 
 android {
     namespace 'co.poynt.samples.dcatestapp'

@@ -23,7 +23,7 @@ public class Utils {
     }
 
 
-    public static String decryptData(String data, String defaultKey) throws Exception {
+    public static String decryptDataAES(String data, String defaultKey) throws Exception {
         // Convert the defaultKey and response to byte arrays
         byte[] keyBytes = ByteUtils.hexStringToByteArray(defaultKey);
         byte[] dataBytes = ByteUtils.hexStringToByteArray(data);
@@ -46,7 +46,7 @@ public class Utils {
         return ByteUtils.byteArrayToHexString(decryptedBytes);
     }
 
-    public static String encryptData(String data, String defaultKey) throws Exception {
+    public static String encryptDataAES(String data, String defaultKey) throws Exception {
         // Convert the defaultKey and data to byte arrays
         byte[] keyBytes = ByteUtils.hexStringToByteArray(defaultKey);
         byte[] dataBytes = ByteUtils.hexStringToByteArray(data);
@@ -69,6 +69,53 @@ public class Utils {
         return ByteUtils.byteArrayToHexString(encryptedBytes);
     }
 
+    public static String decryptData3DES(String data, String defaultKey, String iv) throws Exception {
+        // Convert the defaultKey and response to byte arrays
+        byte[] keyBytes = ByteUtils.hexStringToByteArray(defaultKey);
+        byte[] dataBytes = ByteUtils.hexStringToByteArray(data);
+
+        // Initialize the 3DES cipher in CBC mode without padding
+        Cipher cipher = Cipher.getInstance("DESede/CBC/NoPadding");
+        final SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "DESede");
+
+        // Create an IV (initialization vector) - for simplicity, using a zero IV here
+//        byte[] iv =  new byte[8]; // IV with all 0's (8 bytes for DES/3DES)
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(ByteUtils.hexStringToByteArray(iv));
+
+        // Initialize the cipher for decryption
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+        // Decrypt the response
+        byte[] decryptedBytes = cipher.doFinal(dataBytes);
+
+        // Convert decrypted bytes to string
+        return ByteUtils.byteArrayToHexString(decryptedBytes);
+    }
+
+    public static String encryptData3DES(String data, String defaultKey, String iv) throws Exception {
+        // Convert the defaultKey and data to byte arrays
+        byte[] keyBytes = ByteUtils.hexStringToByteArray(defaultKey);
+        byte[] dataBytes = ByteUtils.hexStringToByteArray(data);
+
+        // Initialize the 3DES cipher in CBC mode without padding
+        Cipher cipher = Cipher.getInstance("DESede/CBC/NoPadding");
+        final SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "DESede");
+
+        // Create an IV (initialization vector) - for simplicity, using a zero IV here
+//        byte[] iv =  new byte[8]; // IV with all 0's (8 bytes for DES/3DES)
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(ByteUtils.hexStringToByteArray(iv));
+
+        // Initialize the cipher for encryption
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+        // Encrypt the data
+        byte[] encryptedBytes = cipher.doFinal(dataBytes);
+
+        // Convert encrypted bytes to hex string
+        return ByteUtils.byteArrayToHexString(encryptedBytes);
+    }
+
+
     public static String rotateStringByOneByte(String input) {
         byte[] byteArray = ByteUtils.hexStringToByteArray(input);
         if (byteArray.length > 1) {
@@ -77,6 +124,17 @@ public class Utils {
             byteArray[byteArray.length - 1] = firstByte;
         }
         return ByteUtils.byteArrayToHexString(byteArray);
+    }
+
+    public static String rotateBytes(String input) {
+        byte[] byteArray = ByteUtils.hexStringToByteArray(input);
+        // Invert each byte
+        byte[] invertedArray = new byte[byteArray.length];
+        for (int i = 0; i < byteArray.length; i++) {
+            invertedArray[i] = (byte) ~byteArray[i];
+            invertedArray[i] = (byte) (invertedArray[i] & 0xFF); // Mask to fit byte
+        }
+        return ByteUtils.byteArrayToHexString(invertedArray);
     }
 
     public static SpannableString getColoredString(String text) {

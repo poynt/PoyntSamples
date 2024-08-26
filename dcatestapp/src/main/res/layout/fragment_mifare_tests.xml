@@ -133,4 +133,131 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mifare Ultralight Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/ultralight801"
+                style="@style/DCAButton"
+                android:text="801"/>
+
+            <Button
+                android:id="@+id/ultralight802"
+                style="@style/DCAButton"
+                android:text="802" />
+
+            <Button
+                android:id="@+id/ultralight803"
+                style="@style/DCAButton"
+                android:text="803" />
+
+            <Button
+                android:id="@+id/ultralight804"
+                style="@style/DCAButton"
+                android:text="804" />
+
+            <Button
+                android:id="@+id/ultralight805"
+                style="@style/DCAButton"
+                android:text="805" />
+
+            <Button
+                android:id="@+id/ultralight806"
+                style="@style/DCAButton"
+                android:text="806" />
+
+            <Button
+                android:id="@+id/ultralight807"
+                style="@style/DCAButton"
+                android:text="807" />
+
+            <Button
+                android:id="@+id/ultralight808"
+                style="@style/DCAButton"
+                android:text="808" />
+
+            <Button
+                android:id="@+id/ultralight809"
+                style="@style/DCAButton"
+                android:text="809" />
+
+            <Button
+                android:id="@+id/ultralight810"
+                style="@style/DCAButton"
+                android:text="810" />
+
+            <Button
+                android:id="@+id/ultralight811"
+                style="@style/DCAButton"
+                android:text="811" />
+
+            <Button
+                android:id="@+id/ultralight812"
+                style="@style/DCAButton"
+                android:text="812" />
+
+            <Button
+                android:id="@+id/ultralight813"
+                style="@style/DCAButton"
+                android:text="813" />
+
+            <Button
+                android:id="@+id/ultralight814"
+                style="@style/DCAButton"
+                android:text="814" />
+
+            <Button
+                android:id="@+id/ultralight815"
+                style="@style/DCAButton"
+                android:text="815" />
+
+            <Button
+                android:id="@+id/ultralight816"
+                style="@style/DCAButton"
+                android:text="816" />
+
+            <Button
+                android:id="@+id/ultralight817"
+                style="@style/DCAButton"
+                android:text="817" />
+
+            <Button
+                android:id="@+id/ultralight818"
+                style="@style/DCAButton"
+                android:text="818" />
+
+            <Button
+                android:id="@+id/ultralight819"
+                style="@style/DCAButton"
+                android:text="819" />
+
+            <Button
+                android:id="@+id/ultralight820"
+                style="@style/DCAButton"
+                android:text="820" />
+
+            <Button
+                android:id="@+id/ultralight830"
+                style="@style/DCAButton"
+                android:text="830" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
 </LinearLayout>

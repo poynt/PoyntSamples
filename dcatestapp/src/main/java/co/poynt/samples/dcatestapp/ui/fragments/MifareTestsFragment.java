@@ -2,7 +2,6 @@ package co.poynt.samples.dcatestapp.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import co.poynt.os.model.APDUData;
-import co.poynt.os.model.ConnectionOptions;
 import co.poynt.os.model.ConnectionResult;
-import co.poynt.os.model.PoyntError;
-import co.poynt.os.services.v1.IPoyntConnectToCardListener;
 import co.poynt.os.util.ByteUtils;
 import co.poynt.samples.dcatestapp.databinding.FragmentMifareTestsBinding;
 import co.poynt.samples.dcatestapp.utils.IHelper;
@@ -68,6 +64,29 @@ public class MifareTestsFragment extends BaseFragment {
         binding.desfire615.setOnClickListener(v -> desfire615());
         binding.desfire616.setOnClickListener(v -> desfire616());
         binding.desfire617.setOnClickListener(v -> desfire617());
+
+        //Mifare Ultralight tests
+        binding.ultralight801.setOnClickListener(v -> ultralight801());
+        binding.ultralight802.setOnClickListener(v -> ultralight802());
+        binding.ultralight803.setOnClickListener(v -> ultralight803());
+        binding.ultralight804.setOnClickListener(v -> ultralight804());
+        binding.ultralight805.setOnClickListener(v -> ultralight805());
+        binding.ultralight806.setOnClickListener(v -> ultralight806());
+        binding.ultralight807.setOnClickListener(v -> ultralight807());
+        binding.ultralight808.setOnClickListener(v -> ultralight808());
+        binding.ultralight809.setOnClickListener(v -> ultralight809());
+        binding.ultralight810.setOnClickListener(v -> ultralight810());
+        binding.ultralight811.setOnClickListener(v -> ultralight811());
+        binding.ultralight812.setOnClickListener(v -> ultralight812());
+        binding.ultralight813.setOnClickListener(v -> ultralight813());
+        binding.ultralight814.setOnClickListener(v -> ultralight814());
+        binding.ultralight815.setOnClickListener(v -> ultralight815());
+        binding.ultralight816.setOnClickListener(v -> ultralight816());
+        binding.ultralight817.setOnClickListener(v -> ultralight817());
+        binding.ultralight818.setOnClickListener(v -> ultralight818());
+        binding.ultralight819.setOnClickListener(v -> ultralight819());
+        binding.ultralight820.setOnClickListener(v -> ultralight820());
+        binding.ultralight830.setOnClickListener(v -> ultralight830());
     }
 
     //region TEST DCA MIFARE tests
@@ -398,29 +417,25 @@ public class MifareTestsFragment extends BaseFragment {
         String testName = "601 DESFire Card Detected ";
         logReceivedMessage("===============================");
         logReceivedMessage(testName);
-        try {
-            final ConnectionOptions connectionOptions = createConnectionOptions();
-            logReceivedMessage("connectToCard : ConnectionOptions : " + connectionOptions);
-            getCardReaderService().connectToCard(connectionOptions, new IPoyntConnectToCardListener.Stub() {
-                @Override
-                public void onSuccess(ConnectionResult connectionResult) throws RemoteException {
-                    logReceivedMessage("Connection success: ConnectionResult " + connectionResult);
-                    boolean testPassed = (connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
+
+        Disposable disposable = connectToCardObservable()
+                .flatMap(connectionResult -> {
+                    if ((connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE
                             || connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_DESFIRE_LIGHT)
-                            && connectionResult.getAtsData() != null && connectionResult.getSakData() != null;
-                    logReceivedMessage(testName + (testPassed ? "Passed" : "Failed"));
-                }
-
-                @Override
-                public void onError(PoyntError poyntError) throws RemoteException {
-                    logReceivedMessage("Connection failed : " + poyntError.toString());
-                }
-            });
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-            logReceivedMessage(e.getMessage());
-        }
+                            && connectionResult.getAtsData() != null
+                            && connectionResult.getSakData() != null) {
+                        return Observable.just(connectionResult);
+                    } else {
+                        return Observable.error(new Exception("Incorrect card detected"));
+                    }
+                })
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(connectionResult -> {
+                    logReceivedMessage(testName + " Passed");
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
     }
 
     private void desfire602() {
@@ -432,7 +447,6 @@ public class MifareTestsFragment extends BaseFragment {
         apduDataList.add(createAPDUData("039060000000", "91AF"));
         apduDataList.add(createAPDUData("0390AF000000", "91AF"));
         apduDataList.add(createAPDUData("0390AF000000", "9100"));
-        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
         Disposable disposable = exchangeAPDUListObservable(
                 apduDataList,
@@ -459,7 +473,6 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage(testName);
 
         APDUData apduData = createAPDUData("0300A4040C10A00000039656434103F015400000000B00");
-        logReceivedMessage("exchangeAPDU : apduData " + apduData);
 
         Disposable disposable = exchangeAPDUObservable(apduData)
                 .firstElement()
@@ -478,7 +491,6 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage(testName);
 
         APDUData apduData = createAPDUData("03906F000000");
-        logReceivedMessage("exchangeAPDU : apduData " + apduData);
 
         Disposable disposable = exchangeAPDUObservable(apduData)
                 .firstElement()
@@ -497,7 +509,6 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage(testName);
 
         APDUData apduData = createAPDUData("0390F50000011F00");
-        logReceivedMessage("exchangeAPDU : apduData " + apduData);
 
         Disposable disposable = exchangeAPDUObservable(apduData)
                 .firstElement()
@@ -516,7 +527,6 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage(testName);
 
         APDUData apduData = createAPDUData("0390AD0000071F00000020000000");
-        logReceivedMessage("exchangeAPDU : apduData " + apduData);
 
         Disposable disposable = exchangeAPDUObservable(apduData)
                 .firstElement()
@@ -535,7 +545,6 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage(testName);
 
         APDUData apduData = createAPDUData("03906C0000010300");
-        logReceivedMessage("exchangeAPDU : apduData " + apduData);
 
         Disposable disposable = exchangeAPDUObservable(apduData)
                 .firstElement()
@@ -559,25 +568,31 @@ public class MifareTestsFragment extends BaseFragment {
         Disposable disposable = authenticateObservable()
                 .flatMap(response -> {
                     String responseWithoutSW1SW2 = response.substring(0, response.length() - 4);
-                    String decryptedResponse = Utils.decryptData(responseWithoutSW1SW2, defaultKey);
+                    String decryptedResponse = Utils.decryptDataAES(responseWithoutSW1SW2, defaultKey);
                     logReceivedMessage("decrypted response: " + decryptedResponse);
                     String rotatedString = Utils.rotateStringByOneByte(decryptedResponse);
                     logReceivedMessage("rotated response: " + rotatedString);
                     String dataToEncrypt = randomNumber + rotatedString;
                     logReceivedMessage("data to encrypt: " + dataToEncrypt);
-                    String encryptedRequest = Utils.encryptData(dataToEncrypt, defaultKey);
+                    String encryptedRequest = Utils.encryptDataAES(dataToEncrypt, defaultKey);
                     logReceivedMessage("encrypted request: " + encryptedRequest);
                     return Observable.just(encryptedRequest);
                 }).flatMap(encryptedRequest -> {
                     String encryptCommand = "0390AF000020" + encryptedRequest + "00";
                     APDUData apduData = createAPDUData(encryptCommand, "9100");
-                    logReceivedMessage("exchangeAPDU : apuduData  " + apduData);
                     return exchangeAPDUObservable(apduData);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(result -> {
-                    boolean success = result.endsWith("9100");
+                    String responseWithoutSW1SW2 = result.substring(0, result.length() - 4);
+                    String decryptedResponse = Utils.decryptDataAES(responseWithoutSW1SW2, defaultKey);
+                    logReceivedMessage("decrypted response: " + decryptedResponse);
+                    String randomNumberFromResponse = decryptedResponse.substring(8, 40);
+                    logReceivedMessage("random number from response: " + randomNumberFromResponse);
+                    String rotatedRandomNumber = Utils.rotateStringByOneByte(randomNumber);
+                    logReceivedMessage("rotated random number: " + rotatedRandomNumber);
+                    boolean success = result.endsWith("9100") && rotatedRandomNumber.equals(randomNumberFromResponse);
                     logReceivedMessage(testName + (success ? "Passed" : "Failed"));
                 }, throwable -> disconnectOnException(testName, throwable));
         compositeDisposable.add(disposable);
@@ -592,7 +607,6 @@ public class MifareTestsFragment extends BaseFragment {
                 .flatMap(response -> {
                     APDUData invalidEncryptionData = createAPDUData(
                             "0390AF000020C8A331FF8EDD3DB175E1545DBEFB760BAAF2127225A49244083F9210D1C9E57900");
-                    logReceivedMessage("exchangeAPDU : apuduData  " + invalidEncryptionData);
                     return exchangeAPDUObservable(invalidEncryptionData);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -612,7 +626,6 @@ public class MifareTestsFragment extends BaseFragment {
         Disposable disposable = authenticateObservable()
                 .flatMap(response -> {
                     APDUData writeData = createAPDUData("03908D0000001F010000000000");
-                    logReceivedMessage("exchangeAPDU : apuduData  " + writeData);
                     return exchangeAPDUObservable(writeData);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -636,14 +649,12 @@ public class MifareTestsFragment extends BaseFragment {
         Disposable disposable = authenticateObservable()
                 .flatMap(response -> {
                     APDUData creditCommand = createAPDUData("03900C0000051F010000000000");
-                    logReceivedMessage("exchangeAPDU : apuduData  " + creditCommand);
                     return exchangeAPDUObservable(creditCommand);
                 })
                 .flatMap(response -> {
                     //check previous command was correct
                     if (response.endsWith("9100")) {
                         APDUData commitTransaction = createAPDUData("03900000010000");
-                        logReceivedMessage("exchangeAPDU : apuduData  " + commitTransaction);
                         return exchangeAPDUObservable(commitTransaction);
                     } else {
                         return Observable.just(response);
@@ -666,14 +677,12 @@ public class MifareTestsFragment extends BaseFragment {
         Disposable disposable = authenticateObservable()
                 .flatMap(response -> {
                     APDUData creditCommand = createAPDUData("0390DC0000051F010000000000");
-                    logReceivedMessage("exchangeAPDU : apuduData  " + creditCommand);
                     return exchangeAPDUObservable(creditCommand);
                 })
                 .flatMap(response -> {
                     //check previous command was correct
                     if (response.endsWith("9100")) {
                         APDUData commitTransaction = createAPDUData("03900000010000");
-                        logReceivedMessage("exchangeAPDU : apuduData  " + commitTransaction);
                         return exchangeAPDUObservable(commitTransaction);
                     } else {
                         return Observable.just(response);
@@ -697,7 +706,6 @@ public class MifareTestsFragment extends BaseFragment {
         apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
         apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
         apduDataList.add(createAPDUData("0300A4040C10A00000039656434103F015400000000B00"));
-        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
         Disposable disposable = exchangeAPDUListObservable(
                 apduDataList,
@@ -728,7 +736,6 @@ public class MifareTestsFragment extends BaseFragment {
         apduDataList.add(createAPDUData("039060000000", "91AF9100"));
         apduDataList.add(createAPDUData("0390AF000000", "91AF9100"));
         apduDataList.add(createAPDUData("0390AF000000", "91009000"));
-        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
         Disposable disposable = exchangeAPDUListObservable(
                 apduDataList,
@@ -758,7 +765,6 @@ public class MifareTestsFragment extends BaseFragment {
         apduDataList.add(createAPDUData("03906000000", "91AF9100"));
         apduDataList.add(createAPDUData("0390AF000000", "9100"));
         apduDataList.add(createAPDUData("0390AF000000", "9100"));
-        logReceivedMessage("exchangeAPDUList : apduData " + apduDataList);
 
         Disposable disposable = exchangeAPDUListObservable(
                 apduDataList,
@@ -784,11 +790,553 @@ public class MifareTestsFragment extends BaseFragment {
     //---------------------------------------------------------------------------------------
     //endregion
 
+    //region Mifare Ultralight tests
+    //---------------------------------------------------------------------------------------
+    private void ultralight801() {
+        String testName = "801 Ultralight Card Detected ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        Disposable disposable = connectToCardObservable()
+                .flatMap(connectionResult -> {
+                    if (connectionResult.getCardType() == ConnectionResult.CardType.MIFARE_ULTRALITE
+//                            && connectionResult.getAtsData() != null // not sure if null is correct or not
+                            && connectionResult.getSakData() != null) {
+                        return Observable.just(connectionResult);
+                    } else {
+                        return Observable.error(new Exception("Incorrect card detected"));
+                    }
+                })
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(connectionResult -> {
+                    logReceivedMessage(testName + " Passed");
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight802() {
+        String testName = "802: L3 Get Version ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A016000000");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight803() {
+        String testName = "803: Read ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01700000104");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight804() {
+        String testName = "804: Fast Read ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A0180000020404");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight805() {
+        String testName = "805: Write ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        String[] first4Bytes = new String[1];
+        String[] invertedFirst4Bytes = new String[1];
+
+        APDUData readData = createAPDUData("03A0180000020404");
+
+        //fast read data
+        Disposable disposable = exchangeAPDUObservable(readData)
+                .flatMap(response -> {
+                    //write inverted bytes
+                    first4Bytes[0] = response.substring(0, 8);
+                    invertedFirst4Bytes[0] = Utils.rotateBytes(first4Bytes[0]);
+                    APDUData writeData = createAPDUData("03A01900000504" + invertedFirst4Bytes[0]);
+                    return exchangeAPDUObservable(writeData);
+                })
+                .flatMap(response -> {
+                    //fast read data with inverted bytes
+                    return exchangeAPDUObservable(readData).flatMap(response2 -> {
+                        if (!response2.startsWith(invertedFirst4Bytes[0])) {
+                            logReceivedMessage(testName + " inverted data verification Failed");
+                        }
+                        return Observable.just(response2);
+                    });
+                })
+                .flatMap(response -> {
+                    //write initial data
+                    APDUData writeData = createAPDUData("03A01900000504" + first4Bytes[0]);
+                    return exchangeAPDUObservable(writeData);
+                })
+                .flatMap(response -> {
+                    //fast read initial data
+                    return exchangeAPDUObservable(readData).flatMap(response2 -> {
+                        if (!response2.startsWith(first4Bytes[0])) {
+                            logReceivedMessage(testName + " original data verification Failed");
+                        }
+                        return Observable.just(response2);
+                    });
+                })
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.startsWith(first4Bytes[0]);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight806() {
+        String testName = "806: Read Counter ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01A00000101");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight807() {
+        String testName = "807: Increment Counter ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01B0000050101000000");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight808() {
+        String testName = "808: Password Authentication ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        showInputDialog(testName, new ITextInputCallback() {
+            @Override
+            public void onTextEntered(String text) {
+                APDUData apduData = createAPDUData("03A01C000004" + text);
+
+                Disposable disposable = exchangeAPDUObservable(apduData)
+                        .firstElement()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(result -> {
+                            boolean success = result.endsWith("112233449000");
+                            logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                        }, throwable -> disconnectOnException(testName, throwable));
+                compositeDisposable.add(disposable);
+            }
+
+            @Override
+            public void onCancel() {
+                logReceivedMessage(testName + " cancelled");
+            }
+        });
+    }
+
+    private void ultralight809() {
+        String testName = "809: Read Signature EV1 ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01D000000");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight810() {
+        String testName = "810: Read Signature AES ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01D000000");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight811() {
+        String testName = "811: Check Tearing Event ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01E00000101");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight812() {
+        String testName = "812: VCSL ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData apduData = createAPDUData("03A01F0000141111111111111111111111111111111122222222");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight813() {
+        String testName = "813: Authenticate C ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        String defaultKey = "49454D4B41455242214E4143554F5946";
+        String randomNumber = "0011223344556677";//8899AABBCCDDEEFF";
+
+        APDUData authenticate = createAPDUData("03A02000000100", "9000");
+        Disposable disposable = exchangeAPDUObservable(authenticate)
+                .flatMap(response -> {
+                    String icv = "0000000000000000";
+                    logReceivedMessage("icv1: " + icv);
+                    String responseWithoutSW1SW2 = response.substring(0, response.length() - 4);
+                    String decryptedResponse = Utils.decryptData3DES(responseWithoutSW1SW2, defaultKey,icv);
+                    logReceivedMessage("decrypted response: " + decryptedResponse);
+                    String rotatedString = Utils.rotateStringByOneByte(decryptedResponse);
+                    logReceivedMessage("rotated response: " + rotatedString);
+                    String dataToEncrypt = randomNumber + rotatedString;
+                    logReceivedMessage("data to encrypt: " + dataToEncrypt);
+                    icv = responseWithoutSW1SW2;
+                    logReceivedMessage("icv2: " + icv);
+                    String encryptedRequest = Utils.encryptData3DES(dataToEncrypt, defaultKey, icv);
+                    logReceivedMessage("encrypted request: " + encryptedRequest);
+                    return Observable.just(encryptedRequest);
+                }).flatMap(encryptedRequest -> {
+                    String encryptCommand = "03A021000010" + encryptedRequest;
+                    APDUData apduData = createAPDUData(encryptCommand, "9000");
+                    return exchangeAPDUObservable(apduData).flatMap(response -> {
+                        String icv = encryptedRequest.substring(16);
+                        logReceivedMessage("icv3: " + icv);
+                        logReceivedMessage("encrypted request: " + encryptedRequest);
+                        String responseWithoutSW1SW2 = response.substring(0, response.length() - 4);
+                        String decryptedResponse = Utils.decryptData3DES(responseWithoutSW1SW2, defaultKey, icv);
+                        logReceivedMessage("decrypted response: " + decryptedResponse);
+                        String rotatedRandomNumber = Utils.rotateStringByOneByte(randomNumber);
+                        logReceivedMessage("rotated random number: " + rotatedRandomNumber);
+                        boolean success = response.endsWith("9000") && rotatedRandomNumber.equals(decryptedResponse);
+                        return Observable.just(success);
+                    });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        result -> logReceivedMessage(testName + (result ? "Passed" : "Failed")),
+                        throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight814() {
+        String testName = "814: Authenticate AES ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        String defaultKey = "00000000000000000000000000000000";
+        String randomNumber = "00112233445566778899AABBCCDDEEFF";
+
+        APDUData authenticate = createAPDUData("03A02000000100", "9000");
+        Disposable disposable = exchangeAPDUObservable(authenticate)
+                .flatMap(response -> {
+                    String responseWithoutSW1SW2 = response.substring(0, response.length() - 4);
+                    String decryptedResponse = Utils.decryptDataAES(responseWithoutSW1SW2, defaultKey);
+                    logReceivedMessage("decrypted response: " + decryptedResponse);
+                    String rotatedString = Utils.rotateStringByOneByte(decryptedResponse);
+                    logReceivedMessage("rotated response: " + rotatedString);
+                    String dataToEncrypt = randomNumber + rotatedString;
+                    logReceivedMessage("data to encrypt: " + dataToEncrypt);
+                    String encryptedRequest = Utils.encryptDataAES(dataToEncrypt, defaultKey);
+                    logReceivedMessage("encrypted request: " + encryptedRequest);
+                    return Observable.just(encryptedRequest);
+                }).flatMap(encryptedRequest -> {
+                    String encryptCommand = "03A021000020" + encryptedRequest;
+                    APDUData apduData = createAPDUData(encryptCommand, "9000");
+                    return exchangeAPDUObservable(apduData);
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    String responseWithoutSW1SW2 = result.substring(0, result.length() - 4);
+                    String decryptedResponse = Utils.decryptDataAES(responseWithoutSW1SW2, defaultKey);
+                    logReceivedMessage("decrypted response: " + decryptedResponse);
+                    String rotatedRandomNumber = Utils.rotateStringByOneByte(randomNumber);
+                    logReceivedMessage("rotated random number: " + rotatedRandomNumber);
+                    boolean success = result.endsWith("9000") && rotatedRandomNumber.equals(decryptedResponse);
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight815() {
+        String testName = "815: Write Signature ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        showInputDialog(testName, new ITextInputCallback() {
+                            @Override
+                            public void onTextEntered(String text) {
+                                APDUData apduData = createAPDUData("03A01D000005" + text);
+
+                                Disposable disposable = exchangeAPDUObservable(apduData)
+                                        .firstElement()
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribeOn(Schedulers.io())
+                                        .subscribe(result -> {
+                                            boolean success = result.endsWith("9000");
+                                            logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                                        }, throwable -> disconnectOnException(testName, throwable));
+                                compositeDisposable.add(disposable);
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                logReceivedMessage(testName + " cancelled");
+                            }
+                });
+
+        APDUData apduData = createAPDUData("03A01D000005AABBBBBBBB");
+
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight816() {
+        String testName = "816: Lock Signature ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        showInputDialog(testName, new ITextInputCallback() {
+            @Override
+            public void onTextEntered(String text) {
+                APDUData apduData = createAPDUData("03A01D000001" + text);
+
+                Disposable disposable = exchangeAPDUObservable(apduData)
+                        .firstElement()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(result -> {
+                            boolean success = result.endsWith("9000");
+                            logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                        }, throwable -> disconnectOnException(testName, throwable));
+                compositeDisposable.add(disposable);
+            }
+
+            @Override
+            public void onCancel() {
+                logReceivedMessage(testName + " cancelled");
+            }
+        });
+    }
+
+    private void ultralight817() {
+        logReceivedMessage("not implemented");
+    }
+
+    private void ultralight818() {
+        String testName = "818: Test Multiple APDUs, No OK List ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("03A01A00000101"));
+        apduDataList.add(createAPDUData("03A01B0000050101000000"));
+        apduDataList.add(createAPDUData("03A01A00000101"));
+
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(list -> {
+                    boolean success = list != null
+                            && list.size() == 3
+                            && list.get(0).endsWith("9000")
+                            && list.get(1).endsWith("9000")
+                            && list.get(2).endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight819() {
+        String testName = "819: Test Multiple APDUs with an OK List ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("03A01A00000101", "91009000"));
+        apduDataList.add(createAPDUData("03A01B0000050101000000", "91009000"));
+        apduDataList.add(createAPDUData("03A01A00000101", "91009000"));
+
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(list -> {
+                    boolean success = list != null
+                            && list.size() == 3
+                            && list.get(0).endsWith("9000")
+                            && list.get(1).endsWith("9000")
+                            && list.get(2).endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight820() {
+        String testName = "820: Test Multiple APDUs with failure on OK List ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        List<APDUData> apduDataList = new ArrayList<>();
+        apduDataList.add(createAPDUData("03A01A00000101", "91009000"));
+        apduDataList.add(createAPDUData("03A01B0000050101000000", "9100"));
+        apduDataList.add(createAPDUData("03A01A00000101", "90009100"));
+
+        Disposable disposable = exchangeAPDUListObservable(
+                apduDataList,
+                testName,
+                false,
+                true)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(list -> {
+                    boolean success = list != null
+                            && list.size() == 2
+                            && list.get(0).endsWith("9000")
+                            && list.get(1).endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+
+    private void ultralight830() {
+        String testName = "830: Authenticate Failure ";
+        logReceivedMessage("===============================");
+        logReceivedMessage(testName);
+
+        APDUData firstCommand = createAPDUData("03A02000000100");
+        Disposable disposable = exchangeAPDUObservable(firstCommand)
+                .flatMap(response -> {
+                    if (response.endsWith("9000")) {
+                        APDUData secondCommand = createAPDUData("03A02100001000112233445566778899aabbccddeeff");
+                        return exchangeAPDUObservable(secondCommand);
+                    } else {
+                        return Observable.just(response);
+                    }
+                })
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doFinally(this::disconnectFromCard)
+                .subscribe(result -> {
+                    boolean success = result.endsWith("91AE");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
+    }
+    //---------------------------------------------------------------------------------------
+    //endregion
+
     //region misc functions
     //---------------------------------------------------------------------------------------
     protected Observable<String> authenticateObservable() {
         APDUData authenticate = createAPDUData("039071000002030000", "91AF");
-        logReceivedMessage("exchangeAPDU : apuduData  " + authenticate);
         return exchangeAPDUObservable(authenticate);
     }
 
