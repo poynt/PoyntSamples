@@ -12,15 +12,10 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.UUID;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import co.poynt.api.model.Order;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.PrintedReceipt;
 import co.poynt.os.model.PrinterStatus;
@@ -32,11 +27,6 @@ import co.poynt.samples.codesamples.utils.Util;
 
 public class ReceiptPrintingServiceActivity extends Activity {
     private final static String TAG = "ReceiptPrintingActivity";
-
-    @BindView(R.id.printImageBtn)
-    Button printImageBtn;
-    @BindView(R.id.printReceiptBtn)
-    Button printReceiptBtn;
 
     private IPoyntReceiptPrintingService receiptPrintingService;
     private IPoyntReceiptPrintingServiceListener receiptPrintingServiceListener = new IPoyntReceiptPrintingServiceListener.Stub() {
@@ -86,8 +76,15 @@ public class ReceiptPrintingServiceActivity extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        bindViews();
+    }
 
-        ButterKnife.bind(this);
+    private void bindViews() {
+        findViewById(R.id.printImageBtn).setOnClickListener(v -> printImage());
+        findViewById(R.id.printReceiptBtn).setOnClickListener(v -> printReceipt());
+        findViewById(R.id.printTxnReceiptBtn).setOnClickListener(v -> printTxnReceipt());
+        findViewById(R.id.printOrderReceiptBtn).setOnClickListener(v -> printOrderReceipt());
+        findViewById(R.id.sendReceiptBtn).setOnClickListener(v -> sendReceipt());
     }
 
     @Override
@@ -129,7 +126,6 @@ public class ReceiptPrintingServiceActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.printTxnReceiptBtn)
     public void printTxnReceipt() {
         String jobId = UUID.randomUUID().toString();
         String transactionId = "d9078bbc-6db5-41e8-be34-d9fb4f147c6f";
@@ -144,7 +140,6 @@ public class ReceiptPrintingServiceActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.printOrderReceiptBtn)
     public void printOrderReceipt() {
         String jobId = UUID.randomUUID().toString();
         String orderId = "2182e387-016c-1000-04ee-1e22b9cf2a80";
@@ -174,7 +169,6 @@ public class ReceiptPrintingServiceActivity extends Activity {
 //        }
 //    }
 
-    @OnClick(R.id.sendReceiptBtn)
     public void sendReceipt() {
         String transactionId = "d9078bbc-6db5-41e8-be34-d9fb4f147c6f";
         String orderId = "2182e387-016c-1000-04ee-1e22b9cf2a80";
@@ -194,7 +188,6 @@ public class ReceiptPrintingServiceActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.printImageBtn)
     public void printImage() {
         String jobId = UUID.randomUUID().toString();
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.receipt3);
@@ -207,7 +200,6 @@ public class ReceiptPrintingServiceActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.printReceiptBtn)
     public void printReceipt() {
         String jobId = UUID.randomUUID().toString();
         PrintedReceipt receipt = Util.generateReceipt(getResources());

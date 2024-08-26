@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import co.poynt.os.model.AccessoryProvider;
 import co.poynt.os.model.PrintedReceipt;
 import co.poynt.os.model.PrintedReceiptLine;
@@ -39,15 +36,10 @@ public class PrinterServiceActivity extends Activity{
     private PrinterServiceHelper printerServiceHelper;
     private HashMap<AccessoryProvider, IBinder> mPrinterServices = new HashMap<>();
 
-
-    @BindView(R.id.printJobBtn)
-    Button printJobBtn;
-    @BindView(R.id.printReceiptBtn)
-    Button printReceiptBtn;
-    @BindView(R.id.printReceiptJobBtn)
-    Button printReceiptJobBtn;
-    @BindView(R.id.printerStatus)
-    TextView printerStatusText;
+    private Button printJobBtn;
+    private Button printReceiptBtn;
+    private Button printReceiptJobBtn;
+    private TextView printerStatusText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +48,20 @@ public class PrinterServiceActivity extends Activity{
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        ButterKnife.bind(this);
         printerServiceHelper = new PrinterServiceHelper(this, printerCallback);
+
+        bindViews();
+    }
+
+    private void bindViews() {
+        printJobBtn = findViewById(R.id.printJobBtn);
+        printReceiptBtn = findViewById(R.id.printReceiptBtn);
+        printReceiptJobBtn = findViewById(R.id.printReceiptJobBtn);
+        printerStatusText = findViewById(R.id.printerStatus);
+
+        printJobBtn.setOnClickListener(this::printJob);
+        printReceiptBtn.setOnClickListener(this::printReceiptBtn);
+        printReceiptJobBtn.setOnClickListener(this::printReceiptJobBtn);
     }
 
     @Override
@@ -81,7 +85,6 @@ public class PrinterServiceActivity extends Activity{
         return true;
     }
 
-    @OnClick(R.id.printJobBtn)
     public void printJob(View view) {
         HashMap<AccessoryProvider, IBinder> printers = printerServiceHelper.getPrinters();
         for (AccessoryProvider printer: printers.keySet()) {
@@ -103,7 +106,6 @@ public class PrinterServiceActivity extends Activity{
     }
 
     // Works only on internal poynt printer
-    @OnClick(R.id.printReceiptBtn)
     public void printReceiptBtn(View view) {
         mPrinterServices = printerServiceHelper.getPrinters();
         for (final AccessoryProvider printer : mPrinterServices.keySet()) {
@@ -122,7 +124,6 @@ public class PrinterServiceActivity extends Activity{
         }
     }
 
-    @OnClick(R.id.printReceiptJobBtn)
     public void printReceiptJobBtn(View view) {
         for (IBinder binder : printerServiceHelper.getPrinters().values()) {
             IPoyntPrinterService printerService = IPoyntPrinterService.Stub.asInterface(binder);

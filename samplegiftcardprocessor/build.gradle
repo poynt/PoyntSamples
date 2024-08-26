@@ -13,8 +13,9 @@ allprojects {
 
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    namespace 'co.poynt.samplegiftcardprocessor'
+
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "co.poynt.samplegiftcardprocessor"

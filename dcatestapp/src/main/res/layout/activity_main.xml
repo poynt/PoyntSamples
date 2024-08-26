@@ -1,0 +1,94 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <CheckBox
+        android:id="@+id/newConnectionOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="Enable New Connection option logic.\nUsing incorrect interfaces may break some tests" />
+
+    <LinearLayout
+        android:id="@+id/connectionInterfaces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/interfaceCL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:enabled="false"
+            android:text="CL" />
+
+        <CheckBox
+            android:id="@+id/interfaceEMV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:enabled="false"
+            android:text="EMV" />
+
+
+        <CheckBox
+            android:id="@+id/interfaceGSM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:enabled="false"
+            android:text="GSM" />
+
+
+        <CheckBox
+            android:id="@+id/interfaceSLE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:enabled="false"
+            android:text="SLE" />
+
+        <CheckBox
+            android:id="@+id/interfaceMSR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:enabled="false"
+            android:text="MSR" />
+
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="auto"
+        app:tabGravity="fill" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"/>
+
+    <ScrollView
+        android:id="@+id/consoleScroller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/consoleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:typeface="monospace" />
+    </ScrollView>
+</LinearLayout>

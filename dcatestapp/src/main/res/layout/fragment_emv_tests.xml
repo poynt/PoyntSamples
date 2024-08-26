@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CT EMV Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/ctSuccessfulTransaction"
+                    style="@style/DCAButton"
+                    android:text="Successful" />
+
+                <Button
+                    android:id="@+id/ctFileNotFound"
+                    style="@style/DCAButton"
+                    android:text="File Not Found" />
+
+                <Button
+                    android:id="@+id/ctCardRejectionMaster"
+                    style="@style/DCAButton"
+                    android:text="Reject" />
+
+                <Button
+                    android:id="@+id/ctExchangeApduList"
+                    style="@style/DCAButton"
+                    android:text="Exchange CT APDU List" />
+
+                <Button
+                    android:id="@+id/ctPymtTransactionDuringDCA"
+                    style="@style/DCAButton"
+                    android:text="Pymt trn during DCA PoyntC" />
+
+                <Button
+                    android:id="@+id/ctXAPDU"
+                    style="@style/DCAButton"
+                    android:text="X APDU" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CL EMV Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/clSuccessfulTransaction"
+                style="@style/DCAButton"
+                android:text="Successful" />
+
+            <Button
+                android:id="@+id/clFileNotFound"
+                style="@style/DCAButton"
+                android:text="File Not Found" />
+
+            <Button
+                android:id="@+id/clCardRejectionMaster"
+                style="@style/DCAButton"
+                android:text="Reject" />
+
+
+            <Button
+                android:id="@+id/clExchangeApduList"
+                style="@style/DCAButton"
+                android:text="Exchange CL APDU List" />
+
+            <Button
+                android:id="@+id/clPymtTransactionDuringDCA"
+                style="@style/DCAButton"
+                android:text="Pymt trn during DCA" />
+
+            <Button
+                android:id="@+id/clXAPDU"
+                style="@style/DCAButton"
+                android:text="X APDU" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ISO 7816 (GSM) Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/isoSuccessfulTransaction"
+                    style="@style/DCAButton"
+                    android:text="Successful" />
+
+                <Button
+                    android:id="@+id/isoFileNotFound"
+                    style="@style/DCAButton"
+                    android:text="File Not Found" />
+
+                <Button
+                    android:id="@+id/isoCardRejectionMaster"
+                    style="@style/DCAButton"
+                    android:text="Reject" />
+
+
+                <Button
+                    android:id="@+id/isoExchangeApduList"
+                    style="@style/DCAButton"
+                    android:text="Exchange ISO APDU List" />
+
+                <Button
+                    android:id="@+id/isoTrnDuringDCA"
+                    style="@style/DCAButton"
+                    android:text="Pymt trn during DCA" />
+
+                <Button
+                    android:id="@+id/isoXAPDU"
+                    style="@style/DCAButton"
+                    android:text="X APDU" />
+
+                <Button
+                    android:id="@+id/isoItalianHealthCards"
+                    style="@style/DCAButton"
+                    android:text="Test Italian Health Card" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SLE Tests" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sle401"
+                style="@style/DCAButton"
+                android:text="401" />
+
+            <Button
+                android:id="@+id/sle402"
+                style="@style/DCAButton"
+                android:text="402" />
+
+            <Button
+                android:id="@+id/sle403"
+                style="@style/DCAButton"
+                android:text="403" />
+
+            <Button
+                android:id="@+id/sle404"
+                style="@style/DCAButton"
+                android:text="404" />
+
+            <Button
+                android:id="@+id/sle405"
+                style="@style/DCAButton"
+                android:text="405" />
+
+            <Button
+                android:id="@+id/sle406"
+                style="@style/DCAButton"
+                android:text="406" />
+
+
+            <Button
+                android:id="@+id/sle407"
+                style="@style/DCAButton"
+                android:text="407" />
+
+            <Button
+                android:id="@+id/sle408"
+                style="@style/DCAButton"
+                android:text="408" />
+
+            <Button
+                android:id="@+id/sle409"
+                style="@style/DCAButton"
+                android:text="409" />
+
+            <Button
+                android:id="@+id/sleXAPDU"
+                style="@style/DCAButton"
+                android:text="X APDU" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

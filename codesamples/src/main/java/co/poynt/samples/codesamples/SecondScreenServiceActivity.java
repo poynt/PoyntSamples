@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import co.poynt.api.model.Discount;
 import co.poynt.api.model.ExchangeRate;
 import co.poynt.api.model.OrderItem;
@@ -44,37 +41,20 @@ public class SecondScreenServiceActivity extends Activity {
     private static final String TAG = SecondScreenServiceActivity.class.getSimpleName();
 
 
-    @BindView(R.id.phoneNumberBtn)
     Button phoneNumberBtn;
-    @BindView(R.id.scanQRBtn)
     Button scanQRBtn;
-    @BindView(R.id.displayItemsBtn)
     Button displayItemsBtn;
-    @BindView(R.id.checkInScreenBtn)
     Button checkInScreenBtn;
-    @BindView(R.id.emailBtn)
     Button emailBtn;
-    @BindView(R.id.textEntryBtn)
     Button textEntryBtn;
-    //@Bind(R.id.printImageBtn) Button printImageBtn;
-    @BindView(R.id.dccScreenBtn)
     Button dccScreenBtn;
-    @BindView(R.id.collectRatingBtn)
     Button collectRatingBtn;
-
-    @BindView(R.id.phoneStatus)
     TextView phoneStatus;
-    @BindView(R.id.emailStatus)
     TextView emailStatus;
-    @BindView(R.id.textStatus)
     TextView textStatus;
-    @BindView(R.id.scanStatus)
     TextView scanStatus;
-    @BindView(R.id.checkinStatus)
     TextView checkinStatus;
-    @BindView(R.id.dccStatus)
     TextView dccStatus;
-    @BindView(R.id.collectRatingStatus)
     TextView ratingStatus;
 
 
@@ -118,7 +98,6 @@ public class SecondScreenServiceActivity extends Activity {
                 }
             };
 
-    @OnClick(R.id.phoneNumberBtn)
     public void phoneNumberButtonClicked(View view) {
         try {
             // @deprecated
@@ -147,7 +126,6 @@ public class SecondScreenServiceActivity extends Activity {
                 }
             };
 
-    @OnClick(R.id.emailBtn)
     public void emailBtnclicked(View view) {
         try {
             //@deprecated
@@ -174,7 +152,6 @@ public class SecondScreenServiceActivity extends Activity {
                 }
             };
 
-    @OnClick(R.id.textEntryBtn)
     public void textEntryBtnClicked(View view) {
         try {
             secondScreenService.collectTextEntry("Enter Code:", textEntryListener);
@@ -183,7 +160,6 @@ public class SecondScreenServiceActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.scanQRBtn)
     public void scanQRCode(View view) {
         try {
             // @deprecated
@@ -204,7 +180,36 @@ public class SecondScreenServiceActivity extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        ButterKnife.bind(this);
+
+        bindViews();
+    }
+
+    private void bindViews() {
+        phoneNumberBtn = findViewById(R.id.phoneNumberBtn);
+        scanQRBtn = findViewById(R.id.scanQRBtn);
+        displayItemsBtn = findViewById(R.id.displayItemsBtn);
+        checkInScreenBtn = findViewById(R.id.checkInScreenBtn);
+        emailBtn = findViewById(R.id.emailBtn);
+        textEntryBtn = findViewById(R.id.textEntryBtn);
+        dccScreenBtn = findViewById(R.id.dccScreenBtn);
+        collectRatingBtn = findViewById(R.id.collectRatingBtn);
+        phoneStatus = findViewById(R.id.phoneStatus);
+        emailStatus = findViewById(R.id.emailStatus);
+        textStatus = findViewById(R.id.textStatus);
+        scanStatus = findViewById(R.id.scanStatus);
+        checkinStatus = findViewById(R.id.checkinStatus);
+        dccStatus = findViewById(R.id.dccStatus);
+        ratingStatus = findViewById(R.id.collectRatingStatus);
+
+        phoneNumberBtn.setOnClickListener(this::phoneNumberButtonClicked);
+        scanQRBtn.setOnClickListener(this::scanQRCode);
+        displayItemsBtn.setOnClickListener(v -> showItems());
+        checkInScreenBtn.setOnClickListener(v -> showCheckinScreen());
+        emailBtn.setOnClickListener(this::emailBtnclicked);
+        textEntryBtn.setOnClickListener(this::textEntryBtnClicked);
+        dccScreenBtn.setOnClickListener(v -> showDccScreen());
+        collectRatingBtn.setOnClickListener(v -> showRatingScreen());
+
     }
 
     @Override
@@ -276,7 +281,6 @@ public class SecondScreenServiceActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.displayItemsBtn)
     public void showItems() {
         // create some dummy items to display in second screen
         List<OrderItem> items = new ArrayList<OrderItem>();
@@ -347,7 +351,6 @@ public class SecondScreenServiceActivity extends Activity {
 
             };
 
-    @OnClick(R.id.checkInScreenBtn)
     public void showCheckinScreen() {
         try {
 //            Bitmap checkin = BitmapFactory.decodeResource(getResources(),R.drawable.button_checkin);
@@ -357,7 +360,6 @@ public class SecondScreenServiceActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.dccScreenBtn)
     public void showDccScreen() {
         ExchangeRate ex = new ExchangeRate();
         ex.setProvider("Citibank UAE"); // printed on the receipt
@@ -389,7 +391,6 @@ public class SecondScreenServiceActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.collectRatingBtn)
     public void showRatingScreen(){
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poynt_logo);
         try {

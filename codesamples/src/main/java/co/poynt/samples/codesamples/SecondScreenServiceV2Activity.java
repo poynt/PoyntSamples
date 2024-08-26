@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import co.poynt.api.model.Discount;
 import co.poynt.api.model.Fee;
 import co.poynt.api.model.OrderItem;
@@ -49,37 +46,23 @@ import co.poynt.os.services.v2.IPoyntTipListener;
 public class SecondScreenServiceV2Activity extends Activity {
 
     private static final String TAG = SecondScreenServiceV2Activity.class.getSimpleName();
-    @BindView(R.id.captureTip)
-    Button captureTip;
-    @BindView(R.id.showCartConfirmation)
-    Button showCartConfirmation;
-    @BindView(R.id.captureReceiptChoice)
-    Button captureReceiptChoice;
-    @BindView(R.id.captureSignature)
-    Button captureSignature;
-    @BindView(R.id.displayMessage)
-    Button displayMessage;
-    @BindView(R.id.collectAgreement)
-    Button collectAgreement;
-    @BindView(R.id.scanCode)
-    Button scanCode;
 
-    @BindView(R.id.tipStatus)
-    TextView tipStatus;
-    @BindView(R.id.showCartStatus)
-    TextView showCartStatus;
-    @BindView(R.id.receiptChoiceStatus)
-    TextView receiptChoiceStatus;
-    @BindView(R.id.captureSignatureStatus)
-    TextView captureSignatureStatus;
-    @BindView(R.id.collectAgreementStatus)
-    TextView collectAgreementStatus;
-    @BindView(R.id.scanStatus)
-    TextView scanStatus;
-    @BindView(R.id.showInstallmentsBtn)
-    TextView showInstallmentsBtn;
-    @BindView(R.id.installmentStatus)
-    TextView installmentStatus;
+    private Button showCartConfirmation;
+    private Button captureReceiptChoice;
+    private Button captureSignature;
+    private Button displayMessage;
+    private Button collectAgreement;
+    private Button scanCode;
+
+    private TextView tipStatus;
+    private TextView showCartStatus;
+    private TextView receiptChoiceStatus;
+    private TextView captureSignatureStatus;
+    private TextView collectAgreementStatus;
+    private TextView scanStatus;
+    private TextView showInstallmentsBtn;
+    private TextView installmentStatus;
+
 
     private IPoyntSecondScreenService secondScreenService;
 
@@ -92,7 +75,33 @@ public class SecondScreenServiceV2Activity extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        ButterKnife.bind(this);
+        bindViews();
+    }
+
+    private void bindViews() {
+        showCartConfirmation = findViewById(R.id.showCartConfirmation);
+        captureReceiptChoice = findViewById(R.id.captureReceiptChoice);
+        captureSignature = findViewById(R.id.captureSignature);
+        displayMessage = findViewById(R.id.displayMessage);
+        collectAgreement = findViewById(R.id.collectAgreement);
+        scanCode = findViewById(R.id.scanCode);
+
+        tipStatus = findViewById(R.id.tipStatus);
+        showCartStatus = findViewById(R.id.showCartStatus);
+        receiptChoiceStatus = findViewById(R.id.receiptChoiceStatus);
+        captureSignatureStatus = findViewById(R.id.captureSignatureStatus);
+        collectAgreementStatus = findViewById(R.id.collectAgreementStatus);
+        scanStatus = findViewById(R.id.scanStatus);
+        showInstallmentsBtn = findViewById(R.id.showInstallmentsBtn);
+        installmentStatus = findViewById(R.id.installmentStatus);
+
+        showCartConfirmation.setOnClickListener(v -> showCartConfirmation());
+        captureReceiptChoice.setOnClickListener(v -> collectReceipt());
+        captureSignature.setOnClickListener(v -> collectSignature());
+        displayMessage.setOnClickListener(v -> showConfirmation());
+        collectAgreement.setOnClickListener(v -> showCollectAgreement());
+        scanCode.setOnClickListener(v -> showScanCode());
+        showInstallmentsBtn.setOnClickListener(v -> showInstallments());
     }
 
     @Override
@@ -158,7 +167,6 @@ public class SecondScreenServiceV2Activity extends Activity {
     };
 
 
-    @OnClick(R.id.captureTip)
     public void captureTip() {
         try {
             TransactionAmounts transactionAmounts = new TransactionAmounts();
@@ -205,7 +213,6 @@ public class SecondScreenServiceV2Activity extends Activity {
         }
     }
 
-    @OnClick(R.id.showCartConfirmation)
     public void showCartConfirmation() {
         // create some dummy items to display in second screen
         List<OrderItem> items = new ArrayList<OrderItem>();
@@ -313,7 +320,6 @@ public class SecondScreenServiceV2Activity extends Activity {
 
     }
 
-    @OnClick(R.id.captureSignature)
     public void collectSignature() {
         try {
             TransactionAmounts transactionAmounts = new TransactionAmounts();
@@ -342,7 +348,6 @@ public class SecondScreenServiceV2Activity extends Activity {
     }
 
 
-    @OnClick(R.id.captureReceiptChoice)
     public void collectReceipt() {
         try {
             TransactionAmounts transactionAmounts = new TransactionAmounts();
@@ -443,7 +448,6 @@ public class SecondScreenServiceV2Activity extends Activity {
     }
 
 
-    @OnClick(R.id.displayMessage)
     public void showConfirmation() {
         try {
             // Supported options
@@ -499,7 +503,6 @@ public class SecondScreenServiceV2Activity extends Activity {
         return null;
     }
 
-    @OnClick(R.id.collectAgreement)
     public void showCollectAgreement() {
         try {
             Bundle options = new Bundle();
@@ -538,7 +541,6 @@ public class SecondScreenServiceV2Activity extends Activity {
         }
     }
 
-    @OnClick(R.id.scanCode)
     public void showScanCode() {
         try {
             Bundle options = new Bundle();
@@ -561,7 +563,6 @@ public class SecondScreenServiceV2Activity extends Activity {
         }
     }
 
-    @OnClick(R.id.showInstallmentsBtn)
     public void showInstallments(){
 
         /*

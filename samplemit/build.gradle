@@ -13,8 +13,9 @@ repositories {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    namespace 'com.poynt.samples.mit'
+
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.poynt.samples.mit"
