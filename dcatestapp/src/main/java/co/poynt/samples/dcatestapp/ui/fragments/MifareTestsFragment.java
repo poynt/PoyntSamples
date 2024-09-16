@@ -1143,36 +1143,48 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage("===============================");
         logReceivedMessage(testName);
 
-        showInputDialog(testName, new ITextInputCallback() {
-                            @Override
-                            public void onTextEntered(String text) {
-                                APDUData apduData = createAPDUData("03A01D000005" + text);
+        String[] first4Bytes = new String[1];
 
-                                Disposable disposable = exchangeAPDUObservable(apduData)
-                                        .firstElement()
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribeOn(Schedulers.io())
-                                        .subscribe(result -> {
-                                            boolean success = result.endsWith("9000");
-                                            logReceivedMessage(testName + (success ? "Passed" : "Failed"));
-                                        }, throwable -> disconnectOnException(testName, throwable));
-                                compositeDisposable.add(disposable);
-                            }
+        APDUData readData = createAPDUData("03A01D000000");
+        //read data
+        Disposable disposable = exchangeAPDUObservable(readData)
+                .flatMap(response -> {
+                    //save first 4 bytes of initial data
+                    first4Bytes[0] = response.substring(0, 8);
 
-                            @Override
-                            public void onCancel() {
-                                logReceivedMessage(testName + " cancelled");
-                            }
-                });
-
-        APDUData apduData = createAPDUData("03A01D000005AABBBBBBBB");
-
-        Disposable disposable = exchangeAPDUObservable(apduData)
+                    //write new data
+                    APDUData writeData = createAPDUData("03A0220000050011111111");
+                    return exchangeAPDUObservable(writeData);
+                })
+                .flatMap(response -> {
+                    //read data
+                    return exchangeAPDUObservable(readData).flatMap(response2 -> {
+                        String first4BytesResponse = response2.substring(0, 8);
+                        if (!"11111111".equals(first4BytesResponse)) {
+                            logReceivedMessage(testName + " received data verification Failed");
+                        }
+                        return Observable.just(response2);
+                    });
+                })
+                .flatMap(response -> {
+                    //write initial data
+                    APDUData writeData = createAPDUData("03A02200000500" + first4Bytes[0]);
+                    return exchangeAPDUObservable(writeData);
+                })
+                .flatMap(response -> {
+                    //read initial data
+                    return exchangeAPDUObservable(readData).flatMap(response2 -> {
+                        if (!response2.startsWith(first4Bytes[0])) {
+                            logReceivedMessage(testName + " original data verification Failed");
+                        }
+                        return Observable.just(response2);
+                    });
+                })
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(result -> {
-                    boolean success = result.endsWith("9000");
+                    boolean success = result.startsWith(first4Bytes[0]);
                     logReceivedMessage(testName + (success ? "Passed" : "Failed"));
                 }, throwable -> disconnectOnException(testName, throwable));
         compositeDisposable.add(disposable);
@@ -1183,27 +1195,17 @@ public class MifareTestsFragment extends BaseFragment {
         logReceivedMessage("===============================");
         logReceivedMessage(testName);
 
-        showInputDialog(testName, new ITextInputCallback() {
-            @Override
-            public void onTextEntered(String text) {
-                APDUData apduData = createAPDUData("03A01D000001" + text);
+        APDUData apduData = createAPDUData("03A02300000100");
 
-                Disposable disposable = exchangeAPDUObservable(apduData)
-                        .firstElement()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(result -> {
-                            boolean success = result.endsWith("9000");
-                            logReceivedMessage(testName + (success ? "Passed" : "Failed"));
-                        }, throwable -> disconnectOnException(testName, throwable));
-                compositeDisposable.add(disposable);
-            }
-
-            @Override
-            public void onCancel() {
-                logReceivedMessage(testName + " cancelled");
-            }
-        });
+        Disposable disposable = exchangeAPDUObservable(apduData)
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(result -> {
+                    boolean success = result.endsWith("9000");
+                    logReceivedMessage(testName + (success ? "Passed" : "Failed"));
+                }, throwable -> disconnectOnException(testName, throwable));
+        compositeDisposable.add(disposable);
     }
 
     private void ultralight817() {
