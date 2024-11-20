@@ -21,7 +21,7 @@
         android:layout_margin="10dp"
         android:textSize="20sp"
         android:padding="10dp"
-        android:text="Set $1 amount" />
+        android:text="Fail with lower amount" />
 
     <Button
         android:id="@+id/noChanges"
@@ -42,5 +42,35 @@
         android:textSize="20sp"
         android:padding="10dp"
         android:text="Exit without returning payment object"/>
+
+    <Button
+        android:id="@+id/addOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_background_color"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Add order"/>
+
+    <Button
+        android:id="@+id/add1Transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_background_color"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Add 1 transaction"/>
+
+    <Button
+        android:id="@+id/addExactTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_background_color"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Add same amount transaction"/>
 
 </LinearLayout>
