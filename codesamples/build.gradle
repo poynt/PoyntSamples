@@ -44,7 +44,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'co.poynt.api:android-api-model:1.2.297'
-    implementation('co.poynt.android.sdk:poynt-sdk:1.3.26-SNAPSHOT@aar'){
+    implementation('co.poynt.android.sdk:poynt-sdk:1.3.28-SNAPSHOT@aar'){
         changing = true
     }
 

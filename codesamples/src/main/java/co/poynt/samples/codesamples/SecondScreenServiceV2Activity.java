@@ -1,5 +1,7 @@
 package co.poynt.samples.codesamples;
 
+import static co.poynt.samples.codesamples.utils.Util.generateTransaction;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -28,11 +30,14 @@ import java.util.UUID;
 import co.poynt.api.model.Discount;
 import co.poynt.api.model.Fee;
 import co.poynt.api.model.OrderItem;
+import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAmounts;
+import co.poynt.os.Constants;
 import co.poynt.os.model.InstallmentsOption;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.ReceiptOption;
 import co.poynt.os.model.ReceiptType;
+import co.poynt.os.services.v1.IPoyntSecondScreenSurchargeListener;
 import co.poynt.os.services.v2.IPoyntActionButtonListener;
 import co.poynt.os.services.v2.IPoyntEmailEntryListener;
 import co.poynt.os.services.v2.IPoyntInstallmentPlanListener;
@@ -53,6 +58,7 @@ public class SecondScreenServiceV2Activity extends Activity {
     private Button displayMessage;
     private Button collectAgreement;
     private Button scanCode;
+    Button collectSurchargeBtn;
 
     private TextView tipStatus;
     private TextView showCartStatus;
@@ -62,6 +68,7 @@ public class SecondScreenServiceV2Activity extends Activity {
     private TextView scanStatus;
     private TextView showInstallmentsBtn;
     private TextView installmentStatus;
+    TextView surchargeStatus;
 
 
     private IPoyntSecondScreenService secondScreenService;
@@ -94,6 +101,8 @@ public class SecondScreenServiceV2Activity extends Activity {
         scanStatus = findViewById(R.id.scanStatus);
         showInstallmentsBtn = findViewById(R.id.showInstallmentsBtn);
         installmentStatus = findViewById(R.id.installmentStatus);
+        collectSurchargeBtn = findViewById(R.id.collectSurchargeBtn);
+        surchargeStatus = findViewById(R.id.collectSurchargeStatus);
 
         showCartConfirmation.setOnClickListener(v -> showCartConfirmation());
         captureReceiptChoice.setOnClickListener(v -> collectReceipt());
@@ -102,6 +111,8 @@ public class SecondScreenServiceV2Activity extends Activity {
         collectAgreement.setOnClickListener(v -> showCollectAgreement());
         scanCode.setOnClickListener(v -> showScanCode());
         showInstallmentsBtn.setOnClickListener(v -> showInstallments());
+        collectSurchargeBtn.setOnClickListener(v -> showSurchargeScreen());
+        collectSurchargeBtn.setOnClickListener(v -> showSurchargeScreen());
     }
 
     @Override
@@ -660,6 +671,34 @@ public class SecondScreenServiceV2Activity extends Activity {
                 textView.setText(msg);
             }
         });
+    }
+
+    public void showSurchargeScreen(){
+        Transaction txn = generateTransaction(100L);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.SurchargeExtras.TRANSACTION, txn);
+        bundle.putLong(Constants.SurchargeExtras.SURCHARGE_AMOUNT, 123L);
+        bundle.putString(Constants.SurchargeExtras.DISCLAIMER, "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+        try {
+            // Scale image is deprecated, just pass null
+            secondScreenService.showSurchargeScreen(bundle, new IPoyntSecondScreenSurchargeListener.Stub() {
+                @Override
+                public void onSurchargeAgreed() throws RemoteException {
+                    Log.d(TAG, "showSurchargeScreen agreed");
+                    showConfirmation("AGREED TAPPED");
+                    setStatus(surchargeStatus, "AGREED TAPPED");
+                }
+
+                @Override
+                public void onCancel() throws RemoteException {
+                    Log.d(TAG, "showSurchargeScreen canceled");
+                    showConfirmation("CANCEL TAPPED");
+                    setStatus(surchargeStatus, "CANCEL TAPPED");
+
+                }
+            });
+        } catch (RemoteException e) {
+        }
     }
 
 }

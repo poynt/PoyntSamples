@@ -1,5 +1,7 @@
 package co.poynt.samples.codesamples;
 
+import static co.poynt.samples.codesamples.utils.Util.generateTransaction;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -25,6 +27,8 @@ import java.util.UUID;
 import co.poynt.api.model.Discount;
 import co.poynt.api.model.ExchangeRate;
 import co.poynt.api.model.OrderItem;
+import co.poynt.api.model.Transaction;
+import co.poynt.os.Constants;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.SecondScreenLabels;
 import co.poynt.os.services.v1.IPoyntSecondScreenCheckInListener;
@@ -34,6 +38,7 @@ import co.poynt.os.services.v1.IPoyntSecondScreenEmailEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenPhoneEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenRatingEntryListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenService;
+import co.poynt.os.services.v1.IPoyntSecondScreenSurchargeListener;
 import co.poynt.os.services.v1.IPoyntSecondScreenTextEntryListener;
 
 public class SecondScreenServiceActivity extends Activity {
@@ -49,6 +54,7 @@ public class SecondScreenServiceActivity extends Activity {
     Button textEntryBtn;
     Button dccScreenBtn;
     Button collectRatingBtn;
+    Button collectSurchargeBtn;
     TextView phoneStatus;
     TextView emailStatus;
     TextView textStatus;
@@ -56,7 +62,7 @@ public class SecondScreenServiceActivity extends Activity {
     TextView checkinStatus;
     TextView dccStatus;
     TextView ratingStatus;
-
+    TextView surchargeStatus;
 
     private IPoyntSecondScreenService secondScreenService;
     private ServiceConnection secondScreenServiceConnection = new ServiceConnection() {
@@ -193,6 +199,7 @@ public class SecondScreenServiceActivity extends Activity {
         textEntryBtn = findViewById(R.id.textEntryBtn);
         dccScreenBtn = findViewById(R.id.dccScreenBtn);
         collectRatingBtn = findViewById(R.id.collectRatingBtn);
+        collectSurchargeBtn = findViewById(R.id.collectSurchargeBtn);
         phoneStatus = findViewById(R.id.phoneStatus);
         emailStatus = findViewById(R.id.emailStatus);
         textStatus = findViewById(R.id.textStatus);
@@ -200,6 +207,7 @@ public class SecondScreenServiceActivity extends Activity {
         checkinStatus = findViewById(R.id.checkinStatus);
         dccStatus = findViewById(R.id.dccStatus);
         ratingStatus = findViewById(R.id.collectRatingStatus);
+        surchargeStatus = findViewById(R.id.collectSurchargeStatus);
 
         phoneNumberBtn.setOnClickListener(this::phoneNumberButtonClicked);
         scanQRBtn.setOnClickListener(this::scanQRCode);
@@ -209,7 +217,7 @@ public class SecondScreenServiceActivity extends Activity {
         textEntryBtn.setOnClickListener(this::textEntryBtnClicked);
         dccScreenBtn.setOnClickListener(v -> showDccScreen());
         collectRatingBtn.setOnClickListener(v -> showRatingScreen());
-
+        collectSurchargeBtn.setOnClickListener(v -> showSurchargeScreen());
     }
 
     @Override
@@ -400,6 +408,33 @@ public class SecondScreenServiceActivity extends Activity {
             e.printStackTrace();
         }
 
+    }
+
+    public void showSurchargeScreen(){
+        Transaction txn = generateTransaction(100L);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.SurchargeExtras.TRANSACTION, txn);
+        bundle.putLong(Constants.SurchargeExtras.SURCHARGE_AMOUNT, 123L);
+//        bundle.putString("disclaimer", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+        try {
+            // Scale image is deprecated, just pass null
+            secondScreenService.showSurchargeScreen(bundle, new IPoyntSecondScreenSurchargeListener.Stub() {
+                @Override
+                public void onSurchargeAgreed() throws RemoteException {
+                    Log.d(TAG, "showSurchargeScreen agreed");
+                    setStatus(surchargeStatus, "Surcharge agreed");
+                    showWelcomeScreen();
+                }
+
+                @Override
+                public void onCancel() throws RemoteException {
+                    Log.d(TAG, "showSurchargeScreen canceled");
+                    setStatus(surchargeStatus, "Surcharge canceled");
+                    showWelcomeScreen();
+                }
+            });
+        } catch (RemoteException e) {
+        }
     }
 
     IPoyntSecondScreenRatingEntryListener ratingEntryListener = new IPoyntSecondScreenRatingEntryListener.Stub() {
