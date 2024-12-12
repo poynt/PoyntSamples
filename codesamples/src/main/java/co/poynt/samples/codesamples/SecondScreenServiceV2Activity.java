@@ -32,6 +32,7 @@ import co.poynt.api.model.Fee;
 import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.Transaction;
 import co.poynt.api.model.TransactionAmounts;
+import co.poynt.os.Constants;
 import co.poynt.os.model.InstallmentsOption;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.ReceiptOption;
@@ -675,9 +676,9 @@ public class SecondScreenServiceV2Activity extends Activity {
     public void showSurchargeScreen(){
         Transaction txn = generateTransaction(100L);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("transaction", txn);
-        bundle.putLong("surchargeAmount", 123L);
-        bundle.putString("disclaimer", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+        bundle.putParcelable(Constants.SurchargeExtras.TRANSACTION, txn);
+        bundle.putLong(Constants.SurchargeExtras.SURCHARGE_AMOUNT, 123L);
+        bundle.putString(Constants.SurchargeExtras.DISCLAIMER, "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
         try {
             // Scale image is deprecated, just pass null
             secondScreenService.showSurchargeScreen(bundle, new IPoyntSecondScreenSurchargeListener.Stub() {
