@@ -28,6 +28,7 @@ import co.poynt.api.model.Discount;
 import co.poynt.api.model.ExchangeRate;
 import co.poynt.api.model.OrderItem;
 import co.poynt.api.model.Transaction;
+import co.poynt.os.Constants;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.SecondScreenLabels;
 import co.poynt.os.services.v1.IPoyntSecondScreenCheckInListener;
@@ -412,8 +413,8 @@ public class SecondScreenServiceActivity extends Activity {
     public void showSurchargeScreen(){
         Transaction txn = generateTransaction(100L);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("transaction", txn);
-        bundle.putLong("surchargeAmount", 123L);
+        bundle.putParcelable(Constants.SurchargeExtras.TRANSACTION, txn);
+        bundle.putLong(Constants.SurchargeExtras.SURCHARGE_AMOUNT, 123L);
 //        bundle.putString("disclaimer", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
         try {
             // Scale image is deprecated, just pass null
