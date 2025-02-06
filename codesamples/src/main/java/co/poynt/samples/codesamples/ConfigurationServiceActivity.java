@@ -15,6 +15,7 @@ import android.widget.TextView;
 import co.poynt.os.model.Intents;
 import co.poynt.os.model.PoyntError;
 import co.poynt.os.services.v1.IPoyntConfigurationService;
+import co.poynt.os.services.v1.IPoyntDeviceInfoListener;
 import co.poynt.os.services.v1.IPoyntReaderVersionListener;
 import co.poynt.os.services.v1.IPoyntSimCardInfoListener;
 
@@ -31,6 +32,7 @@ public class ConfigurationServiceActivity extends Activity {
 
         Button getSimInfoButton = findViewById(R.id.getSimInfoButton);
         Button getFirmwareComponentVersBtn = findViewById(R.id.getFirmwareCompVersButton);
+        Button getDeviceInfoButton = findViewById(R.id.getDeviceInfoButton);
         TextView infoTextView = findViewById(R.id.infoTextView);
 
         getSimInfoButton.setOnClickListener(view -> {
@@ -76,6 +78,26 @@ public class ConfigurationServiceActivity extends Activity {
                 });
             } catch (RemoteException e) {
                 e.printStackTrace();
+            }
+        });
+
+        getDeviceInfoButton.setOnClickListener(view -> {
+            try {
+                configurationService.getDeviceInfo(new IPoyntDeviceInfoListener.Stub() {
+
+                    @Override
+                    public void onDeviceInfoReceived(Bundle bundle) throws RemoteException {
+                        runOnUiThread(() -> {
+                            StringBuilder stringBuilder = new StringBuilder("Device Info:\n");
+                            for (String key : bundle.keySet()) {
+                                stringBuilder.append(key).append(" : ").append(bundle.get(key)).append("\n");
+                            }
+                            infoTextView.setText(stringBuilder);
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                infoTextView.setText("Exception: " + e.getMessage());
             }
         });
     }

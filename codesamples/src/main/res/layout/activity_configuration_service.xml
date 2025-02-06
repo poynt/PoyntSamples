@@ -32,6 +32,16 @@
             android:text="Get Firmware component version"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/getDeviceInfoButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="#777777"
+            android:gravity="center"
+            android:text="Get Device Info"
+            android:textSize="18sp" />
+
         <!-- new buttons for another Configuration service methods will be here...-->
 
         <TextView
