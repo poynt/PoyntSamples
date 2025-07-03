@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
                     android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameChanged(s.toString())}" />
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onLabelChanged(s.toString())}" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -60,8 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onDescriptionChanged(s.toString())}" />
+                    android:layout_marginTop="4dp"/>
+<!--                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onDescriptionChanged(s.toString())}" />-->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -103,9 +103,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    app:autoCompleteData="@{fragment.types}"
-                    app:onItemSelected="@{(position) -> viewModel.onAmountTypeChanged(position)}" />
+                    android:layout_marginTop="4dp"/>
+<!--                    app:autoCompleteData="@{fragment.types}"-->
+<!--                    app:onItemSelected="@{(position) -> viewModel.onAmountTypeChanged(position)}" />-->
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
@@ -134,8 +134,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/item_spacing"
-                        android:layout_marginTop="4dp"
-                        android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideRateAmountChanged(s.toString())}" />
+                        android:layout_marginTop="4dp"/>
+<!--                        android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideRateAmountChanged(s.toString())}" />-->
 
                     <TextView
                         android:layout_width="match_parent"
@@ -163,9 +163,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/item_spacing"
-                        android:layout_marginTop="4dp"
-                        app:autoCompleteData="@{fragment.types}"
-                        app:onItemSelected="@{(position) -> viewModel.onTaxOverrideRateAmountTypeChanged(position)}" />
+                        android:layout_marginTop="4dp"/>
+<!--                        app:autoCompleteData="@{fragment.types}"-->
+<!--                        app:onItemSelected="@{(position) -> viewModel.onTaxOverrideRateAmountTypeChanged(position)}" />-->
 
                 </LinearLayout>
 

@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.godaddy.commerce.catalog.models.Product" />
+        <import type="com.godaddy.commercecore.models.Product" />
 
         <variable
             name="viewModel"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameChanged(s.toString())}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onLabelChanged(s.toString())}" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onDescriptionChanged(s.toString())}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onShortLabelChanged(s.toString())}" />
 
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@{@string/category_product_added + ` ` + fragment.selectedProduct.name}"
+                android:text="@{@string/category_product_added + ` ` + fragment.selectedProduct.id}"
                 android:visibility="@{fragment.selectedProduct != null}" />
 
 

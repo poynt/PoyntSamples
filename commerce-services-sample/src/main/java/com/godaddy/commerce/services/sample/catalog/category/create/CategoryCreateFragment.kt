@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import com.godaddy.commerce.catalog.models.Product
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.dialogBuilder
@@ -13,6 +12,7 @@ import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.CategoryCreateFragmentBinding
+import com.godaddy.commercecore.models.CategoryProduct
 
 class CategoryCreateFragment :
     CommonFragment<CategoryCreateFragmentBinding>(R.layout.category_create_fragment) {
@@ -54,12 +54,12 @@ class CategoryCreateFragment :
         }
     }
 
-    private fun showProductsDialog(pair: Pair<List<Product>, Boolean>) {
+    private fun showProductsDialog(pair: Pair<List<CategoryProduct>, Boolean>) {
         if (pair.second.not()) return
         requireContext().dialogBuilder(
             "Select Product",
             items = pair.first,
-            map = { it.name },
+            map = { it.id },
             onSelected = viewModel::selectProduct
         ).setOnDismissListener { viewModel.hideProductsDialog() }.create().show()
     }

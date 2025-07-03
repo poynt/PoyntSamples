@@ -9,9 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
 import com.godaddy.commerce.catalog.TaxConstants
 import com.godaddy.commerce.catalog.TaxParams
+import com.godaddy.commerce.catalog.model.CatalogProduct
+import com.godaddy.commerce.catalog.model.CatalogTax
 import com.godaddy.commerce.catalog.models.*
 import com.godaddy.commerce.common.DataSource
-import com.godaddy.commerce.inventory.models.*
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onComplete
 import com.godaddy.commerce.services.sample.common.extensions.onError
@@ -54,44 +55,43 @@ class TaxUpdateViewModel(
             val service = catalogServiceClient.getService().getOrThrow()
 
             val params = bundleOf(TaxParams.DATA_SOURCE to DataSource.REMOTE_IF_EMPTY)
-            val response = suspendCancellableCoroutine<Tax?> {
-                service.getTax(id, params, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogTax?> {
+                service.getCatalogTax(id, params, it.onSuccess(), it.onError())
             } ?: return@launch
             update {
                 copy(
-                    tax = Tax(name = response.name, taxRates = response.taxRates?.map {
-                        TaxRate(
-                            name = it.name,
-                            amountType = it.amountType,
-                            amount = it.amount,
-                            ratePercentage = it.ratePercentage
-                        )
-                    }),
-                    toolbarState = toolbarState.copy("Update Tax: ${response.name}")
+                    updatedTaxLabel = response.tax.label,
+
+                    toolbarState = toolbarState.copy(title = "Update Tax: ${response.tax.label}")
                 )
             }
         }
     }
 
     fun onNameChanged(value: String) {
-        updateTax { copy(name = value) }
+        update { copy(updatedTaxLabel = value) }
     }
 
-    fun onRateNameChanged(value: String) {
-        updateTaxRate { copy(name = value) }
+    private fun updateName(block: CatalogTax.() -> CatalogTax) {
+        state.tax?.tax ?: return
+        update { copy(tax = block(tax!!)) }
     }
 
-    fun onAmountTypeChanged(position: Int) {
-        updateTaxRate { copy(amountType = state.amountTypes.getOrNull(position)) }
-    }
-
-    fun onRatePercentageChanged(value: String) {
-        updateTaxRate { copy(ratePercentage = value) }
-    }
-
-    fun onAmountChanged(value: String) {
-        updateTaxRate { copy(amount = value.toLongOrNull().toSimpleMoney()) }
-    }
+//    fun onRateNameChanged(value: String) {
+//        updateTaxRate { copy(name = value) }
+//    }
+//
+//    fun onAmountTypeChanged(position: Int) {
+//        updateTaxRate { copy(amountType = state.amountTypes.getOrNull(position)) }
+//    }
+//
+//    fun onRatePercentageChanged(value: String) {
+//        updateTaxRate { copy(ratePercentage = value) }
+//    }
+//
+//    fun onAmountChanged(value: String) {
+//        updateTaxRate { copy(amount = value.toLongOrNull().toSimpleMoney()) }
+//    }
 
     fun update() {
         execute {
@@ -99,11 +99,11 @@ class TaxUpdateViewModel(
 
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
-            val response = suspendCancellableCoroutine<Tax?> {
-                catalogService.patchTax(id, tax, Bundle.EMPTY, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogTax?> {
+                catalogService.patchCatalogTax(id, tax, Bundle.EMPTY, it.onSuccess(), it.onError())
             }
 
-            sendEffect(Effect.ShowToast("Tax was updated: ${response?.id}"))
+            sendEffect(Effect.ShowToast("Tax was updated: ${response?.tax?.id}"))
         }
     }
 
@@ -114,50 +114,51 @@ class TaxUpdateViewModel(
             // to remove tax need to remove tax association only
 
             // get tax association
-            val items = suspendCancellableCoroutine<TaxAssociations?> {
-                val associationParams = bundleOf(
-                    TaxParams.TAX_ID to id,
-                    TaxParams.DATA_SOURCE to DataSource.REMOTE_IF_EMPTY
-                )
-                catalogService.getTaxAssociations(associationParams, it.onSuccess(), it.onError())
-            }
-
-            Timber.d("Association items: ${items?.associations}")
-            val association =
-                requireNotNull(items?.associations?.firstOrNull()) { "There are no associations for current tax" }
-
-            // remove tax association by id
-            suspendCancellableCoroutine {
-                catalogService.deleteTaxAssociation(
-                    association.id?.toString(),
-                    Bundle.EMPTY,
-                    it.onComplete(),
-                    it.onError()
-                )
-            }
+//            val items = suspendCancellableCoroutine<TaxAssociations?> {
+//                val associationParams = bundleOf(
+//                    TaxParams.TAX_ID to id,
+//                    TaxParams.DATA_SOURCE to DataSource.REMOTE_IF_EMPTY
+//                )
+//                catalogService.getTaxAssociations(associationParams, it.onSuccess(), it.onError())
+//            }
+//
+//            Timber.d("Association items: ${items?.associations}")
+//            val association =
+//                requireNotNull(items?.associations?.firstOrNull()) { "There are no associations for current tax" }
+//
+//            // remove tax association by id
+//            suspendCancellableCoroutine {
+//                catalogService.deleteTaxAssociation(
+//                    association.id?.toString(),
+//                    Bundle.EMPTY,
+//                    it.onComplete(),
+//                    it.onError()
+//                )
+//            }
 
             sendEffect(Effect.ShowToast("Tax $id was removed"))
             sendEffect(Effect.PopScreen)
         }
     }
 
-    private fun updateTax(block: Tax.() -> Tax) {
+    private fun updateTax(block: CatalogTax.() -> CatalogTax) {
         state.tax ?: return
         update { copy(tax = block(tax!!)) }
     }
 
-    private fun updateTaxRate(block: TaxRate.() -> TaxRate) {
-        updateTax { copy(taxRates = listOf(block(taxRates!!.first()))) }
-    }
+//    private fun updateTaxRate(block: TaxRate.() -> TaxRate) {
+//        updateTax { copy(taxRates = isltOf(block(taxRates!!.first()))) }
+//    }
 
     data class State(
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Update Tax"),
-        val tax: Tax? = null,
-        val overrideAssociation: TaxOverrideAssociation? = null,
+        val tax: CatalogTax? = null,
+        val updatedTaxLabel: String? = null,
+//        val overrideAssociation: TaxOverrideAssociation? = null,
         val amountTypes: List<String> = TaxConstants.AmountType.values.toList(),
-        val products: List<Product> = emptyList(),
-        val showTaxAssociationProductDialog: Boolean = false,
-        val showTaxOverrideAssociationProductDialog: Boolean = false,
+        val products: List<CatalogProduct> = emptyList(),
+//        val showTaxAssociationProductDialog: Boolean = false,
+//        val showTaxOverrideAssociationProductDialog: Boolean = false,
     ) : ViewModelState
 }

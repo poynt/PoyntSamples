@@ -25,14 +25,14 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Category Id: ` + item.item.categoryId}"
+                android:text="@{`Category Id: ` + item.item.categoryTreeNode.category.id}"
                 tools:text="Category Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Name: ` + item.item.name}"
+                android:text="@{`Name: ` + item.item.categoryTreeNode.category.label}"
                 tools:text="Category Name: Some Category" />
 
 
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Products Count: ` + item.item.productIds.size()}"
+                android:text="@{`Products Count: ` + item.item.categoryTreeNode.category.products.size()}"
                 tools:text="Products Count: 10" />
 
         </LinearLayout>

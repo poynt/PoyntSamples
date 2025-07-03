@@ -5,13 +5,13 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.godaddy.commerce.services.sample.catalog.tax.update.override.TaxOverrideAssociationViewModel" />
+<!--        <variable-->
+<!--            name="viewModel"-->
+<!--            type="com.godaddy.commerce.services.sample.catalog.tax.update.override.TaxOverrideAssociationViewModel" />-->
 
-        <variable
-            name="fragment"
-            type="com.godaddy.commerce.services.sample.catalog.tax.update.override.TaxOverrideAssociationFragment" />
+<!--        <variable-->
+<!--            name="fragment"-->
+<!--            type="com.godaddy.commerce.services.sample.catalog.tax.update.override.TaxOverrideAssociationFragment" />-->
     </data>
 
 
@@ -46,9 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideRateNameChanged(s.toString())}"
-                    android:text="@{fragment.overrideRateName}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -61,9 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideRateAmountChanged(s.toString())}"
-                    android:text="@{fragment.overrideAmount}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -76,9 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideRatePercentageChanged(s.toString())}"
-                    android:text="@{fragment.overrideRate}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -91,10 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    app:autoCompleteData="@{fragment.types}"
-                    app:onItemSelected="@{(position) -> viewModel.onTaxOverrideRateAmountTypeChanged(position)}"
-                    app:selectedPosition="@{fragment.overrideType}" />
+                    android:layout_marginTop="4dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
@@ -103,7 +94,6 @@
                     android:nestedScrollingEnabled="false"
                     android:paddingHorizontal="@dimen/item_spacing"
                     app:adapterLayout="@{@layout/tax_association_item}"
-                    app:adapterSubmitList="@{fragment.overrideItems}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:spaceItemDecoration="@{8}"
                     tools:listitem="@layout/tax_association_item" />
@@ -123,13 +113,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:onClick="@{() -> viewModel.showProductDialog()}"
                 android:text="@string/add_product_to_tax_override_association" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.update()}"
                 android:text="@string/update" />
         </LinearLayout>
 

@@ -17,10 +17,6 @@ class CommerceViewModel : CommonViewModel<CommerceState>(CommerceState()) {
                         navigateToId = R.id.ordersFragment
                     ),
                     NavigationButtonComponent(
-                        title = "INVENTORY",
-                        navigateToId = R.id.inventoryFragment
-                    ),
-                    NavigationButtonComponent(
                         title = "CATALOG - Product",
                         navigateToId = R.id.productFragment
                     ),

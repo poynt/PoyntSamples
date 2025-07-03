@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.ProductParams
-import com.godaddy.commerce.catalog.models.Product
-import com.godaddy.commerce.catalog.models.UpdateProduct
+import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.common.DataSource
+import com.godaddy.commerce.sdk.catalog.updateCatalogProduct
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onError
 import com.godaddy.commerce.services.sample.common.extensions.toSimpleMoney
@@ -16,6 +16,8 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
+import com.godaddy.commercecore.models.Money
+import com.godaddy.commercecore.models.Product
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -39,48 +41,53 @@ class ProductUpdateViewModel(
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
                 putParcelable(ProductParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
             }
-            val response = suspendCancellableCoroutine<Product?> {
-                service.getProduct(id, bundle, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogProduct?> {
+                service.getCatalogProduct(id, bundle, it.onSuccess(), it.onError())
             }
             update {
                 copy(
-                    item = response,
-                    toolbarState = toolbarState.copy(title = "Product Update: ${response?.productId}")
+                    product = response?.product,
+                    toolbarState = toolbarState.copy(title = "Product Update: ${response?.product?.id}")
                 )
             }
         }
     }
 
-    fun onProductNameUpdated(value: String) {
-        update { copy(updatedName = value) }
+    fun onProductLabelUpdated(value: String) {
+        update { copy(updatedLabel = value) }
     }
 
-    fun onProductAmountUpdated(value: String) {
-        update { copy(updatedAmount = value.toLongOrNull()) }
+    fun onProductPriceUpdated(value: String) {
+        update { copy(updatedPrice = Money(value)) }
     }
 
     fun updateProduct() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
-            val request = UpdateProduct(
-                name = state.updatedName,
-                price = state.updatedAmount?.toSimpleMoney()
+            val request = CatalogProduct(
+                product = Product(
+                    label = state.updatedLabel,
+                    shortLabel = state.updatedShortLabel,
+//                pricingInfos = state.updatedPrice,
+                )
             )
 
-            val response = suspendCancellableCoroutine<Product?> {
-                service.patchProduct(id, request, Bundle.EMPTY, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogProduct?> {
+                service.updateCatalogProduct(id, request, Bundle.EMPTY, it.onSuccess(), it.onError())
             }
 
-            update { copy(updatedId = response?.productId?.toString()) }
+            update { copy(updatedId = response?.product?.id?.toString()) }
         }
     }
 
     data class State(
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Product Update"),
-        val item: Product? = null,
-        val updatedName: String? = null,
-        val updatedAmount: Long? = null,
+        val product: Product? = null,
+        val updatedLabel: String? = null,
+        val updatedShortLabel: String? = null,
+        val updatedPrice: Money? = null,
+        val updatedSalePrice: Money? = null,
         val updatedId: String? = null
     ) : ViewModelState
 }

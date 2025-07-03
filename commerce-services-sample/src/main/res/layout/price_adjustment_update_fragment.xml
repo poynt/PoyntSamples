@@ -5,14 +5,6 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.update.PriceAdjustmentUpdateViewModel" />
-
-        <variable
-            name="fragment"
-            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.update.PriceAdjustmentUpdateFragment" />
-
     </data>
 
 
@@ -47,9 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameChanged(s.toString())}"
-                    android:text="@{fragment.name}" />
+                    android:layout_marginTop="4dp"/>
 
 
                 <TextView
@@ -63,9 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}"
-                    android:text="@{fragment.amount}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -78,9 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRatePercentageChanged(s.toString())}"
-                    android:text="@{fragment.ratePercentage}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -93,10 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    app:autoCompleteData="@{fragment.amountTypes}"
-                    app:onItemSelected="@{(position) -> viewModel.onAmountTypeSelected(position)}"
-                    app:selectedPosition="@{fragment.selectedAmountTypePos}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -109,10 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    app:autoCompleteData="@{fragment.types}"
-                    app:onItemSelected="@{(position) -> viewModel.onTypeSelected(position)}"
-                    app:selectedPosition="@{fragment.selectedTypePos}" />
+                    android:layout_marginTop="4dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -128,7 +108,6 @@
                     android:nestedScrollingEnabled="false"
                     android:paddingHorizontal="@dimen/item_spacing"
                     app:adapterLayout="@{@layout/price_adjustment_association_item}"
-                    app:adapterSubmitList="@{fragment.associationItems}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:spaceItemDecoration="@{8}"
                     tools:listitem="@layout/price_adjustment_association_item" />
@@ -146,13 +125,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:onClick="@{() -> viewModel.showProductDialog()}"
                         android:text="@string/add_product_to_price_adjustment_association_items" />
 
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.update()}"
                         android:text="@string/update" />
                 </LinearLayout>
 

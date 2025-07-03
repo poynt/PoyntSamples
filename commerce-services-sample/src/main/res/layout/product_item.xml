@@ -8,7 +8,6 @@
             name="item"
             type="com.godaddy.commerce.services.sample.catalog.product.ProductRecyclerItem" />
 
-        <import type="com.godaddy.commerce.services.sample.common.extensions.ExtensionsKt" />
     </data>
 
     <LinearLayout
@@ -25,35 +24,35 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Product Id: ` + item.item.productId}"
+                android:text="@{`Product Id: ` + item.item.product.id}"
                 tools:text="Product Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Name: ` + item.item.name}"
+                android:text="@{`Name: ` + item.item.product.label}"
                 tools:text="Product Name: Some Product" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Price: ` + ExtensionsKt.format(item.item.price)}"
+                android:text="@{`Price: ` + item.item.product.pricingInfos[0].price.toString()}"
                 tools:text="Price: 100$" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Variants Count: ` + item.item.variants.size()}"
+                android:text="@{`Variants Count: ` + item.item.product.attributes.size()}"
                 tools:text="Variants Count: 10" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Category count: ` + item.item.categoryIds.size()}"
+                android:text="@{`Category count: ` + item.item.product.categoryIds.size()}"
                 tools:text="Category count: 123" />
 
         </LinearLayout>

@@ -61,9 +61,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRateNameChanged(s.toString())}"
-                    android:text="@{fragment.rateName}" />
+                    android:layout_marginTop="4dp"/>
+<!--                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRateNameChanged(s.toString())}"-->
+<!--                    android:text="@{fragment.rateName}" />-->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -76,9 +76,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}"
-                    android:text="@{fragment.amount}" />
+                    android:layout_marginTop="4dp" />
+<!--                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}"-->
+<!--                    android:text="@{fragment.amount}" />-->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -91,9 +91,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
-                    android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRatePercentageChanged(s.toString())}"
-                    android:text="@{fragment.rate}" />
+                    android:layout_marginTop="4dp"/>
+<!--                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRatePercentageChanged(s.toString())}"-->
+<!--                    android:text="@{fragment.rate}" />-->
 
 
                 <TextView
@@ -108,9 +108,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
                     android:layout_marginTop="4dp"
-                    app:autoCompleteData="@{fragment.types}"
-                    app:onItemSelected="@{(position) -> viewModel.onAmountTypeChanged(position)}"
-                    app:selectedPosition="@{fragment.selectedTypePos}" />
+                    app:autoCompleteData="@{fragment.types}"/>
+<!--                    app:onItemSelected="@{(position) -> viewModel.onAmountTypeChanged(position)}"-->
+<!--                    app:selectedPosition="@{fragment.selectedTypePos}" />-->
 
 
                 <Button

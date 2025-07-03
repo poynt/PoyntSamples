@@ -1,13 +1,21 @@
 package com.godaddy.commerce.services.sample.catalog
 
-import com.godaddy.commerce.catalog.callback.ICategoriesServiceCallback
-import com.godaddy.commerce.catalog.callback.ICategoryServiceCallback
-import com.godaddy.commerce.catalog.callback.IProductServiceCallback
-import com.godaddy.commerce.catalog.callback.IProductsServiceCallback
-import com.godaddy.commerce.catalog.models.Categories
-import com.godaddy.commerce.catalog.models.Category
-import com.godaddy.commerce.catalog.models.Product
-import com.godaddy.commerce.catalog.models.Products
+import com.godaddy.commerce.catalog.callback.ICatalogCategoriesServiceCallback
+import com.godaddy.commerce.catalog.callback.ICatalogCategoryServiceCallback
+import com.godaddy.commerce.catalog.callback.ICatalogCategoryTreeNodeServiceCallback
+import com.godaddy.commerce.catalog.callback.ICatalogCategoryTreeNodesServiceCallback
+import com.godaddy.commerce.catalog.callback.ICatalogProductServiceCallback
+import com.godaddy.commerce.catalog.callback.ICatalogProductsServiceCallback
+import com.godaddy.commerce.catalog.callback.ICatalogTaxCallback
+import com.godaddy.commerce.catalog.callback.ICatalogTaxesCallback
+import com.godaddy.commerce.catalog.model.CatalogCategories
+import com.godaddy.commerce.catalog.model.CatalogCategory
+import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNode
+import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNodes
+import com.godaddy.commerce.catalog.model.CatalogProduct
+import com.godaddy.commerce.catalog.model.CatalogProducts
+import com.godaddy.commerce.catalog.model.CatalogTax
+import com.godaddy.commerce.catalog.model.CatalogTaxes
 import com.godaddy.commerce.priceadjustments.callback.IPriceAdjustmentAssociationServiceCallback
 import com.godaddy.commerce.priceadjustments.callback.IPriceAdjustmentAssociationsServiceCallback
 import com.godaddy.commerce.priceadjustments.callback.IPriceAdjustmentServiceCallback
@@ -17,17 +25,17 @@ import com.godaddy.commerce.priceadjustments.models.PriceAdjustmentAssociation
 import com.godaddy.commerce.priceadjustments.models.PriceAdjustmentAssociations
 import com.godaddy.commerce.priceadjustments.models.PriceAdjustments
 import com.godaddy.commerce.services.sample.common.extensions.resumeIfActive
-import com.godaddy.commerce.taxes.callback.*
 import com.godaddy.commerce.taxes.models.*
+import com.godaddy.commercecore.models.CategoryProduct
 import kotlinx.coroutines.CancellableContinuation
 
 
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<Categories?>.onSuccess(): ICategoriesServiceCallback {
-    return object : ICategoriesServiceCallback.Stub() {
-        override fun onSuccess(categories: Categories?) {
+fun CancellableContinuation<CatalogCategories>.onSuccess(): ICatalogCategoriesServiceCallback {
+    return object : ICatalogCategoriesServiceCallback.Stub() {
+        override fun onSuccess(categories: CatalogCategories) {
             resumeIfActive { categories }
         }
     }
@@ -36,9 +44,9 @@ fun CancellableContinuation<Categories?>.onSuccess(): ICategoriesServiceCallback
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<Category?>.onSuccess(): ICategoryServiceCallback {
-    return object : ICategoryServiceCallback.Stub() {
-        override fun onSuccess(category: Category?) {
+fun CancellableContinuation<CatalogCategory?>.onSuccess(): ICatalogCategoryServiceCallback {
+    return object : ICatalogCategoryServiceCallback.Stub() {
+        override fun onSuccess(category: CatalogCategory?) {
             resumeIfActive { category }
         }
     }
@@ -47,9 +55,32 @@ fun CancellableContinuation<Category?>.onSuccess(): ICategoryServiceCallback {
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<Product?>.onSuccess(): IProductServiceCallback {
-    return object : IProductServiceCallback.Stub() {
-        override fun onSuccess(product: Product?) {
+fun CancellableContinuation<CatalogCategoryTreeNode?>.onSuccess(): ICatalogCategoryTreeNodeServiceCallback {
+    return object : ICatalogCategoryTreeNodeServiceCallback.Stub() {
+        override fun onSuccess(category: CatalogCategoryTreeNode?) {
+            resumeIfActive { category }
+        }
+    }
+}
+
+/**
+ * Wraps AIDL callback to coroutine continuation
+ */
+fun CancellableContinuation<CatalogCategoryTreeNodes?>.onSuccess(): ICatalogCategoryTreeNodesServiceCallback {
+    return object : ICatalogCategoryTreeNodesServiceCallback.Stub() {
+        override fun onSuccess(category: CatalogCategoryTreeNodes?) {
+            resumeIfActive { category }
+        }
+    }
+}
+
+
+/**
+ * Wraps AIDL callback to coroutine continuation
+ */
+fun CancellableContinuation<CatalogProduct?>.onSuccess(): ICatalogProductServiceCallback {
+    return object : ICatalogProductServiceCallback.Stub() {
+        override fun onSuccess(product: CatalogProduct?) {
             resumeIfActive { product }
         }
     }
@@ -58,9 +89,9 @@ fun CancellableContinuation<Product?>.onSuccess(): IProductServiceCallback {
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<Products?>.onSuccess(): IProductsServiceCallback {
-    return object : IProductsServiceCallback.Stub() {
-        override fun onSuccess(products: Products?) {
+fun CancellableContinuation<CatalogProducts?>.onSuccess(): ICatalogProductsServiceCallback {
+    return object : ICatalogProductsServiceCallback.Stub() {
+        override fun onSuccess(products: CatalogProducts?) {
             resumeIfActive { products }
         }
     }
@@ -69,31 +100,31 @@ fun CancellableContinuation<Products?>.onSuccess(): IProductsServiceCallback {
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<TaxAssociation?>.onSuccess(): ITaxAssociationServiceCallback {
-    return object : ITaxAssociationServiceCallback.Stub() {
-        override fun onSuccess(association: TaxAssociation?) {
-            resumeIfActive { association }
-        }
-    }
-}
+//fun CancellableContinuation<TaxAssociation?>.onSuccess(): ITaxAssociationServiceCallback {
+//    return object : ITaxAssociationServiceCallback.Stub() {
+//        override fun onSuccess(association: TaxAssociation?) {
+//            resumeIfActive { association }
+//        }
+//    }
+//}
 
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<TaxAssociations?>.onSuccess(): ITaxAssociationsServiceCallback {
-    return object : ITaxAssociationsServiceCallback.Stub() {
-        override fun onSuccess(associations: TaxAssociations?) {
-            resumeIfActive { associations }
-        }
-    }
-}
+//fun CancellableContinuation<TaxAssociations?>.onSuccess(): ITaxAssociationsServiceCallback {
+//    return object : ITaxAssociationsServiceCallback.Stub() {
+//        override fun onSuccess(associations: TaxAssociations?) {
+//            resumeIfActive { associations }
+//        }
+//    }
+//}
 
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<Taxes?>.onSuccess(): ITaxesServiceCallback {
-    return object : ITaxesServiceCallback.Stub() {
-        override fun onSuccess(taxes: Taxes?) {
+fun CancellableContinuation<CatalogTaxes?>.onSuccess():ICatalogTaxesCallback {
+    return object : ICatalogTaxesCallback.Stub() {
+        override fun onSuccess(taxes: CatalogTaxes?) {
             resumeIfActive { taxes }
         }
     }
@@ -102,31 +133,31 @@ fun CancellableContinuation<Taxes?>.onSuccess(): ITaxesServiceCallback {
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<TaxOverrideAssociation?>.onSuccess(): ITaxOverrideAssociationServiceCallback {
-    return object : ITaxOverrideAssociationServiceCallback.Stub() {
-        override fun onSuccess(association: TaxOverrideAssociation?) {
-            resumeIfActive { association }
-        }
-    }
-}
+//fun CancellableContinuation<TaxOverrideAssociation?>.onSuccess(): ITaxOverrideAssociationServiceCallback {
+//    return object : ITaxOverrideAssociationServiceCallback.Stub() {
+//        override fun onSuccess(association: TaxOverrideAssociation?) {
+//            resumeIfActive { association }
+//        }
+//    }
+//}
 
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<TaxOverrideAssociations?>.onSuccess(): ITaxOverrideAssociationsServiceCallback {
-    return object : ITaxOverrideAssociationsServiceCallback.Stub() {
-        override fun onSuccess(associations: TaxOverrideAssociations?) {
-            resumeIfActive { associations }
-        }
-    }
-}
+//fun CancellableContinuation<TaxOverrideAssociations?>.onSuccess(): ITaxOverrideAssociationsServiceCallback {
+//    return object : ITaxOverrideAssociationsServiceCallback.Stub() {
+//        override fun onSuccess(associations: TaxOverrideAssociations?) {
+//            resumeIfActive { associations }
+//        }
+//    }
+//}
 
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<Tax?>.onSuccess(): ITaxServiceCallback {
-    return object : ITaxServiceCallback.Stub() {
-        override fun onSuccess(tax: Tax?) {
+fun CancellableContinuation<CatalogTax?>.onSuccess(): ICatalogTaxCallback {
+    return object : ICatalogTaxCallback.Stub() {
+        override fun onSuccess(tax: CatalogTax?) {
             resumeIfActive { tax }
         }
     }

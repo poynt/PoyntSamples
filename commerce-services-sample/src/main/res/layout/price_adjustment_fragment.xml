@@ -5,13 +5,13 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentViewModel" />
+<!--        <variable-->
+<!--            name="viewModel"-->
+<!--            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentViewModel" />-->
 
-        <variable
-            name="fragment"
-            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentFragment" />
+<!--        <variable-->
+<!--            name="fragment"-->
+<!--            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentFragment" />-->
     </data>
 
 
@@ -31,7 +31,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.loadPriceAdjustments()}"
                 android:text="@string/refresh_price_adjustments" />
 
             <Button
@@ -51,7 +50,6 @@
             android:layout_weight="1"
             android:paddingHorizontal="@dimen/item_spacing"
             app:adapterLayout="@{@layout/price_adjustment_item}"
-            app:adapterSubmitList="@{fragment.items}"
             app:dividerItemDecoration="@{1}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:spaceItemDecoration="@{@dimen/item_spacing}"

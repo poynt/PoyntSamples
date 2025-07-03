@@ -5,13 +5,6 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.godaddy.commerce.services.sample.catalog.tax.update.association.TaxAssociationViewModel" />
-
-        <variable
-            name="fragment"
-            type="com.godaddy.commerce.services.sample.catalog.tax.update.association.TaxAssociationFragment" />
     </data>
 
 
@@ -34,11 +27,11 @@
             android:nestedScrollingEnabled="false"
             android:paddingHorizontal="@dimen/item_spacing"
             app:adapterLayout="@{@layout/tax_association_item}"
-            app:adapterSubmitList="@{fragment.associationItems}"
             app:dividerItemDecoration="@{1}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:spaceItemDecoration="@{8}"
             tools:listitem="@layout/tax_association_item" />
+        <!--            app:adapterSubmitList="@{fragment.associationItems}"-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -50,13 +43,11 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.showProductDialog()}"
                 android:text="@string/add_product_to_tax_association" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.update()}"
                 android:text="@string/update" />
         </LinearLayout>
 

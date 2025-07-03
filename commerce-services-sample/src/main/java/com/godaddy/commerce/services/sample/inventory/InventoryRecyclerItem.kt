@@ -4,23 +4,23 @@ package com.godaddy.commerce.services.sample.inventory
 
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import com.godaddy.commerce.inventory.models.InventoryBundled
+import com.godaddy.commercecore.models.InventoryInfo
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.binding.RecyclerAdapterItem
 import com.godaddy.commerce.services.sample.databinding.InventoryItemBinding
 
 data class InventoryRecyclerItem(
-    override val item: InventoryBundled,
-    override val onBinding: (binding: InventoryItemBinding, position: Int, getItem: () -> InventoryBundled) -> Unit = { _, _, _ -> },
-) : RecyclerAdapterItem<InventoryBundled, InventoryItemBinding>(item, onBinding)
+    override val item: Any,
+    override val onBinding: (binding: InventoryItemBinding, position: Int, getItem: () -> Any) -> Unit = { _, _, _ -> },
+) : RecyclerAdapterItem<Any, InventoryItemBinding>(item, onBinding)
 
 
-inline fun InventoryBundled.mapToUiItems(): InventoryRecyclerItem {
+inline fun Any.mapToUiItems(): InventoryRecyclerItem {
     return InventoryRecyclerItem(this) { binding, _, getItem ->
         binding.updateBt.setOnClickListener {
             it.findNavController().navigate(
                 resId = R.id.inventoryUpdateFragment,
-                args = bundleOf("id" to getItem().level?.inventoryLevelId)
+//                args = bundleOf("id" to getItem().level?.inventoryLevelId)
             )
         }
     }

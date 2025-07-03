@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
 import com.godaddy.commerce.catalog.TaxParams
+import com.godaddy.commerce.catalog.model.CatalogTaxes
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.common.FilterBy
 import com.godaddy.commerce.provider.catalog.CatalogContract
@@ -16,7 +17,6 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider
-import com.godaddy.commerce.taxes.models.Taxes
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -53,10 +53,10 @@ class TaxViewModel : CommonViewModel<TaxViewModel.State>(State()) {
                 putString(TaxParams.SORT_BY, CatalogContract.Tax.Columns.UPDATED_AT)
 
                 // filter is optional. In this example we do showing taxes which are enabled.
-                putParcelable(TaxParams.FILTER_BY, FilterBy(CatalogContract.Tax.Columns.ENABLED, "1", FilterBy.ComparisonOperator.EQUAL))
+                putParcelable(TaxParams.FILTER_BY, FilterBy(CatalogContract.Tax.Columns.STATUS, "1", FilterBy.ComparisonOperator.EQUAL))
             }
-            val response = suspendCancellableCoroutine<Taxes?> {
-                service.getTaxes(bundle, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogTaxes?> {
+                service.getCatalogTaxes(bundle, it.onSuccess(), it.onError())
             }
             update { copy(items = response?.taxes.orEmpty().map { it.mapToUiItems() }) }
         }

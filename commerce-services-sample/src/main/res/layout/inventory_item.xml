@@ -23,35 +23,35 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Level Id: ` + item.item.level.inventoryLevelId}"
+                android:text="Level Id: ` + item.item.level.inventoryLevelId"
                 tools:text="Level Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Product Id: ` + item.item.level.productId}"
+                android:text="Product Id: item.item.level.productId"
                 tools:text="Product Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Quantity: ` + item.item.level.quantity}"
+                android:text="Quantity: ` + item.item.level.quantity"
                 tools:text="Order Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Low Inventory Threshold: ` + item.item.summary.lowInventoryThreshold}"
+                android:text="`Low Inventory Threshold: ` + item.item.summary.lowInventoryThreshold}"
                 tools:text="Low Inventory Threshold: 10" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Is backorderable: ` + item.item.summary.isBackorderable()}"
+                android:text="`Is backorderable: ` + item.item.summary.isBackorderable()}"
                 tools:text="Is backorderable: true" />
 
         </LinearLayout>
