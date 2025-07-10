@@ -17,30 +17,54 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
 import com.godaddy.commercecore.models.Category
+import com.godaddy.commercecore.models.InventoryInfo
 import com.godaddy.commercecore.models.Money
 import com.godaddy.commercecore.models.PricingInfo
 import com.godaddy.commercecore.models.Product
+import com.godaddy.commercecore.models.SellableProduct
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.suspendCancellableCoroutine
+
+//The fields that are important to be exemplified on the sample are:
+//•	Label
+//•	Price
+//•	SKU Code
+//•	Inventory Info
+//
+//The Inventory API works in conjunction with the Product API to allow Inventory Management of a Merchant Product.
+// Client applications are allowed to enable it for Product and update its quantity as needed.
+//The Domain Model related to the Inventory API is the InventoryInfo. It has a direct relationship
+// with the SellableProduct model.
+//The fields that are important to be exemplified for Inventoryinfo are:
+
+//•	Quantity
+//•	Threshold
+
+//The Create product Screen should exemplify how to create Products.
+//1.	Allow user to input all important fields.
+//2.	Display a Snackbar with any Error message given from CS when Creation Fails.
+//3.	Short Label field should be filled with First 5 Chars from Label
+//4.	Disable Price Override field should be filled based on whether user informed Price.
+//5.	Enable Inventory Tracking field should be filled based on whether user informed Quantity.
+
+
 
 class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(State()) {
 
     private val catalogServiceClient = getCatalogService(viewModelScope)
 
-    fun onProductNameChanged(value: String) {
+    fun onProductLabelChanged(value: String) {
         update { copy(label = value) }
     }
 
-//    fun onAmountChanged(value: String) {
-//        update { copy( = value.toLongOrNull()) }
-//    }
 
-//    fun onQuantityChanged(value: String) {
-//        update { copy(quantity = value.toFloatOrNull()) }
-//    }
-
-    fun showCategoryDialog() {
+    fun showProductDialog() {
         execute {
+            if (state.products){
+                update{
+                    copy()
+            }
+
             if (state.categories.isEmpty()) {
                 val params = bundleOf(
                     // recommended data source is REMOTE_IF_EMPTY.
@@ -66,37 +90,34 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
     }
 
     fun hideProductsDialog() {
-        update { copy(showCategoryDialog = false) }
+        update { copy(showProductDialog = false) }
     }
-
-    fun selectCategory(category: Category) {
-        update { copy(selectedCategory = category) }
-    }
-
-    fun onTypeSelected(position: Int) {
-        update { copy(selectedProductType = productTypes.getOrNull(position)) }
     }
 
     fun create() {
         hideProductsDialog()
         execute {
 
-            val categoryIds = listOfNotNull( state.selectedCategory?.id )
-            val label = requireNotNull( state.label)
-            val shortLabel = requireNotNull( state.shortLabel )
-            val pricingInfos = listOf( PricingInfo(price = state.price, salePrice = state.salePrice))
+            val inventoryInfo = InventoryInfo(
+                quantity = state.quantity,
+                threshold = state.threshold
+            )
+
+            val sellableProduct = SellableProduct(
+                skuCode = state.skuCode,
+                inventoryInfos = listOf(inventoryInfo)
+            )
+
+            val product = Product(
+                label = requireNotNull(state.label),
+                pricingInfos = requireNotNull(state.pricingInfos),
+                sellableProducts = listOf(sellableProduct)
+            )
 
             val request = CatalogProduct(
-                product = Product(
-                    label = label,
-                    shortLabel = shortLabel,
-                    categoryIds = categoryIds,
-                    pricingInfos = pricingInfos
-                ),
-                taxes = emptyList(),
-                discounts = emptyList(),
-                fees = emptyList(),
+                product = product
             )
+
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
             // create product
@@ -111,19 +132,21 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
     data class State(
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Create Product"),
-        val productTypes: List<String> = ProductConstants.Type.values.toList(),
-        val selectedProductType: String? = null,
 
+
+
+        // for Product
         val label: String? = null,
-        val shortLabel: String? = null,
+        val pricingInfos: List<PricingInfo>? = null,
+        val sellableProducts: List<SellableProduct>? = null,
+
+        val skuCode: String? = null,
+
         val price: Money? = null,
         val salePrice: Money? = null,
-        val type: String? = ProductConstants.Type.PHYSICAL,
 
+        val quantity: Int? = null,
+        val threshold: Int? = null,
 
-        val categories: List<Category?> = emptyList(),
-        val selectedCategory: Category? = null,
-        val showCategoryDialog: Boolean = false,
-        val createdId: String? = null
     ) : CommonViewModel.ViewModelState
 }
