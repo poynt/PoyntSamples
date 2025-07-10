@@ -5,7 +5,6 @@ package com.godaddy.commerce.services.sample.catalog.product.create
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.viewModelScope
-import com.godaddy.commerce.catalog.ProductConstants
 import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNodes
 import com.godaddy.commerce.catalog.model.CatalogProduct
@@ -16,7 +15,6 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
-import com.godaddy.commercecore.models.Category
 import com.godaddy.commercecore.models.InventoryInfo
 import com.godaddy.commercecore.models.Money
 import com.godaddy.commercecore.models.PricingInfo
@@ -56,76 +54,66 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
     fun onProductLabelChanged(value: String) {
         update { copy(label = value) }
     }
-
-
-    fun showProductDialog() {
+    fun onProductPriceChanged(value: Money?){
+        update { copy(price = value)}
+    }
+    fun onProductSalePriceChanged(value: Money?){
+        update { copy(salePrice = value)}
+    }
+    fun onProductQuantityChanged(value: Int?){
+        update { copy(quantity = value)}
+    }
+    fun onProductThresholdChanged(value: Int?){
+        update { copy(quantity = value)}
+    }
+    fun createProduct() {
         execute {
-            if (state.products){
-                update{
-                    copy()
-            }
-
-            if (state.categories.isEmpty()) {
-                val params = bundleOf(
-                    // recommended data source is REMOTE_IF_EMPTY.
-                    ProductParams.DATA_SOURCE to DataSource.REMOTE_IF_EMPTY,
-                    // pagination is required otherwise exception can be thrown.
-                    ProductParams.PAGE_SIZE to 100,
-                    ProductParams.PAGE_OFFSET to 0,
-                )
-                val service = catalogServiceClient.getService().getOrThrow()
-                val response = suspendCancellableCoroutine<CatalogCategoryTreeNodes?> {
-                    service.getCatalogCategoryTreeNodes(params, it.onSuccess(), it.onError())
-                }
-                update {
-                    copy(
-                        categories = response?.values?.map { it.categoryTreeNode.category }.orEmpty(),
-                        showCategoryDialog = true
-                    )
-                }
-            } else {
-                update { copy(showCategoryDialog = true) }
-            }
-        }
-    }
-
-    fun hideProductsDialog() {
-        update { copy(showProductDialog = false) }
-    }
-    }
-
-    fun create() {
-        hideProductsDialog()
-        execute {
-
-            val inventoryInfo = InventoryInfo(
+            val label = requireNotNull(state.label)
+            val shortLabel = requireNotNull(label.take(5))
+            val disablePriceOverride = (state.price == null)
+            val pricingInfos = listOf(PricingInfo(
+                price = state.price,
+                salePrice = state.salePrice
+            ))
+            val enableInventoryTracking = (state.quantity == null)
+            val inventoryInfos = listOf(InventoryInfo(
                 quantity = state.quantity,
-                threshold = state.threshold
-            )
+                threshold = state.threshold,
+            ))
 
-            val sellableProduct = SellableProduct(
-                skuCode = state.skuCode,
-                inventoryInfos = listOf(inventoryInfo)
-            )
-
+            val sellableProducts = listOf(SellableProduct(
+                label = label,
+                shortLabel = shortLabel,
+                pricingInfos = pricingInfos,
+                inventoryInfos = inventoryInfos,
+                disablePriceOverride = disablePriceOverride,
+                enableInventoryTracking = enableInventoryTracking
+            ))
             val product = Product(
-                label = requireNotNull(state.label),
-                pricingInfos = requireNotNull(state.pricingInfos),
-                sellableProducts = listOf(sellableProduct)
+                label = label,
+                shortLabel = shortLabel,
+                pricingInfos = pricingInfos,
+                sellableProducts = sellableProducts
             )
 
-            val request = CatalogProduct(
-                product = product
-            )
-
+            val request = CatalogProduct(product)
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
             // create product
             val response = suspendCancellableCoroutine<CatalogProduct?> {
-                catalogService.createCatalogProduct(request, Bundle.EMPTY, it.onSuccess(), it.onError())
+                catalogService.createCatalogProduct(
+                    request,
+                    Bundle.EMPTY,
+                    it.onSuccess(),
+                    it.onError()
+                )
             }
+            update { copy(
+                createdProductId = response?.product?.id,
+                createdSellableProductId = response?.product?.sellableProducts?.first()?.id
+            )}
 
-            // TODO: if quantity is not null then create inventory
+
         }
     }
 
@@ -133,20 +121,14 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Create Product"),
 
-
-
-        // for Product
         val label: String? = null,
-        val pricingInfos: List<PricingInfo>? = null,
-        val sellableProducts: List<SellableProduct>? = null,
-
         val skuCode: String? = null,
-
         val price: Money? = null,
         val salePrice: Money? = null,
-
         val quantity: Int? = null,
         val threshold: Int? = null,
 
+        val createdProductId: String? = null,
+        val createdSellableProductId: String? = null
     ) : CommonViewModel.ViewModelState
 }
