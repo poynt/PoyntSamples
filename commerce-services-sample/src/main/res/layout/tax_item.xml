@@ -25,14 +25,14 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Tax Id: ` + item.item.id}"
+                android:text="@{`Tax Id: ` + item.item}"
                 tools:text="Tax Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Name: ` + item.item.name}"
+                android:text="@{`Name: ` + item.item.tax.label}"
                 tools:text="Tax Name: Some Tax" />
 
 
@@ -40,8 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Name: ` + ExtensionsKt.format(item.item.taxRates.get(0).amount)}"
                 tools:text="Tax Amount: Amount" />
+<!--            android:text="@{`Name: ` + ExtensionsKt.format(item.item.taxRates.get(0).amount)}" -->
 
         </LinearLayout>
 

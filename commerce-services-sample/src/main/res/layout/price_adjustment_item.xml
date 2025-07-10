@@ -4,10 +4,6 @@
 
     <data>
 
-        <variable
-            name="item"
-            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentRecyclerItem" />
-
     </data>
 
     <LinearLayout
@@ -24,48 +20,41 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Id: ` + item.item.id}"
                 tools:text="item Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Name: ` + item.item.name}"
                 tools:text="Name: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Type: ` + item.item.type}"
                 tools:text="Type: Fee" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Applied before tax: ` + item.item.appliedBeforeTax.toString()}"
                 tools:text="Applied before tax" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`AmountType: ` + item.item.amountType.toString()}"
                 tools:text="AmountType" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Amount: ` + item.item.amount.toString()}"
                 tools:text="Amount" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Rate Percentage: ` + item.item.ratePercentage.toString()}"
                 tools:text="Rate Percentage" />
 
         </LinearLayout>

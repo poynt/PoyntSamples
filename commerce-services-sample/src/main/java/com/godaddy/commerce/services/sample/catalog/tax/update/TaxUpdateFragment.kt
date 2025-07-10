@@ -16,17 +16,17 @@ class TaxUpdateFragment :
 
     private val viewModel: TaxUpdateViewModel by viewModels()
 
-    val name by observableField({ viewModel.stateFlow }, { tax?.name })
-    val rateName by observableField({ viewModel.stateFlow }, { tax?.taxRates?.firstOrNull()?.name })
-    val amount by observableField(
-        { viewModel.stateFlow },
-        { tax?.taxRates?.firstOrNull()?.amount?.value?.toString() })
-    val rate by observableField(
-        { viewModel.stateFlow },
-        { tax?.taxRates?.firstOrNull()?.ratePercentage })
-    val selectedTypePos by observableField(
-        { viewModel.stateFlow },
-        { tax?.taxRates?.firstOrNull()?.amountType?.let { amountTypes.indexOf(it) } })
+    val name by observableField({ viewModel.stateFlow }, { tax?.tax?.label })
+//    val rateName by observableField({ viewModel.stateFlow }, { tax?.taxRates?.firstOrNull()?.name })
+//    val amount by observableField(
+//        { viewModel.stateFlow },
+//        { tax?.taxRates?.firstOrNull()?.amount?.value?.toString() })
+//    val rate by observableField(
+//        { viewModel.stateFlow },
+//        { tax?.taxRates?.firstOrNull()?.ratePercentage })
+//    val selectedTypePos by observableField(
+//        { viewModel.stateFlow },
+//        { tax?.taxRates?.firstOrNull()?.amountType?.let { amountTypes.indexOf(it) } })
 
     val types by observableField(
         stateFlow = { viewModel.stateFlow },

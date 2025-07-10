@@ -26,10 +26,6 @@
         android:name="com.godaddy.commerce.services.sample.orders.update.OrderUpdateFragment"
         android:label="OrderUpdateFragment" />
     <fragment
-        android:id="@+id/inventoryFragment"
-        android:name="com.godaddy.commerce.services.sample.inventory.InventoryFragment"
-        android:label="InventoryFragment" />
-    <fragment
         android:id="@+id/inventoryUpdateFragment"
         android:name="com.godaddy.commerce.services.sample.inventory.update.InventoryUpdateFragment"
         android:label="InventoryUpdateFragment" />

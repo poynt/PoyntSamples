@@ -13,9 +13,6 @@
             name="items"
             type="List&lt;InventoryRecyclerItem>" />
 
-        <variable
-            name="viewModel"
-            type="com.godaddy.commerce.services.sample.inventory.InventoryViewModel" />
     </data>
 
 
@@ -35,7 +32,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.loadInventory()}"
                 android:text="@string/refresh_inventory" />
 
             <Button

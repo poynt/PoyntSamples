@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import com.godaddy.commerce.catalog.models.Product
+import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.dialogBuilder
@@ -26,7 +26,7 @@ class TaxCreateFragment :
 
     val types by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = TaxCreateViewModel.State::amountTypes
+        map = TaxCreateViewModel.State::label
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,12 +51,12 @@ class TaxCreateFragment :
     }
 
 
-    private fun showProductsDialog(pair: Pair<List<Product>, Boolean>) {
+    private fun showProductsDialog(pair: Pair<List<CatalogProduct>, Boolean>) {
         if (pair.second.not()) return
         requireContext().dialogBuilder(
             "Select Product",
             items = pair.first,
-            map = { it.name },
+            map = { it.product.label },
             onSelected = viewModel::selectProduct
         ).setOnDismissListener { viewModel.hideProductsDialog() }.create().show()
     }

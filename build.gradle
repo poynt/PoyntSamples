@@ -6,11 +6,36 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.2'
+        classpath 'com.android.tools.build:gradle:8.10.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+def getSystemPropertyOrLocal(String name) {
+    if (project.hasProperty(name)) {
+        println("Property $name is found in gradle properties")
+        return project.property(name).trim().replaceAll("\"", "")
+    } else {
+        println("Property $name is not found in gradle properties")
+        if (!file("$rootDir/local.properties").exists()) {
+            println("local.properties (No such file or directory)")
+            return ""
+        }
+        def localProperties = new Properties()
+        localProperties.load(new FileInputStream("$rootDir/local.properties"))
+        def property = localProperties.get(name)
+        if (property == null || property.isEmpty()) {
+            return ""
+        }
+        return property.trim().replaceAll("\"", "")
+    }
+}
+
+ext {
+    mavenUser = this.&getSystemPropertyOrLocal("mavenUser")
+    mavenPassword = this.&getSystemPropertyOrLocal("mavenPassword")
 }
 
 allprojects {
@@ -20,9 +45,17 @@ allprojects {
         google()
         maven {
             url 'https://nexus.poynt.com/content/repositories/releases'
+            credentials {
+                username mavenUser
+                password mavenPassword
+            }
         }
         maven {
             url 'https://nexus.poynt.com/content/repositories/snapshots'
+            credentials {
+                username mavenUser
+                password mavenPassword
+            }
         }
     }
 }

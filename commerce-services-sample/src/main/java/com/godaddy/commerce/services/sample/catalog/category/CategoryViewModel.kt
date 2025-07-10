@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
 import com.godaddy.commerce.catalog.CategoryParams
-import com.godaddy.commerce.catalog.models.Categories
+import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNodes
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.provider.catalog.CatalogContract
 import com.godaddy.commerce.services.sample.catalog.onSuccess
@@ -52,6 +52,7 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
     fun loadCategories(query: String? = null) {
         execute {
             val service = serviceClient.getService().getOrThrow()
+
             val bundle = Bundle().apply {
                 // data source defines data provider: local db, remote or remote only if there are no data in local db.
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
@@ -69,10 +70,10 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
                 // optional. Use only if need to get products list in category model.
                 putBoolean(CategoryParams.INCLUDE_PRODUCT_IDS, true)
             }
-            val response = suspendCancellableCoroutine<Categories?> {
-                service.getCategories(bundle, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogCategoryTreeNodes?> {
+                service.getCatalogCategoryTreeNodes(bundle, it.onSuccess(), it.onError())
             }
-            update { copy(items = response?.categories.orEmpty().map { it.mapToUiItems() }) }
+            update { copy(items = response?.values.orEmpty().map { it.mapToUiItems() }) }
         }
     }
 

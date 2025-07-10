@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
 import com.godaddy.commerce.catalog.ProductParams
-import com.godaddy.commerce.catalog.models.Products
+import com.godaddy.commerce.catalog.model.CatalogProducts
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.provider.catalog.CatalogContract
 import com.godaddy.commerce.services.sample.catalog.onSuccess
@@ -69,8 +69,8 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
                 // optional. Use only if need to get category list in product model.
                 putBoolean(ProductParams.INCLUDE_CATEGORY_IDS, true)
             }
-            val response = suspendCancellableCoroutine<Products?> {
-                service.getProducts(bundle, it.onSuccess(), it.onError())
+            val response = suspendCancellableCoroutine<CatalogProducts?> {
+                service.getCatalogProducts(bundle, it.onSuccess(), it.onError())
             }
             update { copy(items = response?.products.orEmpty().map { it.mapToUiItems() }) }
         }

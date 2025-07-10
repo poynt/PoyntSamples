@@ -4,25 +4,25 @@ package com.godaddy.commerce.services.sample.catalog.tax
 
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import com.godaddy.commerce.catalog.model.CatalogTax
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.binding.RecyclerAdapterItem
 import com.godaddy.commerce.services.sample.databinding.TaxAssociationItemBinding
 import com.godaddy.commerce.services.sample.databinding.TaxItemBinding
 import com.godaddy.commerce.taxes.models.AssociationItems
-import com.godaddy.commerce.taxes.models.Tax
 import java.util.*
 
 data class TaxRecyclerItem(
-    override val item: Tax,
-    override val onBinding: (binding: TaxItemBinding, position: Int, getItem: () -> Tax) -> Unit = { _, _, _ -> },
-) : RecyclerAdapterItem<Tax, TaxItemBinding>(item, onBinding)
+    override val item: CatalogTax,
+    override val onBinding: (binding: TaxItemBinding, position: Int, getItem: () -> CatalogTax) -> Unit = { _, _, _ -> },
+) : RecyclerAdapterItem<CatalogTax, TaxItemBinding>(item, onBinding)
 
-inline fun Tax.mapToUiItems(): TaxRecyclerItem {
+inline fun CatalogTax.mapToUiItems(): TaxRecyclerItem {
     return TaxRecyclerItem(this) { binding, _, getItem ->
         binding.updateBt.setOnClickListener {
             it.findNavController().navigate(
                 resId = R.id.taxUpdateFragment,
-                args = bundleOf("id" to getItem().id?.toString())
+                args = bundleOf("id" to getItem().tax.id?.toString())
             )
         }
     }

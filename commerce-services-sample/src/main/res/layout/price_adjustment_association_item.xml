@@ -4,10 +4,6 @@
 
     <data>
 
-        <variable
-            name="item"
-            type="com.godaddy.commerce.services.sample.catalog.priceAdjustment.PriceAdjustmentAssociationRecyclerItem" />
-
     </data>
 
     <LinearLayout
@@ -24,14 +20,12 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Item Id: ` + item.item.id}"
                 tools:text="item Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Type: ` + item.item.type}"
                 tools:text="Type: PRODUCT" />
 
         </LinearLayout>

@@ -4,7 +4,7 @@
     <data>
 
 
-        <import type="com.godaddy.commerce.catalog.models.Category" />
+        <import type="com.godaddy.commercecore.models.Category" />
 
         <variable
             name="item"
@@ -50,7 +50,7 @@
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
                 android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameUpdated(s.toString())}"
-                android:text="@{fragment.item.name}" />
+                android:text="@{fragment.item.label}" />
 
             <Button
                 android:layout_width="wrap_content"

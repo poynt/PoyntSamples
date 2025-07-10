@@ -4,19 +4,19 @@
     <data>
 
 
-        <import type="com.godaddy.commerce.inventory.models.InventoryBundled" />
+        <import type="com.godaddy.commercecore.models.InventoryInfo" />
 
         <variable
             name="item"
-            type="InventoryBundled" />
+            type="InventoryInfo" />
 
-        <variable
-            name="viewModel"
-            type="com.godaddy.commerce.services.sample.inventory.update.InventoryUpdateViewModel" />
+<!--        <variable-->
+<!--            name="viewModel"-->
+<!--            type="com.godaddy.commerce.services.sample.inventory.update.InventoryUpdateViewModel" />-->
 
-        <variable
-            name="fragment"
-            type="com.godaddy.commerce.services.sample.inventory.update.InventoryUpdateFragment" />
+<!--        <variable-->
+<!--            name="fragment"-->
+<!--            type="com.godaddy.commerce.services.sample.inventory.update.InventoryUpdateFragment" />-->
     </data>
 
 
@@ -50,9 +50,8 @@
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
                 android:digits="0123456789"
-                android:inputType="numberDecimal"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onLowInventoryThresholdUpdated(s.toString())}"
-                android:text="@{fragment.item.summary.lowInventoryThreshold.toString()}" />
+                android:inputType="numberDecimal"/>
+<!--                android:text="@{fragment.item.summary.lowInventoryThreshold.toString()}" />-->
 
             <TextView
                 android:layout_width="match_parent"
@@ -67,9 +66,8 @@
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
                 android:digits="0123456789"
-                android:inputType="numberDecimal"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onQuantityUpdated(s.toString())}"
-                android:text="@{fragment.item.level.quantity.toString()}" />
+                android:inputType="numberDecimal"/>
+<!--                android:text="@{fragment.item.level.quantity.toString()}" />-->
 
             <Button
                 android:layout_width="wrap_content"
@@ -77,7 +75,6 @@
                 android:layout_gravity="end"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="@dimen/item_spacing"
-                android:onClick="@{() -> viewModel.updateInventory()}"
                 android:text="@string/update" />
 
         </LinearLayout>

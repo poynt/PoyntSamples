@@ -18,9 +18,9 @@ class ProductUpdateFragment :
 
     private val viewModel: ProductUpdateViewModel by viewModels()
 
-    val item by observableField(
+    val product by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = ProductUpdateViewModel.State::item
+        map = ProductUpdateViewModel.State::product
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
