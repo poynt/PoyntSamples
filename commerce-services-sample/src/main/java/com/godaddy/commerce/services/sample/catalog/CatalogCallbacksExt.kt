@@ -166,7 +166,7 @@ fun CancellableContinuation<CatalogTax?>.onSuccess(): ICatalogTaxCallback {
 /**
  * Wraps AIDL callback to coroutine continuation
  */
-fun CancellableContinuation<PriceAdjustmentAssociation?>.onSuccess(): IPriceAdjustmentAssociationServiceCallback {
+fun CancellableContinuation<PriceAdjustmentAssociation?>.onSucces(): IPriceAdjustmentAssociationServiceCallback {
     return object : IPriceAdjustmentAssociationServiceCallback.Stub() {
         override fun onSuccess(association: PriceAdjustmentAssociation?) {
             resumeIfActive { association }

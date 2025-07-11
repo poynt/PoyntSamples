@@ -7,13 +7,10 @@ import androidx.fragment.app.viewModels
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateViewModel.*
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
-import com.godaddy.commerce.services.sample.common.extensions.dialogBuilder
 import com.godaddy.commerce.services.sample.common.extensions.launch
-import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.ProductCreateFragmentBinding
-import com.godaddy.commercecore.models.Category
 
 class ProductCreateFragment :
     CommonFragment<ProductCreateFragmentBinding>(R.layout.product_create_fragment) {
