@@ -20,14 +20,14 @@ class ProductUpdateFragment :
 
     val product by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = ProductUpdateViewModel.State::product
+        map = ProductUpdateViewModel.State::catalogProduct
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindOnCommonViewModelUpdates(viewModel)
         launch {
-            viewModel.stateFlow.bindTo(ProductUpdateViewModel.State::updatedId) {
+            viewModel.stateFlow.bindTo(ProductUpdateViewModel.State::updatedProductId) {
                 it ?: return@bindTo
                 Toast.makeText(
                     requireContext(),

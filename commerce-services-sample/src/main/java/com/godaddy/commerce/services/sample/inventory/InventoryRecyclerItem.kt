@@ -8,20 +8,18 @@ import com.godaddy.commercecore.models.InventoryInfo
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.binding.RecyclerAdapterItem
 import com.godaddy.commerce.services.sample.databinding.InventoryItemBinding
-
 data class InventoryRecyclerItem(
     override val item: Any,
-    override val onBinding: (binding: InventoryItemBinding, position: Int, getItem: () -> Any) -> Unit = { _, _, _ -> },
-) : RecyclerAdapterItem<Any, InventoryItemBinding>(item, onBinding)
+) : RecyclerAdapterItem<Any, InventoryItemBinding>(item, BINDING_HANDLER) {
 
-
-inline fun Any.mapToUiItems(): InventoryRecyclerItem {
-    return InventoryRecyclerItem(this) { binding, _, getItem ->
-        binding.updateBt.setOnClickListener {
-            it.findNavController().navigate(
-                resId = R.id.inventoryUpdateFragment,
-//                args = bundleOf("id" to getItem().level?.inventoryLevelId)
-            )
+    companion object {
+        private val BINDING_HANDLER: (InventoryItemBinding, Int, () -> Any) -> Unit = { binding, _, getItem ->
+            binding.updateBt.setOnClickListener {
+                it.findNavController().navigate(
+                    resId = R.id.inventoryUpdateFragment,
+                    // args = bundleOf("id" to getItem().level?.inventoryLevelId)
+                )
+            }
         }
     }
 }

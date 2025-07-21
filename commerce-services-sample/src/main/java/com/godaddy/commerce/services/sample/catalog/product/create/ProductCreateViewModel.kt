@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.services.sample.catalog.onSuccess
+import com.godaddy.commerce.services.sample.catalog.product.SkuFormatter
 import com.godaddy.commerce.services.sample.common.extensions.onError
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
