@@ -49,8 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductLabelUpdated(s.toString())}"
-                android:text="@{fragment.product.label}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductLabelUpdated(s.toString())}"/>
+<!--                android:text="@{fragment.product.updatedLabel}" -->
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,8 +66,9 @@
                 android:layout_marginTop="4dp"
                 android:digits="0123456789"
                 android:inputType="numberDecimal"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductPriceUpdated(s.toString())}"
-                android:text="@{fragment.product.pricingInfos[0].price.toString()}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductPriceUpdated(s.toString())}"/>
+<!--                android:text="@{fragment.product.updatedPricingInfos[0].price.toString()}" -->
+
 
             <Button
                 android:layout_width="wrap_content"
