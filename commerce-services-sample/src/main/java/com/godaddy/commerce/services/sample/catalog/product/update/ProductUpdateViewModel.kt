@@ -24,8 +24,6 @@ import com.godaddy.commercecore.models.Product
 import com.godaddy.commercecore.models.SellableProduct
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.suspendCancellableCoroutine
-import timber.log.Timber
-
 class ProductUpdateViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : CommonViewModel<ProductUpdateViewModel.State>(State()) {
@@ -36,14 +34,11 @@ class ProductUpdateViewModel(
     private val skuFormatter = SkuFormatter()
 
     init {
-        Timber.tag("ProductUpdateVM").d("ViewModel created/initialized")
         loadProduct()
     }
 
     private fun loadProduct() {
         execute {
-            Timber.tag("ProductUpdateVM").d("loadProduct() called")
-            Timber.tag("ProductUpdateVM").d(id)
             val service = catalogServiceClient.getService().getOrThrow()
             val bundle = Bundle().apply {
                 putParcelable(ProductParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
@@ -52,9 +47,14 @@ class ProductUpdateViewModel(
             val response = suspendCancellableCoroutine<CatalogProduct?> {
                 service.getCatalogProduct(id, bundle, it.onSuccess(), it.onError())
             }
-            update { copy (catalogProduct = response) }
-
-            Timber.tag("ProductUpdateVM").d(response?.product.toString())
+            update { copy (
+                updatedLabel = response?.product?.label,
+                updatedPrice = response?.product?.pricingInfos?.firstOrNull()?.price,
+                updatedSalePrice = response?.product?.pricingInfos?.firstOrNull()?.salePrice,
+                updatedQuantity = response?.product?.sellableProducts?.firstOrNull()?.inventoryInfos?.firstOrNull()?.quantity,
+                updatedThreshold = response?.product?.sellableProducts?.firstOrNull()?.inventoryInfos?.firstOrNull()?.threshold,
+                catalogProduct = response
+            )}
         }
     }
 
@@ -66,24 +66,30 @@ class ProductUpdateViewModel(
             updatedShortLabel = value.take(5)
         ) }
     }
-
     fun onProductPriceUpdated(value: String) {
-        update { copy(updatedPrice = Money(value = value.toLong(), currencyCode = "USD")) }
+        value.toLongOrNull()?.let{
+            update { copy(updatedPrice = Money(value = it, currencyCode = "USD")) }
+        }
     }
     fun onProductSalePriceUpdated(value: String) {
-        update { copy(updatedSalePrice = Money(value = value.toLong(), currencyCode = "USD")) }
+        value.toLongOrNull()?.let{
+            update { copy(updatedSalePrice = Money(value = it, currencyCode = "USD")) }
+        }
     }
     fun onProductQuantityUpdated(value: String) {
-        update { copy(updatedQuantity = value.toInt()) }
+        value.toIntOrNull()?.let{
+            update { copy(updatedQuantity = it) }
+        }
     }
     fun onProductThresholdUpdated(value: String) {
-        update { copy(updatedThreshold = value.toInt()) }
+        value.toIntOrNull()?.let{
+            update { copy(updatedThreshold = it) }
+        }
     }
 
 
     fun updateProduct() {
         execute {
-            Timber.tag("ProductUpdateVM").d(state.catalogProduct?.product.toString())
             val product = requireNotNull(state.catalogProduct?.product)
             val sellableProduct = requireNotNull(product.sellableProducts?.first())
 
@@ -126,18 +132,10 @@ class ProductUpdateViewModel(
                 sellInPerson = product.sellInPerson,
             )
 
-            Timber.tag("ProductUpdateVM").d(updatedProduct.toString())
-            Timber.tag("ProductUpdateVM").d("hi")
-            Timber.tag("ProductUpdateVM").d(updatedProduct.id)
-            Timber.tag("ProductUpdateVM").d(updatedSellableProducts.first().id)
-
-
             val request = CatalogProduct(updatedProduct)
 
-            Timber.tag("ProductUpdateVM").d(request.toString())
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
-            Timber.tag("ProductUpdateVM").d(request.toString())
             val response = suspendCancellableCoroutine<CatalogProduct?> {
                 catalogService.updateCatalogProduct(
                     id,
@@ -147,8 +145,6 @@ class ProductUpdateViewModel(
                     it.onError()
                 )
             }
-            Timber.tag("ProductUpdateVM").d(response.toString())
-
             update {
                 copy(
                     updatedProductId = response?.product?.id,
@@ -164,14 +160,11 @@ class ProductUpdateViewModel(
         val catalogProduct: CatalogProduct? = null,
         val updatedLabel: String? = null,
         val updatedShortLabel: String? = null,
-//        val updatedSkuCode: String? = null,
         val updatedPrice: Money? = null,
         val updatedSalePrice: Money? = null,
         val updatedQuantity: Int? = null,
         val updatedThreshold: Int? = null,
-//        val updatedSellInPerson: Boolean? = true,
         val updatedProductId: String? = null,
-        val updatedEnableInventoryTracking: Boolean = false,
-//        val updatedSellableProductId: String? = null
+        val updatedEnableInventoryTracking: Boolean = true,
     ) : ViewModelState
 }

@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@string/product_amount" />
+                android:text="Product Price" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="sale price" />
+                android:text="Sale Price" />
 
             <EditText
                 android:layout_width="match_parent"
