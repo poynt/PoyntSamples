@@ -6,10 +6,6 @@
         <import type="com.godaddy.commercecore.models.Product" />
 
         <variable
-            name="item"
-            type="Product" />
-
-        <variable
             name="viewModel"
             type="com.godaddy.commerce.services.sample.catalog.product.update.ProductUpdateViewModel" />
 
@@ -41,13 +37,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="Label" />
+                android:text="@string/label" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
+                android:inputType="text"
                 android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductLabelUpdated(s.toString())}"
                 android:text="@{fragment.updatedLabel}" />
 
@@ -56,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="Price" />
+                android:text="@string/price" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -74,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="Sale Price"
+                android:text="@string/sale_price"
                 />
 
             <EditText
@@ -93,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="Quantity" />
+                android:text="@string/quantity" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -111,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="Threshold" />
+                android:text="@string/threshold" />
 
             <EditText
                 android:layout_width="match_parent"

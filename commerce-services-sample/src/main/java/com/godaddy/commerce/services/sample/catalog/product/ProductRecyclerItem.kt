@@ -9,7 +9,6 @@ import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.binding.RecyclerAdapterItem
 import com.godaddy.commerce.services.sample.databinding.ProductItemBinding
 import com.godaddy.commercecore.models.InventoryInfo
-import com.godaddy.commercecore.models.Money
 import com.godaddy.commercecore.models.PricingInfo
 import com.godaddy.commercecore.models.SellableProduct
 

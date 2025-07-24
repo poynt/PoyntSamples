@@ -3,13 +3,11 @@
 package com.godaddy.commerce.services.sample.catalog.product.update
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.common.DataSource
-import com.godaddy.commerce.sdk.util.toOrNull
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.catalog.product.SkuFormatter
 import com.godaddy.commerce.services.sample.common.extensions.onError
@@ -31,12 +29,29 @@ class ProductUpdateViewModel(
     private val catalogServiceClient = getCatalogService(viewModelScope)
 
     private val id get() = savedStateHandle.get<String>("id")
-    private val skuFormatter = SkuFormatter()
+
+    private fun setProductState(response: CatalogProduct?){
+        update {
+            val product = response?.product
+            val pricingInfo = product?.pricingInfos?.firstOrNull()
+            val sellableProduct = product?.sellableProducts?.firstOrNull()
+            val inventoryInfo = sellableProduct?.inventoryInfos?.firstOrNull()
+            copy(
+                updatedLabel = product?.label,
+                updatedPrice = pricingInfo?.price,
+                updatedSalePrice = pricingInfo?.salePrice,
+                updatedQuantity = inventoryInfo?.quantity,
+                updatedThreshold = inventoryInfo?.threshold,
+                updatedProduct = product,
+                updatedSellableProduct = sellableProduct,
+                updatedPricingInfoId = pricingInfo?.id,
+            )
+        }
+    }
 
     init {
         loadProduct()
     }
-
     private fun loadProduct() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
@@ -47,20 +62,11 @@ class ProductUpdateViewModel(
             val response = suspendCancellableCoroutine<CatalogProduct?> {
                 service.getCatalogProduct(id, bundle, it.onSuccess(), it.onError())
             }
-            update { copy (
-                updatedLabel = response?.product?.label,
-                updatedPrice = response?.product?.pricingInfos?.firstOrNull()?.price,
-                updatedSalePrice = response?.product?.pricingInfos?.firstOrNull()?.salePrice,
-                updatedQuantity = response?.product?.sellableProducts?.firstOrNull()?.inventoryInfos?.firstOrNull()?.quantity,
-                updatedThreshold = response?.product?.sellableProducts?.firstOrNull()?.inventoryInfos?.firstOrNull()?.threshold,
-                catalogProduct = response
-            )}
+            setProductState(response)
         }
     }
 
     fun onProductLabelUpdated(value: String) {
-        //TODO: Optimal is read from string one by one and replace all difference in short label
-        // fairly trivial since its only a 5 char operation
         update { copy(
             updatedLabel = value,
             updatedShortLabel = value.take(5)
@@ -87,49 +93,43 @@ class ProductUpdateViewModel(
         }
     }
 
-
     fun updateProduct() {
         execute {
-            val product = requireNotNull(state.catalogProduct?.product)
-            val sellableProduct = requireNotNull(product.sellableProducts?.first())
+            val label = state.updatedLabel
+            val shortLabel = state.updatedShortLabel
 
-            val label = state.updatedLabel ?: product.label
-            val shortLabel = state.updatedShortLabel ?: product.shortLabel
-
-            val pricingInfo = requireNotNull(product.pricingInfos?.first())
             val pricingInfos = listOf(PricingInfo(
-                id = pricingInfo.id,
-                price = state.updatedPrice ?: pricingInfo.price,
-                salePrice = state.updatedSalePrice ?: pricingInfo.salePrice
+                id = state.updatedPricingInfoId,
+                price = state.updatedPrice,
+                salePrice = state.updatedSalePrice
             ))
             val inventoryInfos =
                 if (state.updatedEnableInventoryTracking) listOf(InventoryInfo(quantity = state.updatedQuantity, threshold = state.updatedThreshold))
-                else if (requireNotNull(sellableProduct.enableInventoryTracking)) sellableProduct.inventoryInfos
-                else emptyList<InventoryInfo>()
+                else emptyList()
 
             val updatedSellableProducts = listOf(
                 SellableProduct(
-                    id = sellableProduct.id,
+                    id = state.updatedSellableProduct?.id,
                     label = label,
                     shortLabel = shortLabel,
-                    skuCode = sellableProduct.skuCode,
+                    skuCode = state.updatedSellableProduct?.skuCode,
                     pricingInfos = pricingInfos,
                     inventoryInfos = inventoryInfos,
-                    disablePriceOverride = sellableProduct.disablePriceOverride,
-                    enableInventoryTracking = sellableProduct.enableInventoryTracking,
-                    attributeValues = sellableProduct.attributeValues,
-                    status = sellableProduct.status,
+                    disablePriceOverride = state.updatedSellableProduct?.disablePriceOverride,
+                    enableInventoryTracking = state.updatedEnableInventoryTracking,
+                    attributeValues = state.updatedSellableProduct?.attributeValues,
+                    status = state.updatedSellableProduct?.status,
                 )
             )
             val updatedProduct = Product(
-                id = product.id,
+                id = state.updatedProduct?.id,
                 label = label,
                 shortLabel = shortLabel,
-                pricingInfos = pricingInfos, // Pricing infos should be here if no attribtues
+                pricingInfos = pricingInfos,
                 sellableProducts = updatedSellableProducts,
-                type = product.type,
-                status = product.status,
-                sellInPerson = product.sellInPerson,
+                type = state.updatedProduct?.type,
+                status = state.updatedProduct?.status,
+                sellInPerson = state.updatedProduct?.sellInPerson,
             )
 
             val request = CatalogProduct(updatedProduct)
@@ -145,11 +145,7 @@ class ProductUpdateViewModel(
                     it.onError()
                 )
             }
-            update {
-                copy(
-                    updatedProductId = response?.product?.id,
-                )
-            }
+            setProductState(response)
         }
     }
 
@@ -157,7 +153,8 @@ class ProductUpdateViewModel(
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Update Product"),
 
-        val catalogProduct: CatalogProduct? = null,
+        val updatedProduct: Product? = null,
+        val updatedSellableProduct: SellableProduct? = null,
         val updatedLabel: String? = null,
         val updatedShortLabel: String? = null,
         val updatedPrice: Money? = null,
@@ -165,6 +162,7 @@ class ProductUpdateViewModel(
         val updatedQuantity: Int? = null,
         val updatedThreshold: Int? = null,
         val updatedProductId: String? = null,
-        val updatedEnableInventoryTracking: Boolean = true,
+        val updatedPricingInfoId: String? = null,
+        val updatedEnableInventoryTracking: Boolean = true, // TODO: add function to enable/disable
     ) : ViewModelState
 }

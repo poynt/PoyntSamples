@@ -21,27 +21,22 @@ class ProductUpdateFragment :
         stateFlow = { viewModel.stateFlow },
         map = { this.updatedLabel.toString()}
     )
-
     val updatedPrice by observableField(
         stateFlow = { viewModel.stateFlow },
         map = { this.updatedPrice?.value?.toString() }
     )
-
     val updatedSalePrice by observableField(
         stateFlow = { viewModel.stateFlow },
         map = { this.updatedSalePrice?.value?.toString() }
     )
-
     val updatedThreshold by observableField(
         stateFlow = { viewModel.stateFlow },
         map = { this.updatedThreshold?.toString() }
     )
-
     val updatedQuantity by observableField(
         stateFlow = { viewModel.stateFlow },
         map = { this.updatedQuantity?.toString() }
     )
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
