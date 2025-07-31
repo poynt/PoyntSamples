@@ -14,7 +14,6 @@ import timber.log.Timber
 
 class ProductFragment : CommonFragment<ProductFragmentBinding>(R.layout.product_fragment) {
 
-
     private val viewModel: ProductViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -63,5 +63,10 @@
     <string name="type">Type</string>
     <string name="price_adjustment_association_items">Price Adjustment Association Items</string>
     <string name="add_product_to_price_adjustment_association_items">Add Product to Price Adjustment Association Items</string>
+    <string name="price">Price</string>
+    <string name="sale_price">Sale Price</string>
+    <string name="threshold">Threshold</string>
+    <string name="label">Label</string>
+    <string name="product_price">Product Price</string>
 
 </resources>

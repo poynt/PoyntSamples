@@ -7,13 +7,10 @@ import androidx.fragment.app.viewModels
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.catalog.product.create.ProductCreateViewModel.*
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
-import com.godaddy.commerce.services.sample.common.extensions.dialogBuilder
 import com.godaddy.commerce.services.sample.common.extensions.launch
-import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.ProductCreateFragmentBinding
-import com.godaddy.commercecore.models.Category
 
 class ProductCreateFragment :
     CommonFragment<ProductCreateFragmentBinding>(R.layout.product_create_fragment) {
@@ -21,27 +18,11 @@ class ProductCreateFragment :
 
     private val viewModel: ProductCreateViewModel by viewModels()
 
-    val selectedCategory by observableField(
-        stateFlow = { viewModel.stateFlow },
-        map = State::selectedCategory
-    )
-
-    val types by observableField(
-        stateFlow = {viewModel.stateFlow},
-        map = State::productTypes
-    )
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindOnCommonViewModelUpdates(viewModel)
         launch {
-            viewModel.stateFlow.bindTo(
-                map = { categories to showCategoryDialog },
-                update = ::showCategoriesDialog
-            )
-        }
-        launch {
-            viewModel.stateFlow.bindTo(State::createdId) { id ->
+            viewModel.stateFlow.bindTo(State::createdProductId) { id ->
                 id ?: return@bindTo
                 Toast.makeText(
                     requireContext(),
@@ -50,15 +31,5 @@ class ProductCreateFragment :
                 ).show()
             }
         }
-    }
-
-    private fun showCategoriesDialog(pair: Pair<List<Category?>, Boolean>) {
-        if (pair.second.not()) return
-        requireContext().dialogBuilder(
-            "Select Category",
-            items = pair.first,
-            map = { it?.label },
-            onSelected = { viewModel::selectCategory }
-        ).setOnDismissListener { viewModel.hideProductsDialog() }.create().show()
     }
 }

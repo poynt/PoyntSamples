@@ -3,12 +3,7 @@
 
     <data>
 
-
         <import type="com.godaddy.commercecore.models.Product" />
-
-        <variable
-            name="item"
-            type="Product" />
 
         <variable
             name="viewModel"
@@ -42,15 +37,53 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@string/product_name" />
+                android:text="@string/label" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
+                android:inputType="text"
                 android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductLabelUpdated(s.toString())}"
-                android:text="@{fragment.product.label}" />
+                android:text="@{fragment.updatedLabel}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/price" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:digits="0123456789"
+                android:inputType="numberDecimal"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductPriceUpdated(s.toString())}"
+                android:text="@{fragment.updatedPrice}"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/sale_price"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:digits="0123456789"
+                android:inputType="numberDecimal"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductSalePriceUpdated(s.toString())}"
+                android:text="@{fragment.updatedSalePrice}"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,8 +99,27 @@
                 android:layout_marginTop="4dp"
                 android:digits="0123456789"
                 android:inputType="numberDecimal"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductPriceUpdated(s.toString())}"
-                android:text="@{fragment.product.pricingInfos[0].price.toString()}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductQuantityUpdated(s.toString())}"
+                android:text="@{fragment.updatedQuantity}"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/threshold" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:digits="0123456789"
+                android:inputType="numberDecimal"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onProductThresholdUpdated(s.toString())}"
+                android:text="@{fragment.updatedThreshold}"
+                />
 
             <Button
                 android:layout_width="wrap_content"

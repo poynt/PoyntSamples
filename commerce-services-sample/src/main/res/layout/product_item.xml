@@ -7,12 +7,12 @@
         <variable
             name="item"
             type="com.godaddy.commerce.services.sample.catalog.product.ProductRecyclerItem" />
-
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -24,36 +24,37 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Product Id: ` + item.item.product.id}"
-                tools:text="Product Id: 123123" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Name: ` + item.item.product.label}"
+                android:text="@{`Label: ` + item.item.product.label}"
                 tools:text="Product Name: Some Product" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Price: ` + item.item.product.pricingInfos[0].price.toString()}"
+                android:text="@{`Price: ` + String.valueOf(item.priceInfo.salePrice.value) + ` ` + item.priceInfo.price.currencyCode}"
                 tools:text="Price: 100$" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Variants Count: ` + item.item.product.attributes.size()}"
+                android:text="@{`SKU Code: ` + item.firstSellableProduct.skuCode}"
                 tools:text="Variants Count: 10" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Category count: ` + item.item.product.categoryIds.size()}"
-                tools:text="Category count: 123" />
+                android:text="@{`Inventory Quantity: ` + item.inventoryInfo.quantity}"
+                tools:text="Variants Count: 10" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{`Inventory Threshold: ` + String.valueOf(item.inventoryInfo.threshold)}"
+                tools:text="Variants Count: 10" />
 
         </LinearLayout>
 
