@@ -27,7 +27,9 @@ inline fun CatalogProduct.mapToProductUiItems(): ProductRecyclerItem {
         binding.updateBt.setOnClickListener {
             it.findNavController().navigate(
                 resId = R.id.productUpdateFragment,
-                args = bundleOf("id" to product.id.toString())
+                args = bundleOf(
+                    "id" to product.id.toString(),
+                )
             )
         }
         binding.selectBt.visibility = View.GONE
