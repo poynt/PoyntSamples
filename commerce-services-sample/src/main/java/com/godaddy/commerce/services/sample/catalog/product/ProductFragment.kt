@@ -21,10 +21,8 @@ class ProductFragment : CommonFragment<ProductFragmentBinding>(R.layout.product_
         bindOnCommonViewModelUpdates(viewModel)
         doOnToolbarSearchQueryChanged { viewModel.searchProduct(it) }
         launch {
-            viewModel.stateFlow.bindTo({
-                Timber.d("Items : $items")
-                items
-            }) { dataBinding.items = it }
+            viewModel.stateFlow.bindTo({ items })
+            { dataBinding.items = it }
         }
     }
 }

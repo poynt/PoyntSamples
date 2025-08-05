@@ -28,17 +28,24 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
         update { copy(label = value) }
     }
     fun onProductPriceChanged(value: String){
-        update {
-            copy(price = Money(value = value.toLong(), currencyCode = "USD"))}
+        value.toLongOrNull()?.let {
+            update { copy(price = Money(value = it, currencyCode = "USD"))}
+        }
     }
     fun onProductSalePriceChanged(value: String){
-        update { copy(salePrice = Money(value = value.toLong(), currencyCode = "USD"))}
+        value.toLongOrNull()?.let {
+            update { copy(salePrice = Money(value = it, currencyCode = "USD")) }
+        }
     }
     fun onProductQuantityChanged(value: String){
-        update { copy(quantity = value.toInt())}
+        value.toIntOrNull()?.let {
+            update { copy(quantity = it)}
+        }
     }
     fun onProductThresholdChanged(value: String){
-        update { copy(threshold = value.toInt())}
+        value.toIntOrNull()?.let {
+            update { copy(threshold = it)}
+        }
     }
     fun createProduct() {
         execute {

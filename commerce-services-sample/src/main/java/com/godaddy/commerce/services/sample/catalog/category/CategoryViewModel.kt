@@ -63,7 +63,7 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
                 putInt(CategoryParams.PAGE_SIZE, CATEGORY_DEFAULT_PAGE_SIZE)
 
                 // sorting is optional. List can be sorted by any column in database.
-                putString(CategoryParams.SORT_BY, CatalogContract.Category.Columns.UPDATED_AT)
+                putString(CategoryParams.SORT_BY, CatalogContract.Category.Columns.DISPLAY_ORDER)
 
                 putString(CategoryParams.SEARCH_QUERY, query)
 
@@ -73,7 +73,9 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
             val response = suspendCancellableCoroutine<CatalogCategoryTreeNodes?> {
                 service.getCatalogCategoryTreeNodes(bundle, it.onSuccess(), it.onError())
             }
-            update { copy(items = response?.values.orEmpty().map { it.mapToUiItems() }) }
+            update { copy(
+                items = response?.values.orEmpty().sortedBy { it.categoryTreeNode.displayOrder }.map { it.mapToUiItems() }
+            ) }
         }
     }
 

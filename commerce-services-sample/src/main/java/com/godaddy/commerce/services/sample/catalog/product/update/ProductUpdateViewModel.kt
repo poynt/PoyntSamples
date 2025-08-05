@@ -30,6 +30,10 @@ class ProductUpdateViewModel(
 
     private val id get() = savedStateHandle.get<String>("id")
 
+    init {
+        loadProduct()
+    }
+
     private fun setProductState(response: CatalogProduct?){
         update {
             val product = response?.product
@@ -49,9 +53,6 @@ class ProductUpdateViewModel(
         }
     }
 
-    init {
-        loadProduct()
-    }
     private fun loadProduct() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()

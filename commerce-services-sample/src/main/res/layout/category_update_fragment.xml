@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
 
     <data>
-
-
         <import type="com.godaddy.commercecore.models.Category" />
 
         <variable
@@ -42,22 +43,93 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="8dp"
-                android:text="@string/category_name" />
+                android:text="@string/category_label" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"
                 android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onNameUpdated(s.toString())}"
-                android:text="@{fragment.item.label}" />
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onLabelUpdated(s.toString())}"
+                android:text="@{fragment.label}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/display_order" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="4dp"
+                android:inputType="number"
+                android:onTextChanged="@{(s, start, before, count) -> viewModel.onDisplayOrderUpdated(s.toString())}"
+                android:text="@{fragment.displayOrder.toString()}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/current_products" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingHorizontal="@dimen/item_spacing"
+                app:adapterLayout="@{@layout/product_item}"
+                app:adapterSubmitList="@{fragment.addedItems}"
+                app:dividerItemDecoration="@{1}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:spaceItemDecoration="@{@dimen/item_spacing}"
+                tools:listitem="@layout/product_item" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@string/products" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingHorizontal="@dimen/item_spacing"
+                app:adapterLayout="@{@layout/product_item}"
+                app:adapterSubmitList="@{fragment.items}"
+                app:dividerItemDecoration="@{1}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:spaceItemDecoration="@{@dimen/item_spacing}"
+                tools:listitem="@layout/product_item" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/item_spacing"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/category_product_added + ` ` + fragment.selectedProduct.product.id}"
+                android:visibility="@{fragment.selectedProduct != null}" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginHorizontal="@dimen/item_spacing"
+            android:layout_marginTop="@dimen/item_spacing"
+            android:orientation="horizontal">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="@dimen/item_spacing"
                 android:onClick="@{() -> viewModel.updateCategory()}"
                 android:text="@string/update" />
 

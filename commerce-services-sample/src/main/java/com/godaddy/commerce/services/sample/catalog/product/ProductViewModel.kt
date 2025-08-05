@@ -72,7 +72,7 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
             val response = suspendCancellableCoroutine<CatalogProducts?> {
                 service.getCatalogProducts(bundle, it.onSuccess(), it.onError())
             }
-            update { copy(items = response?.products.orEmpty().map { it.mapToUiItems() }) }
+            update { copy(items = response?.products.orEmpty().map { it.mapToProductUiItems() }) }
         }
     }
 
