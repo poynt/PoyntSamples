@@ -2,15 +2,12 @@
 
 package com.godaddy.commerce.services.sample.catalog.category
 
-import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
-import com.godaddy.commerce.catalog.CategoryParams
-import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNodes
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.provider.catalog.CatalogContract
-import com.godaddy.commerce.services.sample.catalog.onSuccess
-import com.godaddy.commerce.services.sample.common.extensions.onError
+import com.godaddy.commerce.sdk.catalog.CategoryParamsExt
+import com.godaddy.commerce.sdk.catalog.getCatalogCategoryTreeNodes
 import com.godaddy.commerce.services.sample.common.extensions.subscribeOnUpdates
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
@@ -22,7 +19,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
 
@@ -41,7 +37,6 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
         }.launchIn(viewModelScope)
     }
 
-
     private fun subscribeOnSearch() {
         searchQueryFlow.debounce(SEARCH_DEBOUNCE_DELAY)
             .onEach { loadCategories(query = it) }
@@ -52,30 +47,28 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
     fun loadCategories(query: String? = null) {
         execute {
             val service = serviceClient.getService().getOrThrow()
-
-            val bundle = Bundle().apply {
+            val bundle = CategoryParamsExt.toBundle(
                 // data source defines data provider: local db, remote or remote only if there are no data in local db.
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
-                putParcelable(CategoryParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
-
+                dataSource = DataSource.REMOTE_IF_EMPTY,
                 // Add pagination to improve UX and avoid TooLargeTransactionException
-                putInt(CategoryParams.PAGE_OFFSET, 0)
-                putInt(CategoryParams.PAGE_SIZE, CATEGORY_DEFAULT_PAGE_SIZE)
-
+                pageOffset = CATEGORY_DEFAULT_PAGE_OFFSET,
+                pageSize = CATEGORY_DEFAULT_PAGE_SIZE,
                 // sorting is optional. List can be sorted by any column in database.
-                putString(CategoryParams.SORT_BY, CatalogContract.Category.Columns.DISPLAY_ORDER)
-
-                putString(CategoryParams.SEARCH_QUERY, query)
-
-                // optional. Use only if need to get products list in category model.
-                putBoolean(CategoryParams.INCLUDE_PRODUCT_IDS, true)
+                sortBy = CatalogContract.Category.Columns.DISPLAY_ORDER,
+                // add search query if not null
+                searchQuery = query,
+                // optional. Use only if need to get product list in category model.
+                // includeProductIds = false,
+            )
+            val response = service.getCatalogCategoryTreeNodes(bundle)
+            update {
+                copy(
+                    items = response?.values.orEmpty()
+                        .sortedBy { it.categoryTreeNode.displayOrder }
+                        .map { it.mapToUiItems() }
+                )
             }
-            val response = suspendCancellableCoroutine<CatalogCategoryTreeNodes?> {
-                service.getCatalogCategoryTreeNodes(bundle, it.onSuccess(), it.onError())
-            }
-            update { copy(
-                items = response?.values.orEmpty().sortedBy { it.categoryTreeNode.displayOrder }.map { it.mapToUiItems() }
-            ) }
         }
     }
 
@@ -95,5 +88,6 @@ class CategoryViewModel : CommonViewModel<CategoryViewModel.State>(State()) {
     private companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 300L
         private const val CATEGORY_DEFAULT_PAGE_SIZE = 100
+        private const val CATEGORY_DEFAULT_PAGE_OFFSET = 0
     }
 }

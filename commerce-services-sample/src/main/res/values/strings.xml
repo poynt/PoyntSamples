@@ -71,5 +71,6 @@
     <string name="display_order">Display Order</string>
     <string name="products">Products</string>
     <string name="current_products">Current Products</string>
+    <string name="remove_product">:Remove Product</string>
 
 </resources>

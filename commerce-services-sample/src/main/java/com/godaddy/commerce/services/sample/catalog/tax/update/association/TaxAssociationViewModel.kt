@@ -6,7 +6,7 @@
 //import androidx.lifecycle.viewModelScope
 //import co.poynt.api.model.Business
 //import co.poynt.api.model.Product
-//import com.godaddy.commerce.catalog.ICatalogService
+import com.godaddy.commerce.catalog.ICatalogService
 //import com.godaddy.commerce.catalog.ProductParams
 //import com.godaddy.commerce.catalog.TaxConstants
 //import com.godaddy.commerce.catalog.TaxParams

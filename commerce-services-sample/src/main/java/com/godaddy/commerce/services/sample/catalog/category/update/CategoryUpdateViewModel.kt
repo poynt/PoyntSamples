@@ -5,13 +5,13 @@ package com.godaddy.commerce.services.sample.catalog.category.update
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.godaddy.commerce.catalog.CategoryParams
-import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNode
 import com.godaddy.commerce.catalog.model.CatalogProduct
-import com.godaddy.commerce.catalog.model.CatalogProducts
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.provider.catalog.CatalogContract
+import com.godaddy.commerce.sdk.catalog.CategoryParamsExt
+import com.godaddy.commerce.sdk.catalog.ProductParamsExt
+import com.godaddy.commerce.sdk.catalog.getCatalogCategoryTreeNode
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.catalog.product.ProductRecyclerItem
 import com.godaddy.commerce.services.sample.catalog.product.mapToCategoryUiItems
@@ -20,12 +20,12 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
+import com.godaddy.commerce.sdk.catalog.getCatalogProducts
 import com.godaddy.commercecore.models.Category
 import com.godaddy.commercecore.models.CategoryProduct
 import com.godaddy.commercecore.models.CategoryTreeNode
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.suspendCancellableCoroutine
-import timber.log.Timber
 
 class CategoryUpdateViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -57,15 +57,11 @@ class CategoryUpdateViewModel(
     private fun loadCategory() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
-            val bundle = Bundle().apply {
-                putParcelable(CategoryParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
-                putInt(CategoryParams.PAGE_OFFSET, 0)
-                putString(CategoryParams.SORT_BY, CatalogContract.Category.Columns.DISPLAY_ORDER)
-                putBoolean(CategoryParams.INCLUDE_PRODUCT_IDS, true)
-            }
-            val response = suspendCancellableCoroutine<CatalogCategoryTreeNode?> {
-                service.getCatalogCategoryTreeNode(id, bundle, it.onSuccess(), it.onError())
-            }
+            val bundle = CategoryParamsExt.toBundle(
+                includeProductIds = true
+            )
+
+            val response =  service.getCatalogCategoryTreeNode(id, bundle)
             setCategoryState(response)
         }
     }
@@ -73,16 +69,14 @@ class CategoryUpdateViewModel(
     private fun loadProducts(query: String? = null) {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
-            val bundle = Bundle().apply {
-                putParcelable(ProductParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
-                putInt(ProductParams.PAGE_OFFSET, 0)
-                putInt(ProductParams.PAGE_SIZE, 100)
-                putString(ProductParams.SORT_BY, CatalogContract.Product.Columns.UPDATED_AT)
-                putString(ProductParams.SEARCH_TERM, query)
-            }
-            val response = suspendCancellableCoroutine<CatalogProducts?> {
-                service.getCatalogProducts(bundle, it.onSuccess(), it.onError())
-            }
+            val bundle = ProductParamsExt.toBundle(
+                dataSource = DataSource.REMOTE_IF_EMPTY,
+                pageOffset = DEFAULT_CATEGORY_PRODUCTS_PAGE_OFFSET,
+                pageSize = DEFAULT_CATEGORY_PRODUCTS_PAGE_SIZE,
+                sortBy = CatalogContract.Product.Columns.UPDATED_AT,
+                searchTerm = query,
+            )
+            val response = service.getCatalogProducts(bundle)
             val products = response?.products.orEmpty()
 
             update { copy(products = products) }
@@ -93,12 +87,20 @@ class CategoryUpdateViewModel(
     private fun separateProductLists(allProducts: List<CatalogProduct>) {
 
         val existingProductIds = state.updatedCategoryProducts?.map { it.id }?.toSet().orEmpty()
-        val addedProducts = allProducts.filter { catalogProduct ->
-            existingProductIds.contains(catalogProduct.product.id)
+        val displayOrderMap = state.updatedCategoryProducts?.associate {
+            it.id to it.displayOrder
+        }.orEmpty()
+
+        val addedProducts = allProducts.filter {
+            existingProductIds.contains(it.product.id)
+        }.sortedBy {
+            displayOrderMap[it.product.id]
         }
-        val availableProducts = allProducts.filter { catalogProduct ->
-            !existingProductIds.contains(catalogProduct.product.id)
+
+        val availableProducts = allProducts.filter {
+            existingProductIds.contains(it.product.id)
         }
+
         update {
             copy(
                 addedProducts = addedProducts,
@@ -166,7 +168,7 @@ class CategoryUpdateViewModel(
         update {
             copy(
                 updatedLabel = value,
-                updatedShortLabel = value.take(5)
+                updatedShortLabel = value.take(DEFAULT_CATEGORY_SHORT_LABEL_SIZE)
             )
         }
     }
@@ -186,7 +188,6 @@ class CategoryUpdateViewModel(
                 shortLabel = state.updatedShortLabel,
                 displayOrder = state.updatedDisplayOrder,
                 products = state.updatedCategoryProducts,
-                status = "ACTIVE"
             )
             val categoryTreeNode = CategoryTreeNode(
                 id = state.updatedCategoryTreeNode?.id,
@@ -207,7 +208,12 @@ class CategoryUpdateViewModel(
             update { copy(updatedCategoryId = updatedCategory?.id) }
         }
     }
-
+    /**
+     * @property addedProducts holds all current CatalogProducts to be added to the new category
+     * @property addedItems holds all the recyclable items of catalog products from addedProducts
+     * @property products holds all un-added CatalogProducts
+     * @property items holds recyclable items from products
+     */
     data class State(
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Category Update"),
@@ -228,4 +234,10 @@ class CategoryUpdateViewModel(
 
         val selectedProduct: CatalogProduct? = null,
     ) : ViewModelState
+
+    companion object{
+        private const val DEFAULT_CATEGORY_SHORT_LABEL_SIZE = 5
+        private const val DEFAULT_CATEGORY_PRODUCTS_PAGE_SIZE = 100
+        private const val DEFAULT_CATEGORY_PRODUCTS_PAGE_OFFSET = 0
+    }
 }

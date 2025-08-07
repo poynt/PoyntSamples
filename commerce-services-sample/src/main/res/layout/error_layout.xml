@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-
     <data>
-
         <variable
             name="commonState"
             type="com.godaddy.commerce.services.sample.common.viewmodel.CommonState" />
@@ -13,8 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="@{commonState.error}"
         android:textColor="?colorError"
-        android:visibility="@{commonState.errorVisible}" />
+        android:visibility="gone"/>
 
 </layout>

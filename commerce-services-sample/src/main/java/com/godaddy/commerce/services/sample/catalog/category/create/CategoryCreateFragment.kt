@@ -1,8 +1,11 @@
 package com.godaddy.commerce.services.sample.catalog.category.create
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.R
@@ -12,6 +15,8 @@ import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.CategoryCreateFragmentBinding
+import timber.log.Timber
+
 
 class CategoryCreateFragment :
     CommonFragment<CategoryCreateFragmentBinding>(R.layout.category_create_fragment) {
@@ -40,6 +45,7 @@ class CategoryCreateFragment :
         bindToCategoryCreatedEvents()
     }
 
+
     private fun bindToCategoryCreatedEvents() {
         launch {
             viewModel.stateFlow.bindTo(
@@ -54,4 +60,5 @@ class CategoryCreateFragment :
             }
         }
     }
-}
+    }
+

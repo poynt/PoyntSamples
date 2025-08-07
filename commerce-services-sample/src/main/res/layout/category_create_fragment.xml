@@ -55,6 +55,7 @@
                 android:text="@string/display_order" />
 
             <EditText
+                android:id="@+id/display_order_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/item_spacing"

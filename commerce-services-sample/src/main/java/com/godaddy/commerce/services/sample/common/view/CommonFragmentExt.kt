@@ -7,15 +7,18 @@ import androidx.databinding.DataBindingUtil.findBinding
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.BR
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.databinding.ErrorLayoutBinding
 import com.godaddy.commerce.services.sample.databinding.LoadingLayoutBinding
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import com.google.android.material.snackbar.Snackbar
 
 private typealias CommonFragmentTyped = CommonFragment<*>
 
@@ -51,9 +54,12 @@ fun CommonFragmentTyped.bindToCommonStateUpdates(viewModel: CommonViewModel<*>) 
 
     viewModel.run {
         launch {
-            stateFlow.map { it.commonState }.distinctUntilChanged().collectLatest {
+            stateFlow.map { it.commonState }.distinctUntilChanged().collectLatest { it ->
                 loadingBinding?.setVariable(BR.commonState, it)
                 errorBinding?.setVariable(BR.commonState, it)
+                if (it.error.isNotNullOrBlank()){
+                    Snackbar.make(requireView(), it.error.toString(), LENGTH_LONG).show()
+                }
             }
         }
     }
