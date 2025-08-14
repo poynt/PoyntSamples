@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil.findBinding
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.BR
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.extensions.launch
@@ -42,6 +41,9 @@ fun CommonFragmentTyped.bindCommonViewModelEffects(viewModel: CommonViewModel<*>
                 is CommonViewModel.Effect.ShowToast -> Toast.makeText(
                     requireContext(), it.message, Toast.LENGTH_SHORT
                 ).show()
+                is CommonViewModel.Effect.ShowSnackbar -> Snackbar.make(
+                        requireView(), it.message, LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -54,12 +56,9 @@ fun CommonFragmentTyped.bindToCommonStateUpdates(viewModel: CommonViewModel<*>) 
 
     viewModel.run {
         launch {
-            stateFlow.map { it.commonState }.distinctUntilChanged().collectLatest { it ->
+            stateFlow.map { it.commonState }.distinctUntilChanged().collectLatest {
                 loadingBinding?.setVariable(BR.commonState, it)
                 errorBinding?.setVariable(BR.commonState, it)
-                if (it.error.isNotNullOrBlank()){
-                    Snackbar.make(requireView(), it.error.toString(), LENGTH_LONG).show()
-                }
             }
         }
     }

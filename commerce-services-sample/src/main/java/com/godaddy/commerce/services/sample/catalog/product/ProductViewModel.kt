@@ -8,6 +8,7 @@ import com.godaddy.commerce.catalog.model.CatalogProducts
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.provider.catalog.CatalogContract
 import com.godaddy.commerce.sdk.catalog.ProductParamsExt
+import com.godaddy.commerce.sdk.catalog.getCatalogProducts
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onError
 import com.godaddy.commerce.services.sample.common.extensions.subscribeOnUpdates
@@ -64,9 +65,8 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
                 // optional. Use only if need to get category list in product model.
                 // includeCategoryIds = false,
             )
-            val response = suspendCancellableCoroutine<CatalogProducts?> {
-                service.getCatalogProducts(bundle, it.onSuccess(), it.onError())
-            }
+            val response = service.getCatalogProducts(bundle)
+
             update { copy(items = response?.products.orEmpty().map { it.mapToProductUiItems() }) }
         }
     }

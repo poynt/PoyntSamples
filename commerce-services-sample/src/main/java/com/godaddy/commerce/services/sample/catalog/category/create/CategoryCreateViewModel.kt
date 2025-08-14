@@ -2,6 +2,7 @@
 
 package com.godaddy.commerce.services.sample.catalog.category.create
 
+import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNode
 import com.godaddy.commerce.catalog.model.CatalogProduct
@@ -38,7 +39,6 @@ class CategoryCreateViewModel : CommonViewModel<CategoryCreateViewModel.State>(S
                 pageSize = DEFAULT_CATEGORY_PRODUCTS_PAGE_SIZE,
                 sortBy = CatalogContract.Product.Columns.UPDATED_AT,
                 searchTerm = query,
-
             )
             val response = service.getCatalogProducts(bundle)
             val products = response?.products.orEmpty()
@@ -103,24 +103,27 @@ class CategoryCreateViewModel : CommonViewModel<CategoryCreateViewModel.State>(S
 
     fun create() {
         execute {
-            val label = requireNotNull(state.label) { "Label is required" }
-            val shortLabel = requireNotNull(label.take(DEFAULT_CATEGORY_SHORT_LABEL_SIZE))
-            val category = Category(
-                label = label,
-                shortLabel = shortLabel,
-                displayOrder = state.displayOrder,
-                products = state.categoryProducts,
-            )
-            val categoryTreeNode = CategoryTreeNode(
-                category = category,
-                displayOrder = state.displayOrder
-            )
-            val request = CatalogCategoryTreeNode(categoryTreeNode = categoryTreeNode)
-            val catalogService = catalogServiceClient.getService().getOrThrow()
+            try {
+                val label = requireNotNull(state.label) { "Label is required" }
+                val shortLabel = requireNotNull(label.take(DEFAULT_CATEGORY_SHORT_LABEL_SIZE))
+                val category = Category(
+                    label = label,
+                    shortLabel = shortLabel,
+                    displayOrder = state.displayOrder,
+                    products = state.categoryProducts,
+                )
+                val categoryTreeNode = CategoryTreeNode(
+                    category = category,
+                    displayOrder = state.displayOrder
+                )
+                val request = CatalogCategoryTreeNode(categoryTreeNode = categoryTreeNode)
+                val catalogService = catalogServiceClient.getService().getOrThrow()
 
-            val response = catalogService.createCatalogCategoryTreeNode(request)
-
-            update { copy (createdId = response?.categoryTreeNode?.category?.id) }
+                val response = catalogService.createCatalogCategoryTreeNode(request)
+                update { copy (createdId = response?.categoryTreeNode?.category?.id) }
+            } catch (e: Exception) {
+                this.sendEffect(Effect.ShowSnackbar(e.message.toString()))
+            }
         }
     }
     /**

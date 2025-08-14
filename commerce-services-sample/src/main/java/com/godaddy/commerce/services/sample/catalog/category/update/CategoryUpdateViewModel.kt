@@ -21,11 +21,11 @@ import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
 import com.godaddy.commerce.sdk.catalog.getCatalogProducts
+import com.godaddy.commerce.sdk.catalog.updateCatalogCategoryTreeNode
 import com.godaddy.commercecore.models.Category
 import com.godaddy.commercecore.models.CategoryProduct
 import com.godaddy.commercecore.models.CategoryTreeNode
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 class CategoryUpdateViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -85,7 +85,6 @@ class CategoryUpdateViewModel(
     }
 
     private fun separateProductLists(allProducts: List<CatalogProduct>) {
-
         val existingProductIds = state.updatedCategoryProducts?.map { it.id }?.toSet().orEmpty()
         val displayOrderMap = state.updatedCategoryProducts?.associate {
             it.id to it.displayOrder
@@ -201,9 +200,7 @@ class CategoryUpdateViewModel(
                 categoryTreeNode = categoryTreeNode
             )
 
-            val response = suspendCancellableCoroutine<CatalogCategoryTreeNode?> {
-                service.updateCatalogCategoryTreeNode(id, request, Bundle.EMPTY, it.onSuccess(), it.onError())
-            }
+            val response = service.updateCatalogCategoryTreeNode(id.orEmpty(), request)
             setCategoryState(response)
             update { copy(updatedCategoryId = updatedCategory?.id) }
         }

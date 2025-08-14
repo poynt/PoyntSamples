@@ -56,7 +56,8 @@ abstract class CommonViewModel<T : ViewModelState>(state: T) : ViewModel() {
 
     sealed interface Effect {
         data class ShowToast(val message: String) : Effect
-        object PopScreen : Effect
+        data object PopScreen : Effect
+        data class ShowSnackbar(val message: String) : Effect
     }
 
     interface ViewModelState {

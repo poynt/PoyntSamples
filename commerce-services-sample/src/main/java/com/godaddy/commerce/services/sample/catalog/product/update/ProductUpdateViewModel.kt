@@ -9,6 +9,7 @@ import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.sdk.catalog.ProductParamsExt
 import com.godaddy.commerce.sdk.catalog.getCatalogProduct
+import com.godaddy.commerce.sdk.catalog.updateCatalogProduct
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.util.DEFAULT_CURRENCY_CODE
 import com.godaddy.commerce.services.sample.common.extensions.onError
@@ -21,9 +22,7 @@ import com.godaddy.commercecore.models.Money
 import com.godaddy.commercecore.models.PricingInfo
 import com.godaddy.commercecore.models.Product
 import com.godaddy.commercecore.models.SellableProduct
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.suspendCancellableCoroutine
 class ProductUpdateViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : CommonViewModel<ProductUpdateViewModel.State>(State()) {
@@ -143,15 +142,7 @@ class ProductUpdateViewModel(
             val request = CatalogProduct(updatedProduct)
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
-            val response = suspendCancellableCoroutine<CatalogProduct?> {
-                catalogService.updateCatalogProduct(
-                    id,
-                    request,
-                    Bundle.EMPTY,
-                    it.onSuccess(),
-                    it.onError()
-                )
-            }
+            val response = catalogService.updateCatalogProduct(id, request)
             setProductState(response)
         }
     }
@@ -170,7 +161,7 @@ class ProductUpdateViewModel(
         val updatedThreshold: Int? = null,
         val updatedProductId: String? = null,
         val updatedPricingInfoId: String? = null,
-        val updatedEnableInventoryTracking: Boolean = true, // TODO: FIX
+        val updatedEnableInventoryTracking: Boolean = true,
     ) : ViewModelState
 
     companion object{

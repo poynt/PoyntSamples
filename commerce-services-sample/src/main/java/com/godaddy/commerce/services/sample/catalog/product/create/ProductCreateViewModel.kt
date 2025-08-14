@@ -5,6 +5,7 @@ package com.godaddy.commerce.services.sample.catalog.product.create
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.model.CatalogProduct
+import com.godaddy.commerce.sdk.catalog.createCatalogProduct
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.util.SkuFormatter
 import com.godaddy.commerce.services.sample.common.util.DEFAULT_CURRENCY_CODE
@@ -97,14 +98,7 @@ class ProductCreateViewModel : CommonViewModel<ProductCreateViewModel.State>(Sta
             val request = CatalogProduct(product)
             val catalogService = catalogServiceClient.getService().getOrThrow()
 
-            val response = suspendCancellableCoroutine<CatalogProduct?> {
-                catalogService.createCatalogProduct(
-                    request,
-                    Bundle.EMPTY,
-                    it.onSuccess(),
-                    it.onError()
-                )
-            }
+            val response = catalogService.createCatalogProduct(request)
 
             update { copy (
                 createdProductId = response?.product?.id,
