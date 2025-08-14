@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.R
+import com.godaddy.commerce.services.sample.catalog.category.create.CategoryCreateViewModel
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.extensions.observableField
@@ -32,13 +33,9 @@ class CategoryUpdateFragment :
         stateFlow = { viewModel.stateFlow },
         map = CategoryUpdateViewModel.State::selectedProduct
     )
-    val items by observableField(
+    val allItems by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = CategoryUpdateViewModel.State::items
-    )
-    val addedItems by observableField(
-        stateFlow = { viewModel.stateFlow },
-        map = CategoryUpdateViewModel.State::addedItems
+        map = { addedItems + items}
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +43,17 @@ class CategoryUpdateFragment :
         dataBinding.fragment = this
         bindOnCommonViewModelUpdates(viewModel)
         bindToCategoryUpdatedEvents()
+        bindToAddedItemsEvents()
     }
+
+    private fun bindToAddedItemsEvents() {
+        launch { viewModel.stateFlow.bindTo(
+            CategoryUpdateViewModel.State::addedItems) {
+            dataBinding.ProductRecyclerView.scrollToPosition(0)
+        }
+        }
+    }
+
     private fun bindToCategoryUpdatedEvents(){
         launch {
             viewModel.stateFlow.bindTo(

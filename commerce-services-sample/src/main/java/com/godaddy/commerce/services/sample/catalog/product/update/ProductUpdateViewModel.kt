@@ -2,7 +2,6 @@
 
 package com.godaddy.commerce.services.sample.catalog.product.update
 
-import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.model.CatalogProduct
@@ -10,9 +9,7 @@ import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.sdk.catalog.ProductParamsExt
 import com.godaddy.commerce.sdk.catalog.getCatalogProduct
 import com.godaddy.commerce.sdk.catalog.updateCatalogProduct
-import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.util.DEFAULT_CURRENCY_CODE
-import com.godaddy.commerce.services.sample.common.extensions.onError
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
@@ -30,25 +27,6 @@ class ProductUpdateViewModel(
     private val catalogServiceClient = getCatalogService(viewModelScope)
 
     private val id get() = requireNotNull(savedStateHandle.get<String>("id"))
-
-    private fun setProductState(response: CatalogProduct?){
-        update {
-            val product = response?.product
-            val pricingInfo = product?.pricingInfos?.firstOrNull()
-            val sellableProduct = product?.sellableProducts?.firstOrNull()
-            val inventoryInfo = sellableProduct?.inventoryInfos?.firstOrNull()
-            copy(
-                updatedLabel = product?.label,
-                updatedPrice = pricingInfo?.price,
-                updatedSalePrice = pricingInfo?.salePrice,
-                updatedQuantity = inventoryInfo?.quantity,
-                updatedThreshold = inventoryInfo?.threshold,
-                updatedProduct = product,
-                updatedSellableProduct = sellableProduct,
-                updatedPricingInfoId = pricingInfo?.id,
-            )
-        }
-    }
 
     init {
         loadProduct()

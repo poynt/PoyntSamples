@@ -24,7 +24,6 @@ class CategoryCreateFragment : CommonFragment<CategoryCreateFragmentBinding>(
         stateFlow = { viewModel.stateFlow },
         map = { addedItems + items }
     )
-
     val selectedProduct by observableField(
         stateFlow = { viewModel.stateFlow },
         map = CategoryCreateViewModel.State::selectedProduct
@@ -36,6 +35,7 @@ class CategoryCreateFragment : CommonFragment<CategoryCreateFragmentBinding>(
         bindToCategoryCreatedEvents()
         bindToAddedItemsEvents()
     }
+
     private fun bindToAddedItemsEvents() {
         launch { viewModel.stateFlow.bindTo(
             CategoryCreateViewModel.State::addedItems) {

@@ -48,15 +48,13 @@ inline fun CatalogProduct.mapToCategoryUiItems(
         isSelected = isSelected
     ) { binding, _, _ ->
         binding.updateBt.visibility = View.GONE
-        binding.productItemArea.setOnClickListener{
+        binding.ProductItemArea.setOnClickListener{
             clearKeyboard(binding.root)
         }
-
         binding.selectBt.setOnClickListener {
             onSelectClicked.invoke(this@mapToCategoryUiItems, true)
             clearKeyboard(binding.root)
         }
-
         binding.selectBt.visibility = if (!isSelected) View.VISIBLE else View.GONE
         binding.deleteButton.visibility = if (isSelected) View.VISIBLE else View.GONE
         binding.deleteButton.setOnClickListener {
