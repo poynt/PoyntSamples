@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -9,59 +10,51 @@
     </data>
 
     <LinearLayout
-        android:id="@+id/productItemArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{`Label: ` + item.item.product.label}"
-                tools:text="Product Label: Some Product"
-                />
+                tools:text="Product Label: Some Product" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{`Price: ` + String.valueOf(item.priceInfo.salePrice.value) + ` ` + item.priceInfo.price.currencyCode}"
-                tools:text="Price: 100$"
-                />
+                tools:text="Price: 100$" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{`SKU Code: ` + item.firstSellableProduct.skuCode}"
-                tools:text="Variants Count: 10"
-                />
+                tools:text="Variants Count: 10" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{`Inventory Quantity: ` + item.inventoryInfo.quantity}"
-                tools:text="Variants Count: 10"
-                />
+                tools:text="Variants Count: 10" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{`Inventory Threshold: ` + String.valueOf(item.inventoryInfo.threshold)}"
-                tools:text="Variants Count: 10"
-                />
+                tools:text="Variants Count: 10" />
 
         </LinearLayout>
 
@@ -69,9 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            >
+            android:gravity="center_vertical">
 
 
             <Button
@@ -79,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@string/add_product" />
+                android:text="Add Product" />
 
             <Button
                 android:id="@+id/deleteButton"
@@ -87,8 +78,7 @@
                 android:layout_height="36dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/ic_arrow_back"
-                android:contentDescription="@string/remove_product"
-                />
+                android:contentDescription=":Remove Product"/>
 
 
             <Button
@@ -96,8 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@string/update"
-                />
+                android:text="@string/update" />
 
         </LinearLayout>
 

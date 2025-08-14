@@ -31,10 +31,6 @@ class ProductUpdateViewModel(
 
     private val id get() = requireNotNull(savedStateHandle.get<String>("id"))
 
-    init {
-        loadProduct()
-    }
-
     private fun setProductState(response: CatalogProduct?){
         update {
             val product = response?.product
@@ -54,6 +50,29 @@ class ProductUpdateViewModel(
         }
     }
 
+    init {
+        loadProduct()
+    }
+    
+    private fun setProductState(response: CatalogProduct?){
+        update {
+            val product = response?.product
+            val pricingInfo = product?.pricingInfos?.firstOrNull()
+            val sellableProduct = product?.sellableProducts?.firstOrNull()
+            val inventoryInfo = sellableProduct?.inventoryInfos?.firstOrNull()
+            copy(
+                updatedLabel = product?.label,
+                updatedPrice = pricingInfo?.price,
+                updatedSalePrice = pricingInfo?.salePrice,
+                updatedQuantity = inventoryInfo?.quantity,
+                updatedThreshold = inventoryInfo?.threshold,
+                updatedProduct = product,
+                updatedSellableProduct = sellableProduct,
+                updatedPricingInfoId = pricingInfo?.id,
+            )
+        }
+    }
+    
     private fun loadProduct() {
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
