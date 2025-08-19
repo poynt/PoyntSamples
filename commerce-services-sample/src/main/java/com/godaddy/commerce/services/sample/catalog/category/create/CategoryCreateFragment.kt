@@ -4,63 +4,70 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.R
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
-import com.godaddy.commerce.services.sample.common.extensions.dialogBuilder
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.extensions.observableField
+import com.godaddy.commerce.services.sample.common.util.clearKeyboard
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.CategoryCreateFragmentBinding
-import com.godaddy.commercecore.models.CategoryProduct
-
-class CategoryCreateFragment :
-    CommonFragment<CategoryCreateFragmentBinding>(R.layout.category_create_fragment) {
 
 
+class CategoryCreateFragment : CommonFragment<CategoryCreateFragmentBinding>(
+    R.layout.category_create_fragment
+) {
     private val viewModel: CategoryCreateViewModel by viewModels()
 
+    val allItems by observableField(
+        stateFlow = { viewModel.stateFlow },
+        map = { addedItems + items }
+    )
     val selectedProduct by observableField(
         stateFlow = { viewModel.stateFlow },
         map = CategoryCreateViewModel.State::selectedProduct
     )
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dataBinding.fragment = this
         bindOnCommonViewModelUpdates(viewModel)
-        bindToProductsDialogEvents()
         bindToCategoryCreatedEvents()
+        bindToAddedItemsEvents()
     }
 
-    private fun bindToCategoryCreatedEvents() {
-        launch {
-            viewModel.stateFlow.bindTo(CategoryCreateViewModel.State::createdId) { id ->
-                id ?: return@bindTo
-                Toast.makeText(
-                    requireContext(),
-                    "Category with id [$id] was created",
-                    Toast.LENGTH_SHORT
-                ).show()
+    private fun bindToAddedItemsEvents() {
+        launch { viewModel.stateFlow.bindTo(
+            CategoryCreateViewModel.State::addedItems) {
+                dataBinding.ProductRecyclerView.scrollToPosition(0)
             }
         }
     }
 
-    private fun bindToProductsDialogEvents() {
+    private fun bindToCategoryCreatedEvents() {
         launch {
             viewModel.stateFlow.bindTo(
-                map = { products to showProductDialog },
-                update = ::showProductsDialog
-            )
+                CategoryCreateViewModel.State::createdId) { id ->
+                if (id.isNotNullOrBlank()) {
+                    return@bindTo Toast.makeText(
+                        requireContext(),
+                        "Category with id [$id] was created",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 
-    private fun showProductsDialog(pair: Pair<List<CategoryProduct>, Boolean>) {
-        if (pair.second.not()) return
-        requireContext().dialogBuilder(
-            "Select Product",
-            items = pair.first,
-            map = { it.id },
-            onSelected = viewModel::selectProduct
-        ).setOnDismissListener { viewModel.hideProductsDialog() }.create().show()
+    fun clearKeyboard(){
+        clearKeyboard(requireView())
+        view?.findViewById<View>(R.id.display_order_field)?.clearFocus()
+        view?.findViewById<View>(R.id.label_field)?.clearFocus()
+    }
+
+     fun onCreateClick() {
+         viewModel.create()
+         clearKeyboard(requireView())
+         view?.findViewById<View>(R.id.root)?.requestFocus()
     }
 }

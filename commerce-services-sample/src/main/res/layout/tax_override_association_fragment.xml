@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
                     android:layout_marginTop="8dp"
-                    android:text="@string/tax_override_rate_name" />
+                    android:text="@string/tax_override_rate_label" />
 
                 <EditText
                     android:layout_width="match_parent"

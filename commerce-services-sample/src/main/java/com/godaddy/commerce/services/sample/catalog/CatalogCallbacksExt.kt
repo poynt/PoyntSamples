@@ -25,8 +25,6 @@ import com.godaddy.commerce.priceadjustments.models.PriceAdjustmentAssociation
 import com.godaddy.commerce.priceadjustments.models.PriceAdjustmentAssociations
 import com.godaddy.commerce.priceadjustments.models.PriceAdjustments
 import com.godaddy.commerce.services.sample.common.extensions.resumeIfActive
-import com.godaddy.commerce.taxes.models.*
-import com.godaddy.commercecore.models.CategoryProduct
 import kotlinx.coroutines.CancellableContinuation
 
 
@@ -59,6 +57,7 @@ fun CancellableContinuation<CatalogCategoryTreeNode?>.onSuccess(): ICatalogCateg
     return object : ICatalogCategoryTreeNodeServiceCallback.Stub() {
         override fun onSuccess(category: CatalogCategoryTreeNode?) {
             resumeIfActive { category }
+
         }
     }
 }

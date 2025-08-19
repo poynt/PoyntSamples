@@ -13,9 +13,11 @@ import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.databinding.ErrorLayoutBinding
 import com.godaddy.commerce.services.sample.databinding.LoadingLayoutBinding
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import com.google.android.material.snackbar.Snackbar
 
 private typealias CommonFragmentTyped = CommonFragment<*>
 
@@ -38,6 +40,9 @@ fun CommonFragmentTyped.bindCommonViewModelEffects(viewModel: CommonViewModel<*>
                 CommonViewModel.Effect.PopScreen -> findNavController().popBackStack()
                 is CommonViewModel.Effect.ShowToast -> Toast.makeText(
                     requireContext(), it.message, Toast.LENGTH_SHORT
+                ).show()
+                is CommonViewModel.Effect.ShowSnackbar -> Snackbar.make(
+                        requireView(), it.message, LENGTH_LONG
                 ).show()
             }
         }

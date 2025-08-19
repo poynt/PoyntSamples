@@ -3,7 +3,6 @@
 package com.godaddy.commerce.services.sample.catalog.category
 
 import androidx.navigation.findNavController
-import com.godaddy.commerce.catalog.model.CatalogCategory
 import com.godaddy.commerce.catalog.model.CatalogCategoryTreeNode
 import com.godaddy.commerce.sdk.util.bundleOf
 import com.godaddy.commerce.services.sample.R
@@ -21,7 +20,7 @@ inline fun CatalogCategoryTreeNode.mapToUiItems(): CategoryRecyclerItem {
         binding.updateBt.setOnClickListener { clickedItem ->
             clickedItem.findNavController().navigate(
                 resId = R.id.categoryUpdateFragment,
-                args = bundleOf("id" to categoryTreeNode.category?.id.toString())
+                args = bundleOf("id" to categoryTreeNode.id.toString())
             )
         }
     }

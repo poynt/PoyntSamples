@@ -25,22 +25,22 @@
     <string name="quantity">Quantity</string>
     <string name="refresh_product">Refresh Product</string>
     <string name="create_product">Create Product</string>
-    <string name="product_name">Product Name</string>
+    <string name="product_label">Product Label</string>
     <string name="product_amount">Product Amount</string>
     <string name="add_category">Add Category</string>
     <string name="product_type">Product Type</string>
     <string name="category">Category</string>
     <string name="category_product_added">Product Added</string>
-    <string name="category_name">Category Name</string>
+    <string name="category_label">Category Label</string>
     <string name="add_product">Add Product</string>
     <string name="refresh_categories">Refresh Categories</string>
-    <string name="tax_name">Tax Name</string>
+    <string name="tax_label">Tax Label</string>
     <string name="tax_description">Tax Description</string>
-    <string name="rate_name">Rate Name</string>
+    <string name="rate_label">Rate Label</string>
     <string name="fixed_amount">Fixed Amount</string>
     <string name="rate_percentage">Rate Percentage</string>
     <string name="amount_type">Amount Type</string>
-    <string name="tax_override_rate_name">Tax Override Rate Name</string>
+    <string name="tax_override_rate_label">Tax Override Rate Label</string>
     <string name="tax_override_fixed_amount">Tax Override Fixed Amount</string>
     <string name="tax_override_rate_percentage">Tax Override Rate Percentage</string>
     <string name="create_product_level_tax">Add Product Level Tax</string>
@@ -68,5 +68,9 @@
     <string name="threshold">Threshold</string>
     <string name="label">Label</string>
     <string name="product_price">Product Price</string>
+    <string name="display_order">Display Order</string>
+    <string name="products">Products</string>
+    <string name="current_products">Current Products</string>
+    <string name="remove_product">:Remove Product</string>
 
 </resources>

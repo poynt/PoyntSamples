@@ -22,19 +22,20 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{`Category Id: ` + item.item.categoryTreeNode.category.id}"
-                tools:text="Category Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{`Name: ` + item.item.categoryTreeNode.category.label}"
-                tools:text="Category Name: Some Category" />
+                android:text="@{`Label: ` + item.item.categoryTreeNode.category.label}"
+                tools:text="Category Label: Some Category" />
 
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{`Display Order: ` + item.item.categoryTreeNode.displayOrder}"
+                tools:text="Category Id: 123123" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"

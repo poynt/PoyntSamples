@@ -2,13 +2,13 @@
 
 package com.godaddy.commerce.services.sample.catalog.product
 
-import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
-import com.godaddy.commerce.catalog.ProductParams
 import com.godaddy.commerce.catalog.model.CatalogProducts
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.provider.catalog.CatalogContract
+import com.godaddy.commerce.sdk.catalog.ProductParamsExt
+import com.godaddy.commerce.sdk.catalog.getCatalogProducts
 import com.godaddy.commerce.services.sample.catalog.onSuccess
 import com.godaddy.commerce.services.sample.common.extensions.onError
 import com.godaddy.commerce.services.sample.common.extensions.subscribeOnUpdates
@@ -42,7 +42,7 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
     }
 
     private fun subscribeOnSearch() {
-        searchQueryFlow.debounce(300)
+        searchQueryFlow.debounce(SEARCH_DEBOUNCE_DELAY)
             .onEach { loadProducts(query = it) }
             .launchIn(viewModelScope)
     }
@@ -51,28 +51,23 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
     fun loadProducts(query: String? = null) {
         execute {
             val service = serviceClient.getService().getOrThrow()
-            val bundle = Bundle().apply {
+            val bundle = ProductParamsExt.toBundle(
                 // data source defines data provider: local db, remote or remote only if there are no data in local db.
                 // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
-                putParcelable(ProductParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
-
+                dataSource = DataSource.REMOTE_IF_EMPTY,
                 // Add pagination to improve UX and avoid TooLargeTransactionException
-                putInt(ProductParams.PAGE_OFFSET, 0)
-                putInt(ProductParams.PAGE_SIZE, 100)
-
+                pageOffset = PRODUCT_DEFAULT_PAGE_OFFSET,
+                pageSize = PRODUCT_DEFAULT_PAGE_SIZE,
                 // sorting is optional. List can be sorted by any column in database.
-                putString(ProductParams.SORT_BY, CatalogContract.Product.Columns.UPDATED_AT)
-
+                sortBy = CatalogContract.Product.Columns.UPDATED_AT,
                 // add search query if not null
-                putString(ProductParams.SEARCH_TERM, query)
-
+                searchTerm = query,
                 // optional. Use only if need to get category list in product model.
-                putBoolean(ProductParams.INCLUDE_CATEGORY_IDS, true)
-            }
-            val response = suspendCancellableCoroutine<CatalogProducts?> {
-                service.getCatalogProducts(bundle, it.onSuccess(), it.onError())
-            }
-            update { copy(items = response?.products.orEmpty().map { it.mapToUiItems() }) }
+                // includeCategoryIds = false,
+            )
+            val response = service.getCatalogProducts(bundle)
+
+            update { copy(items = response?.products.orEmpty().map { it.mapToProductUiItems() }) }
         }
     }
 
@@ -82,7 +77,16 @@ class ProductViewModel : CommonViewModel<ProductViewModel.State>(State()) {
 
     data class State(
         override val commonState: CommonState = CommonState(),
-        override val toolbarState: ToolbarState = ToolbarState(title = "Products", showSearchButton = true),
+        override val toolbarState: ToolbarState = ToolbarState(
+            title = "Products",
+            showSearchButton = true
+        ),
         val items: List<ProductRecyclerItem> = emptyList()
     ) : ViewModelState
+
+    private companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 300L
+        private const val PRODUCT_DEFAULT_PAGE_SIZE = 100
+        private const val PRODUCT_DEFAULT_PAGE_OFFSET = 0
+    }
 }

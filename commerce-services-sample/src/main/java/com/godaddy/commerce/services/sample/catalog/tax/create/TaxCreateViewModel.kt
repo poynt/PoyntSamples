@@ -49,10 +49,10 @@ class TaxCreateViewModel : CommonViewModel<TaxCreateViewModel.State>(State()) {
     fun onAmountChanged(value: String) {
         updateAmount( Amount(Money(value)) )
     }
-//
-//    fun onTaxOverrideRateAmountChanged(value: String) {
-//        updateTaxOverrideRate { copy(amount = value.toLongOrNull()) }
-//    }
+
+    fun onTaxOverrideRateAmountChanged(value: String) {
+        updateTaxOverrideRate { copy(amount = Amount(amount = Money(value = value.toLongOrNull()))) }
+    }
 
     fun onTaxOverrideRatePercentageChanged(value: String) {
         updateTaxOverrideRate { copy(ratePercentage = Percentage(value)) }

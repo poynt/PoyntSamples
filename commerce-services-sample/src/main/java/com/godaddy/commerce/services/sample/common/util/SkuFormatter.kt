@@ -1,4 +1,4 @@
-package com.godaddy.commerce.services.sample.catalog.product
+package com.godaddy.commerce.services.sample.common.util
 
 import java.text.Normalizer
 import java.util.Locale
