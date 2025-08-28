@@ -2,6 +2,7 @@
 
 package com.godaddy.commerce.services.sample.catalog.tax.create
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.catalog.model.CatalogTax
@@ -23,6 +24,7 @@ import com.godaddy.commercecore.models.OverrideRate
 import com.godaddy.commercecore.models.Percentage
 import com.godaddy.commercecore.models.Tax
 import kotlinx.coroutines.FlowPreview
+import timber.log.Timber
 
 class TaxCreateViewModel : CommonViewModel<TaxCreateViewModel.State>(State()) {
 
@@ -35,12 +37,13 @@ class TaxCreateViewModel : CommonViewModel<TaxCreateViewModel.State>(State()) {
         update { copy(label = value) }
     }
     fun onRatePercentageChanged(value: String) {
-        update { copy(percentage = Percentage(percentage = value)) }
+        update { copy(percentage = Percentage(value, value)) }
     }
     fun onAmountChanged(value: String) {
         value.toLongOrNull()?.let {
+            val amount = Money(DEFAULT_CURRENCY_CODE, it)
             update {
-                copy(amount = Amount(Money(currencyCode = DEFAULT_CURRENCY_CODE, it)))
+                copy(amount = Amount(amount, amount))
             }
         }
     }
@@ -126,8 +129,9 @@ class TaxCreateViewModel : CommonViewModel<TaxCreateViewModel.State>(State()) {
                     productIds = state.overrideProducts.map {it.product.id.toString()}.toSet()
                 )
             ) else emptyList()
+
             val percentage = if (state.taxType == "Percentage") state.percentage else null
-            val amount = if (state.taxType == "Amount") null else state.amount
+            val amount = if (state.taxType == "Amount") state.amount else null
 
             val tax = Tax(
                 label = requireNotNull(state.label),

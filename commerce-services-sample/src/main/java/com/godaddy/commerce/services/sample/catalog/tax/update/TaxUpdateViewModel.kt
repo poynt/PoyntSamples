@@ -2,6 +2,7 @@
 
 package com.godaddy.commerce.services.sample.catalog.tax.update
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
@@ -16,6 +17,7 @@ import com.godaddy.commerce.sdk.catalog.deleteCatalogTax
 import com.godaddy.commerce.sdk.catalog.getCatalogProducts
 import com.godaddy.commerce.sdk.catalog.getCatalogTax
 import com.godaddy.commerce.sdk.catalog.patchCatalogTax
+import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.common.extensions.subscribeOnUpdates
 import com.godaddy.commerce.services.sample.common.util.DEFAULT_CURRENCY_CODE
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
@@ -58,6 +60,7 @@ class TaxUpdateViewModel(
         execute {
             val service = catalogServiceClient.getService().getOrThrow()
             val request = TaxParamsExt.toBundle(
+                taxId = id,
                 dataSource = DataSource.REMOTE_IF_EMPTY,
                 includeClassification = true,
                 includeOverrides = true,
@@ -76,11 +79,14 @@ class TaxUpdateViewModel(
                 val overrideLabel = selectedOverride?.label.orEmpty()
                 val customRate = selectedOverride?.customRate
                 val overrideProductIds = selectedOverride?.productIds.orEmpty()
-
+                Timber.tag("help1").d(selectedOverride.toString())
+                Timber.tag("help1").d(selectedClassification.toString())
+                Timber.tag("help1").d(tax.toString())
                 copy(
                     label = tax.label,
                     amount = tax.amount,
                     percentage = tax.percentage,
+                    status = tax.status,
                     selectedClassification = selectedClassification,
                     availableClassifications = classifications,
                     classificationLabel = classificationLabel,
@@ -211,31 +217,40 @@ class TaxUpdateViewModel(
 
     fun update() {
         execute {
-            val classifications = listOf(
+            val classifications = if (state.availableClassifications.isNotEmpty()) listOf(
                 Classification(
+                    id = state.selectedClassification?.id,
                     label = state.classificationLabel,
                     productIds = state.classificationProductIds
                 )
-            )
-            val overrides = listOf(
+            ) else emptyList()
+
+            val overrides = if (state.availableOverrides.isNotEmpty()) listOf(
                 Override(
+                    id = state.selectedOverride?.id,
                     label = state.overrideLabel,
                     customRate = state.customRate,
                     productIds = state.overrideProductIds
-                ))
+                )
+            ) else emptyList()
+
             val percentage = if (state.taxType == "Percentage") state.percentage else null
-            val amount = if (state.taxType == "Amount") null else state.amount
+            val amount = if (state.taxType == "Amount") state.amount else null
 
             val tax = Tax(
+                id = id,
+                status = requireNotNull(state.status),
                 label = requireNotNull(state.label),
                 percentage = percentage,
                 amount = amount,
                 classifications = classifications,
                 overrides = overrides,
             )
-            val request = CatalogTax(tax = tax)
+
+            Timber.tag("help1").d(tax.toString())
+            val request = CatalogTax(tax)
             val catalogService = catalogServiceClient.getService().getOrThrow()
-            val response = catalogService.patchCatalogTax(id.orEmpty(), request)
+            val response = catalogService.patchCatalogTax(requireNotNull(id), request)
             update { copy(updatedTaxId = response?.tax?.id) }
             sendEffect(Effect.ShowToast("Tax was updated: ${response?.tax?.id}"))
         }
@@ -249,8 +264,7 @@ class TaxUpdateViewModel(
                 includeOverrides = true,
                 includeClassification = true,
             )
-            val response = catalogService.deleteCatalogTax(id.orEmpty(), request)
-            Timber.tag("help1").d(response.toString())
+            catalogService.deleteCatalogTax(id.orEmpty(), request)
         }
 
             sendEffect(Effect.ShowToast("Tax $id was removed"))
@@ -262,6 +276,7 @@ class TaxUpdateViewModel(
         override val toolbarState: ToolbarState = ToolbarState(title = "Update Tax"),
         // Tax Fields
         val updatedTaxId: String? = null,
+        val status: String? = null,
         val label: String? = null,
         val amount: Amount? = null,
         val percentage: Percentage? = null,
