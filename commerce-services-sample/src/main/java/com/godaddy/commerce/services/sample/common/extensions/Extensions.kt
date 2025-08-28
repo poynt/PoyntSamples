@@ -61,6 +61,23 @@ fun <T> Context.dialogBuilder(
     return builder
 }
 
+fun <T, R> Context.dialogBuilder(
+    title: String,
+    extras: R,
+    items: List<T>,
+    map: (T) -> String?,
+    onSelected: (T, R) -> Unit
+): AlertDialog.Builder {
+    val builder = AlertDialog.Builder(this)
+    builder.setTitle(title)
+    builder.setItems(items.map(map).toTypedArray()) { dialog, which ->
+        onSelected(items[which], extras)
+        dialog.dismiss()
+    }
+    return builder
+}
+
+
 suspend fun <T : CommonViewModel.ViewModelState, K> StateFlow<T>.bindTo(
     map: T.() -> K,
     keySelector: ((T) -> Any?)? = null,

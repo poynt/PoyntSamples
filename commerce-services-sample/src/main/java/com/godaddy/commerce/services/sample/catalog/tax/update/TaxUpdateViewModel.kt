@@ -2,36 +2,39 @@
 
 package com.godaddy.commerce.services.sample.catalog.tax.update
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
-import com.godaddy.commerce.catalog.TaxConstants
 import com.godaddy.commerce.catalog.TaxParams
 import com.godaddy.commerce.catalog.model.CatalogProduct
 import com.godaddy.commerce.catalog.model.CatalogTax
-import com.godaddy.commerce.catalog.models.*
 import com.godaddy.commerce.common.DataSource
-import com.godaddy.commerce.services.sample.catalog.onSuccess
-import com.godaddy.commerce.services.sample.common.extensions.onComplete
-import com.godaddy.commerce.services.sample.common.extensions.onError
+import com.godaddy.commerce.provider.catalog.CatalogContract
+import com.godaddy.commerce.sdk.catalog.ProductParamsExt
+import com.godaddy.commerce.sdk.catalog.TaxParamsExt
+import com.godaddy.commerce.sdk.catalog.deleteCatalogTax
+import com.godaddy.commerce.sdk.catalog.getCatalogProducts
+import com.godaddy.commerce.sdk.catalog.getCatalogTax
+import com.godaddy.commerce.sdk.catalog.patchCatalogTax
 import com.godaddy.commerce.services.sample.common.extensions.subscribeOnUpdates
-import com.godaddy.commerce.services.sample.common.extensions.toSimpleMoney
+import com.godaddy.commerce.services.sample.common.util.DEFAULT_CURRENCY_CODE
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
 import com.godaddy.commerce.services.sample.common.viewmodel.ToolbarState
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider
 import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider.getCatalogService
-import com.godaddy.commerce.taxes.models.*
+import com.godaddy.commercecore.models.Amount
+import com.godaddy.commercecore.models.Classification
+import com.godaddy.commercecore.models.Money
+import com.godaddy.commercecore.models.Override
+import com.godaddy.commercecore.models.OverrideRate
+import com.godaddy.commercecore.models.Percentage
+import com.godaddy.commercecore.models.Tax
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
-import java.util.*
 
 class TaxUpdateViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -42,6 +45,7 @@ class TaxUpdateViewModel(
 
     init {
         fetchTax()
+        loadProducts()
         CommerceDependencyProvider.getContext()
             .subscribeOnUpdates(CatalogIntents.ACTION_TAXES_CHANGED)
             // refresh only when current tax is updated
@@ -51,114 +55,252 @@ class TaxUpdateViewModel(
     }
 
     private fun fetchTax() {
-        viewModelScope.launch {
+        execute {
             val service = catalogServiceClient.getService().getOrThrow()
-
-            val params = bundleOf(TaxParams.DATA_SOURCE to DataSource.REMOTE_IF_EMPTY)
-            val response = suspendCancellableCoroutine<CatalogTax?> {
-                service.getCatalogTax(id, params, it.onSuccess(), it.onError())
-            } ?: return@launch
+            val request = TaxParamsExt.toBundle(
+                dataSource = DataSource.REMOTE_IF_EMPTY,
+                includeClassification = true,
+                includeOverrides = true,
+            )
+            val response = service.getCatalogTax(id.orEmpty(), request)
             update {
-                copy(
-                    updatedTaxLabel = response.tax.label,
+                val tax = requireNotNull(response?.tax)
 
-                    toolbarState = toolbarState.copy(title = "Update Tax: ${response.tax.label}")
+                val classifications = tax.classifications.orEmpty()
+                val selectedClassification = classifications.firstOrNull()
+                val classificationLabel = selectedClassification?.label.orEmpty()
+                val classificationProductIds = selectedClassification?.productIds.orEmpty()
+
+                val overrides = tax.overrides.orEmpty()
+                val selectedOverride = overrides.firstOrNull()
+                val overrideLabel = selectedOverride?.label.orEmpty()
+                val customRate = selectedOverride?.customRate
+                val overrideProductIds = selectedOverride?.productIds.orEmpty()
+
+                copy(
+                    label = tax.label,
+                    amount = tax.amount,
+                    percentage = tax.percentage,
+                    selectedClassification = selectedClassification,
+                    availableClassifications = classifications,
+                    classificationLabel = classificationLabel,
+                    classificationProductIds = classificationProductIds,
+                    selectedOverride = selectedOverride,
+                    availableOverrides = overrides,
+                    overrideLabel = overrideLabel,
+                    overrideProductIds = overrideProductIds,
+                    customRate = customRate,
+                    taxType = if (tax.amount != null) "Amount" else "Percentage",
+                    toolbarState = toolbarState.copy(title = "Update Tax: ${tax.label}")
                 )
             }
         }
     }
 
-    fun onNameChanged(value: String) {
-        update { copy(updatedTaxLabel = value) }
+    fun onLabelChanged(value: String) {
+        update { copy(label = value) }
     }
-
-    private fun updateName(block: CatalogTax.() -> CatalogTax) {
-        state.tax?.tax ?: return
-        update { copy(tax = block(tax!!)) }
+    fun onRatePercentageChanged(value: String) {
+        update { copy(percentage = Percentage(value)) }
     }
+    fun onAmountChanged(value: String) {
+        value.toLongOrNull()?.let {
+            update {
+                copy(amount = Amount(Money(currencyCode = DEFAULT_CURRENCY_CODE, it)))
+            }
+        }
+    }
+    fun onTaxOverrideLabelChanged(value: String) {
+        update { copy(overrideLabel = value) }
+    }
+    fun onTaxOverrideCustomRateChanged(value: String) {
+        update { copy(customRate = OverrideRate(ratePercentage = Percentage(value)))}
+    }
+    fun onTaxClassificationLabelChanged(value: String) {
+        update { copy(classificationLabel = value) }
+    }
+    fun onTaxTypeChange(position: Int) {
+        update { copy(
+            taxType = state.types[position]
+        ) }
+    }
+    private fun loadProducts(query: String? = null) {
+        execute {
+            val service = catalogServiceClient.getService().getOrThrow()
+            val bundle = ProductParamsExt.toBundle(
+                dataSource = DataSource.REMOTE_IF_EMPTY,
+                pageOffset = DEFAULT_TAX_PRODUCTS_PAGE_OFFSET,
+                pageSize = DEFAULT_TAX_PRODUCTS_PAGE_SIZE,
+                sortBy = CatalogContract.Product.Columns.UPDATED_AT,
+                searchTerm = query,
+            )
+            val response = service.getCatalogProducts(bundle)
+            val products = response?.products.orEmpty().toSet()
+            update { copy (allProducts = products) }
+        }
+    }
+    fun switchTaxOverride(isShow: Boolean) {
+        update { copy(updateTaxOverride = isShow) }
+    }
+    fun switchTaxClassification(isShow: Boolean) {
+        update { copy(updateTaxClassification = isShow) }
+    }
+    fun hideDialog(){
+        update{ copy(dialogType = DialogType.NO_SHOW) }
+    }
+    fun addClassificationProduct(){
+        update {
+            val classificationProducts = allProducts.filter {
+                !classificationProductIds.contains(it.product.id)
+            }
+            copy(
+                dialogType = DialogType.ADD_CLASSIFICATION,
+                dialogList = classificationProducts
 
-//    fun onRateNameChanged(value: String) {
-//        updateTaxRate { copy(name = value) }
-//    }
-//
-//    fun onAmountTypeChanged(position: Int) {
-//        updateTaxRate { copy(amountType = state.amountTypes.getOrNull(position)) }
-//    }
-//
-//    fun onRatePercentageChanged(value: String) {
-//        updateTaxRate { copy(ratePercentage = value) }
-//    }
-//
-//    fun onAmountChanged(value: String) {
-//        updateTaxRate { copy(amount = value.toLongOrNull().toSimpleMoney()) }
-//    }
+            )
+        }
+    }
+    fun removeClassificationProduct(){
+        update {
+            val classificationProducts = allProducts.filter {
+                classificationProductIds.contains(it.product.id)
+            }
+            copy(
+                dialogType = DialogType.REMOVE_CLASSIFICATION,
+                dialogList = classificationProducts
+            )
+        }
+    }
+    fun addOverrideProduct(){
+        update {
+            val overrideProducts = allProducts.filter {
+                !overrideProductIds.contains(it.product.id)
+            }
+            copy(
+                dialogType = DialogType.ADD_OVERRIDE,
+                dialogList = overrideProducts
+            )
+        }
+    }
+    fun removeOverrideProduct(){
+        update {
+            val overrideProducts = allProducts.filter {
+                overrideProductIds.contains(it.product.id)
+            }
+            copy(
+                dialogType = DialogType.REMOVE_OVERRIDE,
+                dialogList = overrideProducts
+            )
+        }
+    }
+    fun handleProduct(catalogProduct: CatalogProduct, dialogType: DialogType) {
+        val id = catalogProduct.product.id.toString()
+        if (dialogType == DialogType.ADD_CLASSIFICATION){
+            update { copy (classificationProductIds = state.classificationProductIds.plus(id)) }
+        }
+        else if (state.dialogType == DialogType.ADD_OVERRIDE){
+            update { copy (overrideProductIds = state.overrideProductIds.plus(id)) }
+        }
+        else if (dialogType == DialogType.REMOVE_CLASSIFICATION){
+            update { copy (classificationProductIds = state.classificationProductIds.minus(id)) }
+        }
+        else if (dialogType == DialogType.REMOVE_OVERRIDE){
+            update { copy (overrideProductIds = state.overrideProductIds.minus(id)) }
+        }
+    }
 
     fun update() {
         execute {
-            val tax = requireNotNull(state.tax) { "Tax must be loaded" }
+            val classifications = listOf(
+                Classification(
+                    label = state.classificationLabel,
+                    productIds = state.classificationProductIds
+                )
+            )
+            val overrides = listOf(
+                Override(
+                    label = state.overrideLabel,
+                    customRate = state.customRate,
+                    productIds = state.overrideProductIds
+                ))
+            val percentage = if (state.taxType == "Percentage") state.percentage else null
+            val amount = if (state.taxType == "Amount") null else state.amount
 
+            val tax = Tax(
+                label = requireNotNull(state.label),
+                percentage = percentage,
+                amount = amount,
+                classifications = classifications,
+                overrides = overrides,
+            )
+            val request = CatalogTax(tax = tax)
             val catalogService = catalogServiceClient.getService().getOrThrow()
-
-            val response = suspendCancellableCoroutine<CatalogTax?> {
-                catalogService.patchCatalogTax(id, tax, Bundle.EMPTY, it.onSuccess(), it.onError())
-            }
-
+            val response = catalogService.patchCatalogTax(id.orEmpty(), request)
+            update { copy(updatedTaxId = response?.tax?.id) }
             sendEffect(Effect.ShowToast("Tax was updated: ${response?.tax?.id}"))
         }
     }
-
     fun delete() {
         execute {
             val catalogService = catalogServiceClient.getService().getOrThrow()
-
-            // to remove tax need to remove tax association only
-
-            // get tax association
-//            val items = suspendCancellableCoroutine<TaxAssociations?> {
-//                val associationParams = bundleOf(
-//                    TaxParams.TAX_ID to id,
-//                    TaxParams.DATA_SOURCE to DataSource.REMOTE_IF_EMPTY
-//                )
-//                catalogService.getTaxAssociations(associationParams, it.onSuccess(), it.onError())
-//            }
-//
-//            Timber.d("Association items: ${items?.associations}")
-//            val association =
-//                requireNotNull(items?.associations?.firstOrNull()) { "There are no associations for current tax" }
-//
-//            // remove tax association by id
-//            suspendCancellableCoroutine {
-//                catalogService.deleteTaxAssociation(
-//                    association.id?.toString(),
-//                    Bundle.EMPTY,
-//                    it.onComplete(),
-//                    it.onError()
-//                )
-//            }
+            val request = TaxParamsExt.toBundle(
+                taxId = TaxParams.TAX_ID,
+                dataSource = DataSource.REMOTE_IF_EMPTY,
+                includeOverrides = true,
+                includeClassification = true,
+            )
+            val response = catalogService.deleteCatalogTax(id.orEmpty(), request)
+            Timber.tag("help1").d(response.toString())
+        }
 
             sendEffect(Effect.ShowToast("Tax $id was removed"))
             sendEffect(Effect.PopScreen)
-        }
     }
-
-    private fun updateTax(block: CatalogTax.() -> CatalogTax) {
-        state.tax ?: return
-        update { copy(tax = block(tax!!)) }
-    }
-
-//    private fun updateTaxRate(block: TaxRate.() -> TaxRate) {
-//        updateTax { copy(taxRates = isltOf(block(taxRates!!.first()))) }
-//    }
 
     data class State(
         override val commonState: CommonState = CommonState(),
         override val toolbarState: ToolbarState = ToolbarState(title = "Update Tax"),
-        val tax: CatalogTax? = null,
-        val updatedTaxLabel: String? = null,
-//        val overrideAssociation: TaxOverrideAssociation? = null,
-        val amountTypes: List<String> = TaxConstants.AmountType.values.toList(),
-        val products: List<CatalogProduct> = emptyList(),
-//        val showTaxAssociationProductDialog: Boolean = false,
-//        val showTaxOverrideAssociationProductDialog: Boolean = false,
+        // Tax Fields
+        val updatedTaxId: String? = null,
+        val label: String? = null,
+        val amount: Amount? = null,
+        val percentage: Percentage? = null,
+        val createdId: String? = null,
+        val types: List<String> = listOf("Amount", "Percentage"),
+        val taxType: String = "Amount",
+
+        val availableOverrides: List<Override> = emptyList(),
+        val availableClassifications: List<Classification> = emptyList(),
+        val selectedOverride: Override? = null,
+        val selectedClassification: Classification? = null,
+
+        // New Override Fields
+        val overrideLabel: String? = null,
+        val customRate: OverrideRate? = null,
+        val updateTaxOverride: Boolean = false,
+
+        // New Classification Fields
+        val classificationLabel: String? = null,
+        val updateTaxClassification: Boolean = false,
+
+        // Fields for handling product mapping
+        val classificationProductIds: Set<String> = emptySet(),
+        val overrideProductIds: Set<String> = emptySet(),
+
+        val allProducts: Set<CatalogProduct> = emptySet(),
+        val dialogList: List<CatalogProduct> = emptyList(),
+        val dialogType: DialogType? = null,
     ) : ViewModelState
+
+    companion object{
+        private const val DEFAULT_TAX_PRODUCTS_PAGE_SIZE = 100
+        private const val DEFAULT_TAX_PRODUCTS_PAGE_OFFSET = 0
+    }
+    enum class DialogType{
+        ADD_CLASSIFICATION,
+        ADD_OVERRIDE,
+        REMOVE_CLASSIFICATION,
+        REMOVE_OVERRIDE,
+        NO_SHOW,
+    }
 }

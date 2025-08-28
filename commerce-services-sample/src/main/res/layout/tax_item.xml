@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="item"
             type="com.godaddy.commerce.services.sample.catalog.tax.TaxRecyclerItem" />
@@ -25,24 +25,37 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Tax Id: ` + item.item}"
-                tools:text="Tax Id: 123123" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{`Name: ` + item.item.tax.label}"
-                tools:text="Tax Name: Some Tax" />
-
+                tools:text="Name: Some Tax" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                tools:text="Tax Amount: Amount" />
-<!--            android:text="@{`Name: ` + ExtensionsKt.format(item.item.taxRates.get(0).amount)}" -->
+                android:text="@{`Amount: ` + item.amountString}"
+                tools:text="Amount: Some Amount" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{`Percentage: ` + item.percentageString}"
+                tools:text="Percentage: Some Percentage %" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{`Classifications: ` + item.classificationCount}"
+                tools:text="Classifications: Some Classification Count" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{`Overrides: ` + item.overrideCount}"
+                tools:text="Overrides: Some Override Count" />
         </LinearLayout>
 
         <LinearLayout

@@ -66,39 +66,34 @@ class CategoryCreateViewModel : CommonViewModel<CategoryCreateViewModel.State>(S
         }
     }
     private fun selectProduct(catalogProduct: CatalogProduct) {
-        if (!state.addedProducts.contains(catalogProduct)) {
-            update {
-                copy(
-                    addedProducts = addedProducts + catalogProduct,
-                    selectedProduct = catalogProduct,
-                    items = items.filterNot { it.item == catalogProduct },
-                    addedItems = addedItems + catalogProduct.mapToCategoryUiItems(
-                        isSelected = true,
-                        onDeleteClicked = {removeProduct(it)},
-                        onSelectClicked = { _, _ -> }
-                    ),
-                    categoryProducts = categoryProducts +
-                        CategoryProduct(
-                            id = requireNotNull(catalogProduct.product.id),
-                            displayOrder = state.categoryProducts.size + 1
-                        )
+        if (state.addedProducts.contains(catalogProduct)){ return }
+        update { copy(
+            addedProducts = addedProducts + catalogProduct,
+            selectedProduct = catalogProduct,
+            items = items.filterNot { it.item == catalogProduct },
+            addedItems = addedItems + catalogProduct.mapToCategoryUiItems(
+                isSelected = true,
+                onDeleteClicked = {removeProduct(it)},
+                onSelectClicked = { _, _ -> }
+            ),
+            categoryProducts = categoryProducts +
+                CategoryProduct(
+                    id = requireNotNull(catalogProduct.product.id),
+                    displayOrder = state.categoryProducts.size + 1
                 )
-            }
-        }
+        ) }
     }
     private fun removeProduct(catalogProduct: CatalogProduct) {
-        update {
-            copy(
-                addedProducts = addedProducts - catalogProduct,
-                categoryProducts = categoryProducts.filterNot { it.id == catalogProduct.product.id },
-                addedItems =  addedItems.filterNot {it.item == catalogProduct },
-                items = listOf(catalogProduct.mapToCategoryUiItems(
-                    isSelected = false,
-                    onDeleteClicked = { removeProduct(it) },
-                    onSelectClicked = { _, _ -> selectProduct(catalogProduct) }
-                )) + items
-            )
-        }
+        update { copy(
+            addedProducts = addedProducts - catalogProduct,
+            categoryProducts = categoryProducts.filterNot { it.id == catalogProduct.product.id },
+            addedItems =  addedItems.filterNot {it.item == catalogProduct },
+            items = listOf(catalogProduct.mapToCategoryUiItems(
+                isSelected = false,
+                onDeleteClicked = { removeProduct(it) },
+                onSelectClicked = { _, _ -> selectProduct(catalogProduct) }
+            )) + items
+        ) }
     }
 
     fun create() {
