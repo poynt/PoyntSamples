@@ -25,175 +25,186 @@
         <include layout="@layout/toolbar_layout" />
 
         <include layout="@layout/loading_layout" />
-
-        <TextView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="8dp"
-            android:text="@string/tax_label" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="4dp"
-            android:onTextChanged="@{(s, start, before, count) -> viewModel.onLabelChanged(s.toString())}" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="8dp"
-            android:text="@string/amount" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="4dp"
-            android:inputType="numberDecimal"
-            android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="8dp"
-            android:text="@string/rate" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="4dp"
-            android:onTextChanged="@{(s, start, before, count) -> viewModel.onRatePercentageChanged(s.toString())}" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="8dp"
-            android:text="@string/tax_type" />
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="4dp"
-            app:autoCompleteData="@{fragment.taxTypes}"
-            app:onItemSelected="@{(position) -> viewModel.onTaxTypeChange(position)}"
-            app:selectedPosition="@{fragment.taxTypePos}" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/item_spacing"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:onCheckedChanged="@{(switch, checked) -> viewModel.switchTaxOverride(checked)}"
-            android:text="@string/override_tax_for_products"
-            app:switchPadding="10dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="@{fragment.showTaxOverride}">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="8dp"
-                android:text="@string/tax_override_label" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideLabelChanged(s.toString())}" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="8dp"
-                android:text="@string/tax_override_custom_rate" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="4dp"
-                android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideCustomRateChanged(s.toString())}" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.addOverrideProduct()}"
-                    android:text="@string/add_product" />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.removeOverrideProduct()}"
-                    android:text="@string/remove_product" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/item_spacing"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:onCheckedChanged="@{(switch, checked) -> viewModel.switchTaxClassification(checked)}"
-                android:text="@string/tax_classification_for_products"
-                app:switchPadding="10dp" />
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="@{fragment.showTaxClassification}">
-
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
                     android:layout_marginTop="8dp"
-                    android:text="@string/tax_classification_label" />
+                    android:text="@string/tax_label" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/item_spacing"
                     android:layout_marginTop="4dp"
-                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxClassificationLabelChanged(s.toString())}" />
-                <LinearLayout
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onLabelChanged(s.toString())}" />
 
-
-
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <Button
-                        android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/amount" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:inputType="numberDecimal"
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onAmountChanged(s.toString())}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/rate" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:onTextChanged="@{(s, start, before, count) -> viewModel.onRatePercentageChanged(s.toString())}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/tax_type" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    app:autoCompleteData="@{fragment.taxTypes}"
+                    app:onItemSelected="@{(position) -> viewModel.onTaxTypeChange(position)}"
+                    app:selectedPosition="@{fragment.taxTypePos}" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/item_spacing"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:onCheckedChanged="@{(switch, checked) -> viewModel.switchTaxOverride(checked)}"
+                    android:text="@string/override_tax_for_products"
+                    app:switchPadding="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="@{fragment.showTaxOverride}">
+
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.addClassificationProduct()}"
-                        android:text="@string/add_product" />
-                    <Button
-                        android:layout_width="wrap_content"
+                        android:layout_marginHorizontal="@dimen/item_spacing"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/tax_override_label" />
+
+                    <EditText
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.removeClassificationProduct()}"
-                        android:text="@string/remove_product" />
+                        android:layout_marginHorizontal="@dimen/item_spacing"
+                        android:layout_marginTop="4dp"
+                        android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideLabelChanged(s.toString())}" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/item_spacing"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/tax_override_custom_rate" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/item_spacing"
+                        android:layout_marginTop="4dp"
+                        android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxOverrideCustomRateChanged(s.toString())}" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.addOverrideProduct()}"
+                            android:text="@string/add_product" />
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.removeOverrideProduct()}"
+                            android:text="@string/remove_product" />
+                    </LinearLayout>
+
                 </LinearLayout>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/item_spacing"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:onCheckedChanged="@{(switch, checked) -> viewModel.switchTaxClassification(checked)}"
+                        android:text="@string/tax_classification_for_products"
+                        app:switchPadding="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="@{fragment.showTaxClassification}">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/item_spacing"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/tax_classification_label" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/item_spacing"
+                            android:layout_marginTop="4dp"
+                            android:onTextChanged="@{(s, start, before, count) -> viewModel.onTaxClassificationLabelChanged(s.toString())}" />
+                        <LinearLayout
+
+
+
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{() -> viewModel.addClassificationProduct()}"
+                                android:text="@string/add_product" />
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{() -> viewModel.removeClassificationProduct()}"
+                                android:text="@string/remove_product" />
+                        </LinearLayout>
+                    </LinearLayout>
             </LinearLayout>
+        </ScrollView>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

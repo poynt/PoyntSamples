@@ -19,7 +19,7 @@ data class TaxRecyclerItem(
     else "N/A",
 
     val classificationCount: String = item.tax.classifications.orEmpty().size.toString(),
-    val overrideCount: String = item.tax.classifications.orEmpty().size.toString(),
+    val overrideCount: String = item.tax.overrides.orEmpty().size.toString(),
 
     override val onBinding: (binding: TaxItemBinding, position: Int, getItem: () -> CatalogTax) -> Unit = { _, _, _ -> }
 

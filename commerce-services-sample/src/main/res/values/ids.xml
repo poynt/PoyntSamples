@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="root" type="id" />
+    <item name="label_field" type="id" />
+    <item name="display_order_field" type="id" />
+    <item name="ProductRecyclerView" type="id" />
+</resources>

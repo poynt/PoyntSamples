@@ -2,7 +2,6 @@
 
 package com.godaddy.commerce.services.sample.catalog.tax.update
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
@@ -36,7 +35,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 
 class TaxUpdateViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -79,9 +77,6 @@ class TaxUpdateViewModel(
                 val overrideLabel = selectedOverride?.label.orEmpty()
                 val customRate = selectedOverride?.customRate
                 val overrideProductIds = selectedOverride?.productIds.orEmpty()
-                Timber.tag("help1").d(selectedOverride.toString())
-                Timber.tag("help1").d(selectedClassification.toString())
-                Timber.tag("help1").d(tax.toString())
                 copy(
                     label = tax.label,
                     amount = tax.amount,
@@ -162,7 +157,6 @@ class TaxUpdateViewModel(
             copy(
                 dialogType = DialogType.ADD_CLASSIFICATION,
                 dialogList = classificationProducts
-
             )
         }
     }
@@ -247,7 +241,6 @@ class TaxUpdateViewModel(
                 overrides = overrides,
             )
 
-            Timber.tag("help1").d(tax.toString())
             val request = CatalogTax(tax)
             val catalogService = catalogServiceClient.getService().getOrThrow()
             val response = catalogService.patchCatalogTax(requireNotNull(id), request)
@@ -264,9 +257,8 @@ class TaxUpdateViewModel(
                 includeOverrides = true,
                 includeClassification = true,
             )
-            catalogService.deleteCatalogTax(id.orEmpty(), request)
+            val response = catalogService.deleteCatalogTax(id.orEmpty(), request)
         }
-
             sendEffect(Effect.ShowToast("Tax $id was removed"))
             sendEffect(Effect.PopScreen)
     }
@@ -289,12 +281,12 @@ class TaxUpdateViewModel(
         val selectedOverride: Override? = null,
         val selectedClassification: Classification? = null,
 
-        // New Override Fields
+        // Override Fields
         val overrideLabel: String? = null,
         val customRate: OverrideRate? = null,
         val updateTaxOverride: Boolean = false,
 
-        // New Classification Fields
+        // Classification Fields
         val classificationLabel: String? = null,
         val updateTaxClassification: Boolean = false,
 

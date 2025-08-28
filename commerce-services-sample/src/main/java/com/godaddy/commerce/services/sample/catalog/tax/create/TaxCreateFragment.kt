@@ -15,6 +15,7 @@ import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.TaxCreateFragmentBinding
 import com.godaddy.commerce.services.sample.catalog.tax.create.TaxCreateViewModel.DialogType
+import com.godaddy.commerce.services.sample.catalog.tax.update.TaxUpdateViewModel
 import timber.log.Timber
 
 class TaxCreateFragment :
@@ -59,27 +60,18 @@ class TaxCreateFragment :
             keySelector = { it.dialogType },
             map = { this },
             update = {
-                when (it.dialogType) {
-                    DialogType.ADD_CLASSIFICATION ->
-                        handleProductDialog(it.allProducts, it.dialogType)
-                    DialogType.ADD_OVERRIDE ->
-                        handleProductDialog(it.allProducts, it.dialogType)
-                    DialogType.REMOVE_CLASSIFICATION ->
-                        handleProductDialog(it.classificationProducts.toList(), it.dialogType)
-                    DialogType.REMOVE_OVERRIDE ->
-                        handleProductDialog(it.overrideProducts.toList(), it.dialogType)
-                    DialogType.NO_SHOW -> {}
-                    null -> {}
+                if (it.dialogType != null && it.dialogType != DialogType.NO_SHOW){
+                    handleProductDialog(it.dialogList, it.dialogType)
                 }
+
             }
         ) }
-
     }
-    private fun handleProductDialog(productIds: List<CatalogProduct>, dialogType: DialogType) {
+    private fun handleProductDialog(products: List<CatalogProduct>, dialogType: DialogType) {
         requireContext().dialogBuilder(
             "Select Product",
             extras = dialogType,
-            items = productIds,
+            items = products,
             map = { it.product.label },
             onSelected = viewModel::handleProduct
         ).setOnDismissListener { viewModel.hideDialog() }.create().show()}

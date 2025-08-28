@@ -84,7 +84,7 @@ class TaxUpdateFragment :
         ).setOnDismissListener { viewModel.hideDialog() }.create().show()
     }
 
-private fun bindToTaxUpdatedEvents(){
+    private fun bindToTaxUpdatedEvents(){
         launch {
             viewModel.stateFlow.bindTo(
                 TaxUpdateViewModel.State::updatedTaxId
