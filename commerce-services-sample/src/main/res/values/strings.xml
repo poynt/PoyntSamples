@@ -71,6 +71,14 @@
     <string name="display_order">Display Order</string>
     <string name="products">Products</string>
     <string name="current_products">Current Products</string>
-    <string name="remove_product">:Remove Product</string>
+    <string name="remove_product">Remove Product</string>
+    <string name="tax_classification_label">Tax Classification Label</string>
+    <string name="tax_classification_for_products">Tax Classification for Products</string>
+    <string name="tax_override_custom_rate">Tax Override Custom Rate</string>
+    <string name="tax_override_label">Tax Override Label</string>
+    <string name="override_tax_for_products">Override Tax for Products</string>
+    <string name="rate">Rate</string>
+    <string name="show_products">Show Products</string>
+    <string name="tax_type">Tax Type:</string>
 
 </resources>

@@ -6,14 +6,12 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.godaddy.commerce.sdk.util.isNotNullOrBlank
 import com.godaddy.commerce.services.sample.R
-import com.godaddy.commerce.services.sample.catalog.category.create.CategoryCreateViewModel
 import com.godaddy.commerce.services.sample.common.extensions.bindTo
 import com.godaddy.commerce.services.sample.common.extensions.launch
 import com.godaddy.commerce.services.sample.common.extensions.observableField
 import com.godaddy.commerce.services.sample.common.view.CommonFragment
 import com.godaddy.commerce.services.sample.common.view.bindOnCommonViewModelUpdates
 import com.godaddy.commerce.services.sample.databinding.CategoryUpdateFragmentBinding
-import timber.log.Timber
 
 class CategoryUpdateFragment :
     CommonFragment<CategoryUpdateFragmentBinding>(R.layout.category_update_fragment) {
@@ -35,7 +33,7 @@ class CategoryUpdateFragment :
     )
     val allItems by observableField(
         stateFlow = { viewModel.stateFlow },
-        map = { addedItems + items}
+        map = { addedItems + items }
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,8 +47,8 @@ class CategoryUpdateFragment :
     private fun bindToAddedItemsEvents() {
         launch { viewModel.stateFlow.bindTo(
             CategoryUpdateViewModel.State::addedItems) {
-            dataBinding.ProductRecyclerView.scrollToPosition(0)
-        }
+                dataBinding.ProductRecyclerView.scrollToPosition(0)
+            }
         }
     }
 
@@ -60,7 +58,6 @@ class CategoryUpdateFragment :
                 CategoryUpdateViewModel.State::updatedCategoryId
             ) { id ->
                 if (id.isNotNullOrBlank()) {
-                    Timber.tag("test10").d("no")
                     return@bindTo Toast.makeText(
                         requireContext(),
                         "Category with id [${id}] was updated",

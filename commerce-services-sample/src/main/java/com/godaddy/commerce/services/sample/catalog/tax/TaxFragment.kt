@@ -13,7 +13,6 @@ import timber.log.Timber
 
 class TaxFragment : CommonFragment<TaxFragmentBinding>(R.layout.tax_fragment) {
 
-
     private val viewModel: TaxViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -2,16 +2,15 @@
 
 package com.godaddy.commerce.services.sample.catalog.tax
 
-import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.godaddy.commerce.catalog.CatalogIntents
-import com.godaddy.commerce.catalog.TaxParams
-import com.godaddy.commerce.catalog.model.CatalogTaxes
+import com.godaddy.commerce.catalog.model.CatalogTax
 import com.godaddy.commerce.common.DataSource
 import com.godaddy.commerce.common.FilterBy
 import com.godaddy.commerce.provider.catalog.CatalogContract
-import com.godaddy.commerce.services.sample.catalog.onSuccess
-import com.godaddy.commerce.services.sample.common.extensions.onError
+import com.godaddy.commerce.sdk.catalog.TaxParamsExt
+import com.godaddy.commerce.sdk.catalog.getCatalogTaxes
 import com.godaddy.commerce.services.sample.common.extensions.subscribeOnUpdates
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonState
 import com.godaddy.commerce.services.sample.common.viewmodel.CommonViewModel
@@ -20,7 +19,7 @@ import com.godaddy.commerce.services.sample.di.CommerceDependencyProvider
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.suspendCancellableCoroutine
+import timber.log.Timber
 
 class TaxViewModel : CommonViewModel<TaxViewModel.State>(State()) {
 
@@ -28,8 +27,6 @@ class TaxViewModel : CommonViewModel<TaxViewModel.State>(State()) {
 
     init {
         loadTaxes()
-
-        // CS sends an event when data was changed. Subscribe on it and refresh the list.
         CommerceDependencyProvider.getContext().subscribeOnUpdates(
             CatalogIntents.ACTION_TAXES_CHANGED
         ).onEach {
@@ -40,26 +37,19 @@ class TaxViewModel : CommonViewModel<TaxViewModel.State>(State()) {
     fun loadTaxes() {
         execute {
             val service = serviceClient.getService().getOrThrow()
-            val bundle = Bundle().apply {
-                // data source defines data provider: local db, remote or remote only if there are no data in local db.
-                // It is better to use REMOTE_IF_EMPTY in most cases to improve UX and performance.
-                putParcelable(TaxParams.DATA_SOURCE, DataSource.REMOTE_IF_EMPTY)
+            val bundle = TaxParamsExt.toBundle(
+                dataSource = DataSource.REMOTE_IF_EMPTY,
+                pageOffset = 0,
+                pageSize = 100,
+                sortBy = CatalogContract.Tax.Columns.UPDATED_AT,
+                includeClassification = true,
+                includeOverrides = true,
 
-                // Add pagination to improve UX and avoid TooLargeTransactionException
-                putInt(TaxParams.PAGE_OFFSET, 0)
-                putInt(TaxParams.PAGE_SIZE, 100)
-
-                // sorting is optional. List can be sorted by any column in database.
-                putString(TaxParams.SORT_BY, CatalogContract.Tax.Columns.UPDATED_AT)
-
-                // filter is optional. In this example we do showing taxes which are enabled.
-                putParcelable(TaxParams.FILTER_BY, FilterBy(CatalogContract.Tax.Columns.STATUS, "1", FilterBy.ComparisonOperator.EQUAL))
-            }
-            val response = suspendCancellableCoroutine<CatalogTaxes?> {
-                service.getCatalogTaxes(bundle, it.onSuccess(), it.onError())
-            }
+            )
+            val response = service.getCatalogTaxes(bundle)
             update { copy(items = response?.taxes.orEmpty().map { it.mapToUiItems() }) }
         }
+
     }
 
     data class State(
