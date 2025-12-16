@@ -174,5 +174,14 @@
             android:text="Configuration Service Activity"
             android:textAlignment="center" />
 
+        <Button
+            android:id="@+id/autoDisagnosticsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@color/gray"
+            android:text="Auto Disagnostics"
+            android:textAlignment="center" />
+
     </LinearLayout>
 </ScrollView>

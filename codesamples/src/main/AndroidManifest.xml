@@ -22,9 +22,10 @@
     <uses-permission android:name="poynt.permission.CONFIGURATION_SERVICE" />
     <uses-permission android:name="co.poynt.receipts.ACCESS_RECEIPT_SETTINGS" />
     <uses-permission android:name="poynt.permission.LAST_SYNC_TIME_INFO" />
-
+    <uses-permission android:name="poynt.permission.DIAGNOSTICS_INFO_SERVICE" />
 
     <uses-feature android:name="android.hardware.camera" />
+
 
     <application
         android:allowBackup="true"
@@ -95,6 +96,8 @@
 
         <activity android:name=".ConfigurationServiceActivity" />
 
+        <activity android:name=".AutoDiagnosticsActivity" />
+
         <receiver
             android:name=".CustomerDetectedReceiver"
             android:enabled="true"
@@ -117,18 +120,18 @@
         </receiver>
 
         <service
-        android:name=".ReceiptCustomizationService"
-        android:enabled="true"
-        android:exported="true">
+            android:name=".ReceiptCustomizationService"
+            android:enabled="true"
+            android:exported="true">
 
-        <!-- define the intent filter with an action as IPoyntReceiptDecoratorService interface -->
-        <intent-filter>
-        <action android:name="co.poynt.os.services.v1.IPoyntReceiptDecoratorService" />
-        </intent-filter>
+            <!-- define the intent filter with an action as IPoyntReceiptDecoratorService interface -->
+            <intent-filter>
+                <action android:name="co.poynt.os.services.v1.IPoyntReceiptDecoratorService" />
+            </intent-filter>
 
-        <meta-data
-        android:name="co.poynt.os.service.capability"
-        android:resource="@xml/receipt_decorator_capability" />
+            <meta-data
+                android:name="co.poynt.os.service.capability"
+                android:resource="@xml/receipt_decorator_capability" />
 
         </service>
 
