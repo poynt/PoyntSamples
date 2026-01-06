@@ -48,6 +48,7 @@ public class AutoDiagnosticsActivity extends Activity {
         TextView infoTextView = findViewById(R.id.infoTextView);
 
         hardwareInfoButton.setOnClickListener(view -> {
+            Log.d(TAG, "hardwareInfoButton is pressed!");
             try {
                 Bundle request = DiagnosticsRequest
                         .create(DiagnosticsRequest.RequestType.HARDWARE_INFO)
@@ -76,6 +77,7 @@ public class AutoDiagnosticsActivity extends Activity {
         });
 
         printerInfoButton.setOnClickListener(view -> {
+            Log.d(TAG, "printerInfoButton is pressed!");
             try {
                 Bundle request = DiagnosticsRequest
                         .create(DiagnosticsRequest.RequestType.PRINTER_INFO)
@@ -98,6 +100,7 @@ public class AutoDiagnosticsActivity extends Activity {
         });
 
         dockInfoButton.setOnClickListener(view -> {
+            Log.d(TAG, "dockInfoButton is pressed!");
             try {
                 Bundle request = DiagnosticsRequest
                         .create(DiagnosticsRequest.RequestType.DOCK_STATION_INFO)
@@ -106,6 +109,9 @@ public class AutoDiagnosticsActivity extends Activity {
                     @Override
                     public void onChanged(Bundle previousStateBundle, Bundle currentStateBundle) throws RemoteException {
                         DiagnosticsResponse response = DiagnosticsResponse.fromBundle(currentStateBundle);
+
+                        Log.d(TAG, "getting dock info, response.isConnectedToDock() = " + response.isConnectedToDock());
+
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append("isConnectedToDock: ")
                                 .append(response.isConnectedToDock())
@@ -126,6 +132,7 @@ public class AutoDiagnosticsActivity extends Activity {
 
         subscribeButton.setOnClickListener(view -> {
             try {
+                Log.d(TAG, "subscribeButton is pressed!");
                 Bundle request = DiagnosticsRequest
                         .create(DiagnosticsRequest.RequestType.HARDWARE_INFO,
                                 DiagnosticsRequest.RequestType.PRINTER_INFO,
@@ -135,6 +142,9 @@ public class AutoDiagnosticsActivity extends Activity {
                     @Override
                     public void onChanged(Bundle previousStateBundle, Bundle currentStateBundle) throws RemoteException {
                         DiagnosticsResponse response = DiagnosticsResponse.fromBundle(currentStateBundle);
+
+                        Log.d(TAG, "onChanged! response.isConnectedToDock() = " + response.isConnectedToDock());
+
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append("Diagnostics Info is Changed!")
                                 .append("\nPrinter: ")
