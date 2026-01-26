@@ -22,9 +22,10 @@
     <uses-permission android:name="poynt.permission.CONFIGURATION_SERVICE" />
     <uses-permission android:name="co.poynt.receipts.ACCESS_RECEIPT_SETTINGS" />
     <uses-permission android:name="poynt.permission.LAST_SYNC_TIME_INFO" />
-
+    <uses-permission android:name="poynt.permission.DIAGNOSTICS_INFO_SERVICE" />
 
     <uses-feature android:name="android.hardware.camera" />
+
 
     <application
         android:allowBackup="true"
@@ -94,6 +95,8 @@
         <activity android:name=".PrinterServiceActivity" />
 
         <activity android:name=".ConfigurationServiceActivity" />
+
+        <activity android:name=".AutoDiagnosticsActivity"/>
 
         <receiver
             android:name=".CustomerDetectedReceiver"

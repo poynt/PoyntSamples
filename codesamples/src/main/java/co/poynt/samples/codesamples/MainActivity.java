@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
     private Button nonPaymentCardReaderActivityBtn;
     private Button printerServiceActivityBtn;
     private Button configurationServiceActivityBtn;
+    private Button autoDiagnosticsBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +190,14 @@ public class MainActivity extends Activity {
         configurationServiceActivityBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ConfigurationServiceActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        autoDiagnosticsBtn = (Button) findViewById(R.id.autoDisagnosticsBtn);
+        autoDiagnosticsBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AutoDiagnosticsActivity.class);
                 startActivity(intent);
             }
         });
