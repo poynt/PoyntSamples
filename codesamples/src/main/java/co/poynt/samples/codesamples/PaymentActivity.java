@@ -263,7 +263,6 @@ public class PaymentActivity extends Activity {
         payment.setReferences(generateReferences());
         payment.setSkipSignatureScreen(true);
         payment.setSkipReceiptScreen(true);
-        payment.setSkipPaymentConfirmationScreen(true);
         Intent collectPaymentIntent = new Intent(Intents.ACTION_COLLECT_PAYMENT);
         collectPaymentIntent.putExtra(Intents.INTENT_EXTRAS_PAYMENT, payment);
         startActivityForResult(collectPaymentIntent, COLLECT_PAYMENT_REFS_REQUEST);
@@ -436,7 +435,6 @@ public class PaymentActivity extends Activity {
 
         payment.setSkipSignatureScreen(true);
         payment.setSkipReceiptScreen(true);
-        payment.setSkipPaymentConfirmationScreen(true);
 
         payment.setCallerPackageName("co.poynt.sample");
         Map<String, String> processorOptions = new HashMap<>();
