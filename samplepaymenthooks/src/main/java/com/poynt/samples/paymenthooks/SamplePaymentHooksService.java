@@ -71,6 +71,14 @@ public class SamplePaymentHooksService extends Service {
                 intent.putExtra(Constants.HooksExtras.TRANSACTION, transaction);
 
                 listener.onLaunchActivity(intent);
+            } else if (PaymentHookEvent.PAYMENT_VOIDED.equals(s)) {
+                payment.setAmount(payment.getAmount() - 10);
+                Log.d(TAG, "updated payment amount");
+                listener.updatePayment(payment);
+            } else if (PaymentHookEvent.PAYMENT_REFUNDED.equals(s)) {
+                payment.setAmount(payment.getAmount() - 20);
+                Log.d(TAG, "updated payment amount");
+                listener.updatePayment(payment);
             } else {
                 listener.onContinue();
             }
