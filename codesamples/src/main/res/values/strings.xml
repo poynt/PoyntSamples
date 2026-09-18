@@ -23,4 +23,13 @@
     <string name="title_activity_in_app_billing">InAppBillingActivity</string>
     <string name="title_activity_content_provider_sample">ContentProviderSampleActivity</string>
 
+    <string-array name="customer_choice_options">
+        <item>Default: PagoBancomat, Alternative: Visa, MC</item>
+        <item>Default: Visa, MC, Alternative: PagoBancomat</item>
+        <item>Default: null, Alternative: null (Consumer Choice disabled)</item>
+        <item>Default: Visa, MC, Alternative: null</item>
+        <item>Default: Bankaxept, Alternative: Visa, MC</item>
+        <item>Default: Visa, MC, Alternative: Bankaxept</item>
+    </string-array>
+
 </resources>
