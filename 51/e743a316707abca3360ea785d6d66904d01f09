@@ -1,0 +1,20 @@
+codesamples/build.gradle
+  h_16b518164b6ae5 47-48
+codesamples/src/main/java/co/poynt/samples/codesamples/ConfigurationServiceActivity.java
+  h_16b518164b6ae5 4,13,15,18-26,29-30,32,42-52,59-69,136-256,265-266,274,290-303
+codesamples/src/main/res/layout/activity_configuration_service.xml
+  h_16b518164b6ae5 47-85
+codesamples/src/main/res/values/strings.xml
+  h_16b518164b6ae5 26-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "51e743a316707abca3360ea785d6d66904d01f09",
+  "prompts": {},
+  "humans": {
+    "h_16b518164b6ae5": {
+      "author": "odundar <odundar@godaddy.com>"
+    }
+  }
+}
