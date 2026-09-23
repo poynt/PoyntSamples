@@ -1,0 +1,19 @@
+settings.gradle
+  s_5b110b0b2e350d::t_d20197437c5b62 3-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "09504ffad2e6eb1dc93ec29ed73ffba453d00425",
+  "prompts": {},
+  "sessions": {
+    "s_5b110b0b2e350d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "22d2c09c-9f91-4a15-983f-a0f97bebbb96",
+        "model": "auto-smart"
+      },
+      "human_author": "odundar <odundar@godaddy.com>"
+    }
+  }
+}
