@@ -44,6 +44,45 @@
 
         <!-- new buttons for another Configuration service methods will be here...-->
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="16dp"
+            android:background="#000000" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_horizontal"
+            android:text="Customer choice"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/customerChoiceSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:entries="@array/customer_choice_options"
+            android:spinnerMode="dropdown" />
+
+        <Button
+            android:id="@+id/enableCustomerChoiceButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="#777777"
+            android:gravity="center"
+            android:text="Enable customer choice"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000" />
+
         <TextView
             android:id="@+id/infoTextView"
             android:layout_width="match_parent"
